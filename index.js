@@ -46,6 +46,69 @@ function revealAll() {
   rev.forEach((el, i) => setTimeout(() => el.classList.add('in'), i * 40));
 }
 
+function normalizeIndent(md) {
+  if (!md) return md;
+  const lines = md.split('\n');
+  // remove leading/trailing blank lines
+  while (lines.length && lines[0].trim() === '') lines.shift();
+  while (lines.length && lines[lines.length-1].trim() === '') lines.pop();
+  // find minimum indentation among non-empty lines that start with whitespace
+  const indents = [];
+  lines.forEach(l => { const m = l.match(/^\s+/); if (m && l.trim() !== '') indents.push(m[0].length); });
+  if (indents.length === 0) return lines.join('\n');
+  const minIndent = Math.min(...indents);
+  // remove up to `minIndent` leading whitespace characters (spaces or tabs) from each line
+  const rg = new RegExp('^\\s{0,' + minIndent + '}');
+  const out = lines.map(l => l.replace(rg, '')).join('\n');
+  return out;
+}
+
+// Load markdown content which may be an inline string or a path to a .md file (relative or remote)
+async function fetchMarkdown(mdField) {
+  if (!mdField) return { text: '', tried: [] };
+  if (typeof mdField !== 'string') return { text: String(mdField), tried: [] };
+  const trimmed = mdField.trim();
+  const looksLikePath = /^\.\.?\/?[\w\-./]+\.md$/i.test(trimmed) || /^https?:\/\/.+\.md$/i.test(trimmed);
+  if (!looksLikePath || trimmed.includes('\n')) return { text: mdField, tried: [] };
+  const tried = [];
+  const origin = (typeof window !== 'undefined' && window.location && window.location.origin) ? window.location.origin.replace(/\/$/, '') : '';
+  const candidates = [];
+  // prefer origin-based absolute path first when available
+  if (origin) candidates.push(origin + '/' + trimmed.replace(/^\/+/, ''));
+  candidates.push(trimmed);
+  if (!trimmed.startsWith('./') && !trimmed.startsWith('/')) {
+    candidates.push('./' + trimmed);
+    candidates.push('/' + trimmed);
+    if (origin) candidates.push(origin + '/' + trimmed);
+  } else if (trimmed.startsWith('/')) {
+    if (origin) candidates.push(origin + trimmed);
+  }
+
+  for (const c of candidates) {
+    try {
+      tried.push(c);
+      console.debug('fetchMarkdown trying', c);
+      const res = await fetch(c, { cache: 'no-store' });
+      if (res && res.ok) {
+        const txt = await res.text();
+        return { text: txt, tried };
+      } else {
+        console.debug('fetchMarkdown non-ok', c, res && res.status);
+      }
+    } catch (inner) {
+      console.debug('fetchMarkdown candidate failed', c, inner && inner.message);
+    }
+  }
+  console.warn('fetchMarkdown: all attempts failed for', trimmed, tried);
+  return { text: '', tried };
+}
+
+function resolveImagePath(u) {
+  if (!u) return '';
+  if (/^(https?:|data:|\/\/)/i.test(u)) return u;
+  return u;
+}
+
 function renderCards(items, type) {
   const container = type === 'projects' ? document.getElementById('cards-grid') : document.getElementById('selling-grid');
   if (!items || !container) return;
@@ -56,12 +119,16 @@ function renderCards(items, type) {
     const imgCount = (p.gallery || p.images || []).length;
     const hintText = imgCount > 0 ? `${imgCount} IMAGE${imgCount !== 1 ? 'S' : ''}` : (type === 'projects' ? 'CLICK TO VIEW' : 'NO IMAGES');
 
+    const coverSrc = type === 'selling' ? resolveImagePath(p.cover || (p.images && p.images[0] && p.images[0].url) || '') : '';
+    const coverHtml = coverSrc ? `<div class="card-cover" style="background-image:url('${coverSrc}');background-size:cover;background-position:center;height:110px;border-radius:6px;margin-bottom:8px"></div>` : '';
+
     const el = document.createElement('div');
     el.className = 'card reveal';
     el.style.transitionDelay = `${i * .06}s`;
     el.innerHTML = `
       <div class="card-accent" style="background:${p.color || '#666'}"></div>
       <div class="card-inner">
+        ${coverHtml}
         <div class="card-icon-row">
           <span class="card-emoji">${p.icon || '📦'}</span>
           ${p.status ? `<span class="status-pill ${p.status === 'wip'? 'pill-wip': p.status === 'active'? 'pill-active':'pill-archived'}">${p.status}</span>` : ''}
@@ -86,6 +153,8 @@ function renderCards(items, type) {
 function initProjectModal() {
   const modal = document.getElementById('gallery-modal');
   const mainImg = document.getElementById('gm-main-img');
+  // fallback to local placeholder if image fails to load
+  mainImg.addEventListener('error', () => { mainImg.src = 'images/placeholder.svg'; });
   const placeholder = document.getElementById('gm-placeholder');
   const captionEl = document.getElementById('gm-caption');
   const captionBar = document.getElementById('gm-caption-bar');
@@ -121,11 +190,24 @@ function initProjectModal() {
 
     modal.classList.add('open'); document.body.style.overflow = 'hidden';
 
+    function resolveImagePath(u) {
+      if (!u) return '';
+      // treat as absolute if it contains a scheme (http:, data:, //)
+      if (/^(https?:|data:|\/\/)/i.test(u)) return u;
+      // relative paths (images/foo.png or ./images/foo.png) work as-is
+      return u;
+    }
+
     function buildThumbs(gallery, thumbsElLocal) {
       thumbsElLocal.innerHTML = '';
       gallery.forEach((img, i) => {
         const d = document.createElement('div'); d.className = 'gm-thumb' + (i === 0 ? ' active' : ''); d.dataset.idx = i;
-        d.innerHTML = `<img src="${img.url}" alt="${img.caption || ''}" loading="lazy">`;
+        const src = resolveImagePath(img.url);
+        d.innerHTML = `<img src="${src}" alt="${img.caption || ''}" loading="lazy">`;
+        const imageEl = d.querySelector('img');
+        imageEl.addEventListener('error', () => {
+          d.innerHTML = '<div class="gm-thumb-placeholder">📷</div>';
+        });
         d.addEventListener('click', () => showImage(i)); thumbsElLocal.appendChild(d);
       });
     }
@@ -134,7 +216,7 @@ function initProjectModal() {
       const gallery = currentProject.gallery || [];
       if (!gallery.length) return;
       idx = Math.max(0, Math.min(idx, gallery.length - 1)); currentIndex = idx;
-      mainImg.classList.add('switching'); setTimeout(() => { mainImg.src = gallery[idx].url; mainImg.alt = gallery[idx].caption || ''; mainImg.classList.remove('switching'); }, 180);
+      mainImg.classList.add('switching'); setTimeout(() => { mainImg.src = resolveImagePath(gallery[idx].url); mainImg.alt = gallery[idx].caption || ''; mainImg.classList.remove('switching'); }, 180);
       captionEl.textContent = gallery[idx].caption || '';
       counterEl.textContent = `${idx + 1} / ${gallery.length}`;
       document.querySelectorAll('.gm-thumb').forEach(t => t.classList.toggle('active', parseInt(t.dataset.idx) === idx));
@@ -167,6 +249,8 @@ function initProjectModal() {
 function initSellingModal() {
   const modal = document.getElementById('selling-modal');
   const mainImg = document.getElementById('sm-main-img');
+  // fallback to local placeholder if image fails to load
+  mainImg.addEventListener('error', () => { mainImg.src = 'images/placeholder.svg'; });
   const placeholder = document.getElementById('sm-placeholder');
   const captionEl = document.getElementById('sm-caption');
   const captionBar = document.getElementById('sm-caption-bar');
@@ -177,6 +261,7 @@ function initSellingModal() {
   const descEl = document.getElementById('sm-desc');
   const linksEl = document.getElementById('sm-links');
   let currentItem = null, currentIndex = 0, expanded = false;
+  // no custom scrollbar — use native modal scrollbar
 
   window.openSelling = function (idx) {
     currentItem = CONFIG.currentlySelling[idx];
@@ -192,14 +277,57 @@ function initSellingModal() {
     const gallery = currentItem.images || [];
     if (gallery.length > 0) {
       placeholder.style.display = 'none'; mainImg.style.display = 'block'; captionBar.style.display = 'flex'; prevBtn.style.display = 'flex'; nextBtn.style.display = 'flex'; thumbsEl.style.display = 'flex';
+      function resolveImagePath(u) {
+        if (!u) return '';
+        if (/^(https?:|data:|\/\/)/i.test(u)) return u;
+        return u;
+      }
+
+      function buildThumbs(gallery, thumbsElLocal) {
+        thumbsElLocal.innerHTML = '';
+        gallery.forEach((img, i) => {
+          const d = document.createElement('div'); d.className = 'gm-thumb' + (i === 0 ? ' active' : ''); d.dataset.idx = i;
+          const src = resolveImagePath(img.url);
+          d.innerHTML = `<img src="${src}" alt="${img.caption || ''}" loading="lazy">`;
+          const imageEl = d.querySelector('img');
+          imageEl.addEventListener('error', () => { d.innerHTML = '<div class="gm-thumb-placeholder">📷</div>'; });
+          d.addEventListener('click', () => showImage(i)); thumbsElLocal.appendChild(d);
+        });
+      }
+
       buildThumbs(gallery, thumbsEl);
       showImage(0);
     } else {
       placeholder.style.display = 'flex'; mainImg.style.display = 'none'; captionBar.style.display = 'none'; thumbsEl.style.display = 'none'; prevBtn.style.display = 'none'; nextBtn.style.display = 'none';
     }
 
-    // Render markdown (truncated)
-    renderMarkdownTruncated(currentItem.md || '');
+    // Render markdown (truncated). Support `md` as inline content or a path to a .md file.
+    let loadedMd = '';
+    const rawMdField = (currentItem.md || '').toString();
+    descEl.style.cursor = 'pointer';
+    // If md is a path we previously attempted fetch; but user requested no fetch requirement.
+    // Support both inline md and path: if the field looks like a path but was inlined, use it directly.
+    (async () => {
+      let mdText = '';
+      try {
+        const res = await fetchMarkdown(rawMdField);
+        mdText = res && res.text ? res.text : '';
+      } catch (e) {
+        mdText = '';
+      }
+      // if fetchMarkdown returned empty but rawMdField is not a path (contains newlines), use the raw field
+      if (!mdText && rawMdField.includes('\n')) mdText = rawMdField;
+      // normalize indentation to avoid code-block rendering
+      mdText = normalizeIndent(mdText || rawMdField || '');
+      loadedMd = mdText || '';
+      // if still empty and the field looked like a path, show helpful message
+      if (!loadedMd && /\.md$/i.test(rawMdField)) {
+        const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        descEl.innerHTML = `<div class="gm-placeholder-sub">Description unavailable — failed to load <strong>${esc(rawMdField)}</strong>.</div>`;
+      } else {
+        renderMarkdownTruncated(loadedMd);
+      }
+    })();
 
     modal.classList.add('open'); document.body.style.overflow = 'hidden';
 
@@ -222,7 +350,7 @@ function initSellingModal() {
       const gallery = currentItem.images || [];
       if (!gallery.length) return;
       idx = Math.max(0, Math.min(idx, gallery.length - 1)); currentIndex = idx;
-      mainImg.classList.add('switching'); setTimeout(() => { mainImg.src = gallery[idx].url; mainImg.alt = gallery[idx].caption || ''; mainImg.classList.remove('switching'); }, 180);
+      mainImg.classList.add('switching'); setTimeout(() => { mainImg.src = resolveImagePath(gallery[idx].url); mainImg.alt = gallery[idx].caption || ''; mainImg.classList.remove('switching'); }, 180);
       captionEl.textContent = gallery[idx].caption || '';
       counterEl.textContent = `${idx + 1} / ${gallery.length}`;
       document.querySelectorAll('#sm-thumbs .gm-thumb').forEach(t => t.classList.toggle('active', parseInt(t.dataset.idx) === idx));
@@ -239,22 +367,74 @@ function initSellingModal() {
 
     function closeSelling() { modal.classList.remove('open'); document.body.style.overflow = ''; document.removeEventListener('keydown', sellingKeydown); }
 
-    // clicking desc toggles full md
-    descEl.onclick = () => {
-      expanded = !expanded; renderMarkdownTruncated(currentItem.md || '', expanded);
+    // clicking desc toggles full md (only after content is loaded)
+    descEl.onclick = (e) => {
+      e.stopPropagation();
+      if (!loadedMd) return; expanded = !expanded; renderMarkdownTruncated(loadedMd, expanded);
     };
 
-    function renderMarkdownTruncated(md, forceFull = false) {
-      if (!forceFull && md.length > 200) {
-        const raw = md.slice(0, 200).replace(/\s+$/, '') + '...';
-        descEl.innerHTML = marked.parse(raw);
-        const more = document.createElement('div'); more.style.marginTop = '10px'; more.innerHTML = '<a class="card-btn" style="font-size:10px;padding:6px 10px;">Read more</a>';
-        more.querySelector('a').addEventListener('click', (e) => { e.stopPropagation(); expanded = true; renderMarkdownTruncated(md, true); });
-        descEl.appendChild(more);
+    // handle wheel events so the description scrolls when possible and outer modal doesn't steal the scroll
+    descEl.addEventListener('wheel', (ev) => {
+      const delta = ev.deltaY;
+      const canScrollDown = descEl.scrollTop + descEl.clientHeight < descEl.scrollHeight - 1;
+      const canScrollUp = descEl.scrollTop > 0;
+      const willScrollInside = (delta > 0 && canScrollDown) || (delta < 0 && canScrollUp);
+      if (willScrollInside) {
+        // allow default so the element scrolls, but stop propagation so the page/modal doesn't also scroll
+        ev.stopPropagation();
       } else {
-        descEl.innerHTML = marked.parse(md || '*No description provided.*');
+        // prevent default to avoid outer scrolling and stop propagation
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+    }, { passive: false });
+
+    function renderMarkdownTruncated(md, forceFull = false) {
+      if (!md) { descEl.textContent = 'No description provided.'; return; }
+      // When not expanded, show a plain-text truncated preview (no markdown formatting)
+      if (!forceFull) {
+        descEl.classList.remove('expanded');
+        // cleanup any previous wrapper or custom scrollbar left over
+        try { const oldScroll = document.querySelector('.sm-scrollbar'); if (oldScroll) oldScroll.remove(); } catch (e) {}
+        const parent = descEl.parentElement; if (parent && parent.classList && parent.classList.contains('sm-desc-wrap')) { parent.parentElement.replaceChild(descEl, parent); }
+        // render to HTML then extract plain text to strip formatting
+        const fullHtml = marked.parse(md);
+        const tmp = document.createElement('div'); tmp.innerHTML = fullHtml;
+        const plain = (tmp.textContent || tmp.innerText || '').trim();
+        let cut = plain.slice(0, 280);
+        cut = cut.replace(/\s+\S*$/, '');
+        const preview = cut + (plain.length > cut.length ? '...' : '');
+
+        descEl.innerHTML = '';
+        const textNode = document.createTextNode(preview);
+        descEl.appendChild(textNode);
+
+        if (plain.length > cut.length) {
+          const more = document.createElement('div'); more.style.marginTop = '10px';
+          more.innerHTML = '<a class="card-btn" style="font-size:10px;padding:6px 10px;">Read more</a>';
+          more.querySelector('a').addEventListener('click', (e) => { e.stopPropagation(); renderMarkdownTruncated(md, true); });
+          descEl.appendChild(more);
+        }
+      } else {
+          // Expanded: render full markdown with formatting and allow native scrolling within the desc box
+          descEl.innerHTML = marked.parse(md || '*No description provided.*');
+          descEl.classList.add('expanded');
+          // remove any leftover custom scrollbar element or wrapper from earlier iterations
+          try {
+            const oldScroll = document.querySelector('.sm-scrollbar'); if (oldScroll) oldScroll.remove();
+          } catch (e) {}
+          // if a wrapper was created earlier, unwrap the desc element back into place
+          const parent = descEl.parentElement;
+          if (parent && parent.classList && parent.classList.contains('sm-desc-wrap')) {
+            parent.parentElement.replaceChild(descEl, parent);
+          }
+          // make sure the box can be focused and scrolled
+          descEl.tabIndex = -1;
+          descEl.focus({ preventScroll: true });
+          descEl.scrollTop = 0;
       }
     }
+    
   };
 }
 

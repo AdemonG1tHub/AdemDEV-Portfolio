@@ -46,7 +46,7 @@ const CONFIG = {
       desc: "CrabSMP is a Lifesteal survival server, where the goal is to essentially slay bosses, get rich, and become the best player!",
       tags: ["Python", "TypeScript", "JSON UI", "Discord"],
       status: "active", color: "#FF7043",
-      links: [],
+      links: [{ label: "Visit Website", url: "https://crabsmp.net" }, { label: "Join Discord", url: "https://discord.gg/crabsmp" }],
       gallery: [],
     },
     {
@@ -68,16 +68,49 @@ const CONFIG = {
   // ── Currently Selling: paste markdown into the `md` field for each item
   currentlySelling: [
     {
-      id: "sample-1",
-      title: "Custom Minecraft Skin Pack",
-      price: "$5",
+      id: "astral-engine",
+      title: "AstralCraft Engine",
+      price: "$50 USD",
+      cover: "images/astral-engine1.png",
       images: [
-        { url: "https://i.imgur.com/8Km9tLL.jpg", caption: "Example skin 1" },
-        { url: "https://i.imgur.com/6oKX4Wm.jpg", caption: "Example skin 2" }
+        { url: "images/astral-engine1.png", caption: "Screenshot 1" },
+        { url: "images/astral-engine2.png", caption: "Screenshot 2" },
+        { url: "images/astral-engine3.png", caption: "Screenshot 3" },
+        { url: "images/astral-engine4.png", caption: "Screenshot 4" },
+        { url: "images/astral-engine5.png", caption: "Screenshot 5" },
+        { url: "images/astral-engine6.png", caption: "Screenshot 6" },
+        { url: "images/astral-engine7.png", caption: "Screenshot 7" },
+        { url: "images/astral-engine8.png", caption: "Screenshot 8" },
+        { url: "images/astral-engine9.png", caption: "Screenshot 9" },
+        { url: "images/astral-engine10.png", caption: "Screenshot 10" },
+        { url: "images/astral-engine11.png", caption: "Screenshot 11" },
+        { url: "images/astral-engine12.png", caption: "Screenshot 12" },
+        { url: "images/astral-engine13.png", caption: "Screenshot 13" },
+        { url: "images/astral-engine14.png", caption: "Screenshot 14" },
+        { url: "images/astral-engine15.png", caption: "Screenshot 15" },
+        { url: "images/astral-engine16.png", caption: "Screenshot 16" },
+        { url: "images/astral-engine17.png", caption: "Screenshot 17" },
+        { url: "images/astral-engine18.png", caption: "Screenshot 18" },
+        { url: "images/astral-engine19.png", caption: "Screenshot 19" },
+        { url: "images/astral-engine20.png", caption: "Screenshot 20" },
+        { url: "images/astral-engine21.png", caption: "Screenshot 21" },
+        { url: "images/astral-engine22.png", caption: "Screenshot 22" },
+        { url: "images/astral-engine23.png", caption: "Screenshot 23" },
+        { url: "images/astral-engine24.png", caption: "Screenshot 24" }
       ],
-      tags: ["skin", "minecraft", "download"],
-      // Put your markdown here. It will be rendered in the preview.
-      md: `# Skin Pack\n\nA set of 10 custom skins themed around fantasy rogues and mages.\n\n- High quality PNGs\n- Compatible with Bedrock & Java\n- Delivery via zip + install instructions\n\n**Includes:** 10 skins, usage license, install guide.\n\nWant changes? Reply and I can make small edits for free.`,
+      tags: ["engine", "minecraft", "download"],
+      // Markdown content for the item. Inlined so it displays without network requests.
+      md: `# AstralCraft Engine
+
+    A full-featured Minecraft Bedrock server engine with RPG levelling, factions, quest system, custom shop menu, NPC handlers, sidebar HUD, and Discord embed integration.
+
+    - High quality code
+    - Compatible with Bedrock & Java
+    - Delivery via zip + install instructions
+
+    **Includes:** Engine files, usage license, install guide.
+
+    Want changes? Reply and I can make small edits for free.`,
       links: [{ label: "Buy via PayPal", url: "https://paypal.me/ademdev" }]
     }
   ]

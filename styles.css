@@ -150,11 +150,12 @@ footer { background: var(--bg3); border-top: 2px solid var(--border); padding: 2
 ╚══════════════════════════════════════════════ */
 #gallery-modal, #selling-modal {
   position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: opacity .25s ease;
+  overflow: auto; /* prevent modal from causing page-level scroll */
 }
 #gallery-modal.open, #selling-modal.open { opacity: 1; pointer-events: all }
 .gm-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.88); backdrop-filter: blur(6px); cursor: pointer }
 .gm-backdrop::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.08) 3px, rgba(0,0,0,.08) 4px); pointer-events: none }
-.gm-shell { position: relative; z-index: 1; width: 100%; max-width: 960px; background: var(--bg2); border: 2px solid var(--border2); display: flex; flex-direction: column; max-height: 90vh; transform: scale(.93) translateY(16px); transition: transform .28s cubic-bezier(.22,.68,0,1.2); box-shadow: 0 32px 80px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05) }
+.gm-shell { position: relative; z-index: 1; width: 100%; max-width: 960px; background: var(--bg2); border: 2px solid var(--border2); display: flex; flex-direction: column; max-height: 90vh; transform: scale(.93) translateY(16px); transition: transform .28s cubic-bezier(.22,.68,0,1.2); box-shadow: 0 32px 80px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.05); overflow: auto; }
 #gallery-modal.open .gm-shell, #selling-modal.open .gm-shell { transform: scale(1) translateY(0) }
 .gm-titlebar { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; height: 48px; background: var(--bg3); border-bottom: 2px solid var(--border); flex-shrink: 0 }
 .gm-title-left { display: flex; align-items: center; gap: 12px }
@@ -190,6 +191,66 @@ footer { background: var(--bg3); border-top: 2px solid var(--border); padding: 2
 .gm-tags { display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 16px 0; flex-shrink: 0 }
 .gm-info { padding: 14px 20px; border-top: 1px solid var(--border); background: var(--surface); display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-shrink: 0 }
 .gm-info-desc { font-size: 14px; color: var(--muted); line-height: 1.7; flex: 1 }
+.gm-info-desc, #sm-desc {
+  /* normal wrapping for preview and rendered markdown */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-height: 260px;
+  overflow: auto;
+}
+
+/* ensure rendered markdown doesn't create overflow horizontally */
+#sm-desc, #sm-desc * {
+  max-width: 100%;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+/* ensure code blocks wrap instead of forcing horizontal overflow */
+#sm-desc pre, #sm-desc code { white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+/* images and tables should not overflow */
+#sm-desc img, #sm-desc table { max-width: 100%; height: auto; }
+/* avoid horizontal scrolling inside description */
+#sm-desc { overflow-x: hidden; }
+
+/* make sure lists render with visible bullets and spacing */
+#sm-desc ul, #sm-desc ol {
+  padding-left: 1.25rem;
+  margin: 8px 0;
+  list-style-position: outside;
+}
+#sm-desc li { margin-bottom: 6px; }
+
+/* gallery modal shell scrolls when content exceeds viewport (native scrollbar) */
+/* .gm-shell set to overflow:auto above so it will show a native scrollbar on the right */
+
+/* expanded state: allow large markdown content to scroll within the modal */
+#sm-desc.expanded {
+  /* fit inside the modal while leaving room for title/controls */
+  max-height: calc(60vh - 120px);
+  overflow-y: auto;
+  padding-right: 8px; /* room for scrollbar */
+  /* reserve space for a visible scrollbar to avoid layout shift when zooming */
+  scrollbar-gutter: stable both-edges;
+  /* make scrollbar clearly visible for this box */
+  scrollbar-width: thin;
+}
+
+/* visible scrollbar styling for expanded description */
+#sm-desc.expanded::-webkit-scrollbar { width: 12px }
+#sm-desc.expanded::-webkit-scrollbar-track { background: rgba(0,0,0,.18) }
+#sm-desc.expanded::-webkit-scrollbar-thumb { background: var(--green-dark); border-radius: 6px }
+
+/* improved scrolling behavior on touch devices */
+#sm-desc.expanded {
+  -webkit-overflow-scrolling: touch;
+  touch-action: auto;
+}
+
+/* preview text styling to avoid markdown formatting in preview */
+#sm-desc { font-family: var(--body); font-size: 14px; color: var(--muted); }
+#sm-desc a.card-btn { margin-top: 8px; display: inline-block }
 .gm-info-links { display: flex; gap: 8px; flex-shrink: 0 }
 .gm-add-hint { font-family: var(--px); font-size: 7px; color: var(--dim); text-align: center; padding: 6px; background: var(--bg3); border-top: 1px solid var(--border); flex-shrink: 0 }
 
