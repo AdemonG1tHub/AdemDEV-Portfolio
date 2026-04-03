@@ -1,222 +1,323 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdemDEV — Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AdemDEV — Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-</head>
+  <body>
+    <!-- HEADER -->
+    <header>
+      <a href="#" class="logo">
+        <div class="logo-icon">AD</div>
+        <span class="logo-text" id="logo-text"></span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle">☰</button>
+      <nav id="nav">
+        <a href="#about">About</a>
+        <a href="#selling">Currently Selling</a>
+        <a href="#projects">Projects</a>
+        <a href="#services">Services</a>
+        <a href="#contact" class="cta">Contact</a>
+      </nav>
+    </header>
 
-<body>
-  <!-- HEADER -->
-  <header>
-    <a href="#" class="logo">
-      <div class="logo-icon">AD</div>
-      <span class="logo-text" id="logo-text"></span>
-    </a>
-    <button class="nav-toggle" id="nav-toggle">☰</button>
-    <nav id="nav">
-      <a href="#about">About</a>
-      <a href="#selling">Currently Selling</a>
-      <a href="#projects">Projects</a>
-      <a href="#services">Services</a>
-      <a href="#contact" class="cta">Contact</a>
-    </nav>
-  </header>
-
-  <!-- HERO -->
-  <section id="hero">
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <p class="hero-eyebrow">PORTFOLIO</p>
-      <h1 class="hero-title" id="hero-title"></h1>
-      <p class="hero-sub" id="hero-sub"></p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn btn-green">View Projects</a>
-        <a href="#contact" class="btn btn-stone">Contact Me</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <div class="stats-row" id="stats-row"></div>
-
-  <!-- ABOUT -->
-  <section class="section section-alt" id="about">
-    <div class="container">
-      <div class="about-grid reveal">
-        <div>
-          <p class="section-label">01 — About Me</p>
-          <h2 class="section-heading">A developer who<br>plays what he builds.</h2>
-          <p class="section-body" id="about-body"></p>
-          <div class="skills-wrap" id="skills-wrap"></div>
-        </div>
-        <div class="feature-visual">
-          <img src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/5/52/Netherite_Pickaxe_JE2_BE1.png/revision/latest?cb=20200226194053?size=256" alt="Feature Visual" style="width:50%;height:auto;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))">
-          <div style="position:absolute;bottom:10px;right:12px;font-family:var(--px);font-size:7px;color:var(--dim)">AdemDEV.exe</div>
+    <!-- HERO -->
+    <section id="hero">
+      <canvas id="hero-canvas"></canvas>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow">PORTFOLIO</p>
+        <h1 class="hero-title" id="hero-title"></h1>
+        <p class="hero-sub" id="hero-sub"></p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-green">View Projects</a>
+          <a href="#contact" class="btn btn-stone">Contact Me</a>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <div class="section-divider"></div>
+    <!-- STATS -->
+    <div class="stats-row" id="stats-row"></div>
 
-  <!-- CURRENTLY SELLING -->
-  <section class="section" id="selling">
-    <div class="container">
-      <div class="projects-header reveal">
-        <div>
-          <p class="section-label">02 — Currently Selling</p>
-          <h2 class="section-heading">Items I'm Selling</h2>
-        </div>
-        <p style="font-size:13px;color:var(--dim);font-family:var(--px);font-size:8px;">CLICK A CARD TO VIEW DETAILS</p>
-      </div>
-      <div class="cards-grid" id="selling-grid"></div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- PROJECTS -->
-  <section class="section" id="projects">
-    <div class="container">
-      <div class="projects-header reveal">
-        <div>
-          <p class="section-label">03 — Projects</p>
-          <h2 class="section-heading">What I've Built</h2>
-        </div>
-        <p style="font-size:13px;color:var(--dim);font-family:var(--px);font-size:8px;">CLICK A CARD TO VIEW GALLERY</p>
-      </div>
-      <div class="cards-grid" id="cards-grid"></div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- SERVICES -->
-  <section class="section section-alt" id="services">
-    <div class="container">
-      <div style="text-align:center;margin-bottom:48px" class="reveal">
-        <p class="section-label">04 — Services</p>
-        <h2 class="section-heading">What I Can Do For You</h2>
-        <p class="section-body" style="margin:0 auto">Whether you need a Minecraft plugin from scratch, a Discord bot, or a full deployment pipeline — I've done it.</p>
-      </div>
-      <div class="services-grid reveal" id="services-grid"></div>
-    </div>
-  </section>
-
-  <div class="section-divider"></div>
-
-  <!-- CONTACT -->
-  <section class="section section-dark" id="contact">
-    <div class="container">
-      <div class="contact-inner reveal">
-        <p class="section-label" style="text-align:center">05 — Contact</p>
-        <h2 class="section-heading" style="text-align:center">Commissions</h2>
-        <p class="section-body" style="text-align:center;margin:16px auto 36px">Got a server to build? A bot to deploy? A feature to ship? Drop me a message — response times may vary.</p>
-        <div class="contact-links" id="contact-links"></div>
-        <div class="divider-row">or find me on Discord</div>
-        <div class="discord-box" id="discord-box">
-          <span class="discord-tag" id="discord-tag"></span>
-          <span class="discord-copy">Click to copy</span>
+    <!-- ABOUT -->
+    <section class="section section-alt" id="about">
+      <div class="container">
+        <div class="about-grid reveal">
+          <div>
+            <p class="section-label">01 — About Me</p>
+            <h2 class="section-heading">
+              A developer who<br />plays what he builds.
+            </h2>
+            <p class="section-body" id="about-body"></p>
+            <div class="skills-wrap" id="skills-wrap"></div>
+          </div>
+          <div class="feature-visual">
+            <img
+              src="https://static.wikia.nocookie.net/minecraft_gamepedia/images/5/52/Netherite_Pickaxe_JE2_BE1.png/revision/latest?cb=20200226194053?size=256"
+              alt="Feature Visual"
+              style="
+                width: 50%;
+                height: auto;
+                filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+              "
+            />
+            <div
+              style="
+                position: absolute;
+                bottom: 10px;
+                right: 12px;
+                font-family: var(--px);
+                font-size: 7px;
+                color: var(--dim);
+              "
+            >
+              AdemDEV.exe
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <span class="footer-copy" id="footer-copy"></span>
-    <div class="footer-links">
-      <a href="#about">About</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
-      <a href="#" id="footer-gh">GitHub</a>
-    </div>
-  </footer>
+    <div class="section-divider"></div>
 
-  <!-- ═══════════════════════════════════════════════════════
+    <!-- CURRENTLY SELLING -->
+    <section class="section" id="selling">
+      <div class="container">
+        <div class="projects-header reveal">
+          <div>
+            <p class="section-label">02 — Currently Selling</p>
+            <h2 class="section-heading">Items I'm Selling</h2>
+          </div>
+          <p
+            style="
+              font-size: 13px;
+              color: var(--dim);
+              font-family: var(--px);
+              font-size: 8px;
+            "
+          >
+            CLICK A CARD TO VIEW DETAILS
+          </p>
+        </div>
+        <div class="cards-grid" id="selling-grid"></div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- PROJECTS -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="projects-header reveal">
+          <div>
+            <p class="section-label">03 — Projects</p>
+            <h2 class="section-heading">What I've Built</h2>
+          </div>
+          <p
+            style="
+              font-size: 13px;
+              color: var(--dim);
+              font-family: var(--px);
+              font-size: 8px;
+            "
+          >
+            CLICK A CARD TO VIEW GALLERY
+          </p>
+        </div>
+        <div class="cards-grid" id="cards-grid"></div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- SERVICES -->
+    <section class="section section-alt" id="services">
+      <div class="container">
+        <div style="text-align: center; margin-bottom: 48px" class="reveal">
+          <p class="section-label">04 — Services</p>
+          <h2 class="section-heading">What I Can Do For You</h2>
+          <p class="section-body" style="margin: 0 auto">
+            Whether you need a Minecraft plugin from scratch, a Discord bot, or
+            a full deployment pipeline — I've done it.
+          </p>
+        </div>
+        <div class="services-grid reveal" id="services-grid"></div>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- CONTACT -->
+    <section class="section section-dark" id="contact">
+      <div class="container">
+        <div class="contact-inner reveal">
+          <p class="section-label" style="text-align: center">05 — Contact</p>
+          <h2 class="section-heading" style="text-align: center">
+            Commissions
+          </h2>
+          <p
+            class="section-body"
+            style="text-align: center; margin: 16px auto 36px"
+          >
+            Got a server to build? A bot to deploy? A feature to ship? Drop me a
+            message — response times may vary.
+          </p>
+          <div class="contact-links" id="contact-links"></div>
+          <div class="divider-row">or find me on Discord</div>
+          <div class="discord-box" id="discord-box">
+            <span class="discord-tag" id="discord-tag"></span>
+            <span class="discord-copy">Click to copy</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <span class="footer-copy" id="footer-copy"></span>
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+        <a href="#" id="footer-gh">GitHub</a>
+      </div>
+    </footer>
+
+    <!-- ═══════════════════════════════════════════════════════
        GALLERY MODAL (for projects)
   ═══════════════════════════════════════════════════════ -->
-  <div id="gallery-modal" role="dialog" aria-modal="true" aria-label="Project gallery">
-    <div class="gm-backdrop" id="gm-backdrop"></div>
-    <div class="gm-shell">
-      <div class="gm-titlebar">
-        <div class="gm-title-left">
-          <div class="gm-accent-dot" id="gm-accent-dot"></div>
-          <span class="gm-project-name" id="gm-project-name"></span>
+    <div
+      id="gallery-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Project gallery"
+    >
+      <div class="gm-backdrop" id="gm-backdrop"></div>
+      <div class="gm-shell">
+        <div class="gm-titlebar">
+          <div class="gm-title-left">
+            <div class="gm-accent-dot" id="gm-accent-dot"></div>
+            <span class="gm-project-name" id="gm-project-name"></span>
+          </div>
+          <button class="gm-close" id="gm-close" aria-label="Close gallery">
+            ✕
+          </button>
         </div>
-        <button class="gm-close" id="gm-close" aria-label="Close gallery">✕</button>
-      </div>
-      <div class="gm-viewer" id="gm-viewer" style="min-height:340px;">
-        <button class="gm-nav prev" id="gm-prev" aria-label="Previous image">◀</button>
-        <img class="gm-main-img" id="gm-main-img" src="" alt="" style="display:none">
-        <div class="gm-placeholder" id="gm-placeholder">
-          <div class="gm-placeholder-icon" id="gm-ph-icon">📷</div>
-          <div class="gm-placeholder-title">No screenshots yet</div>
-          <div class="gm-placeholder-sub">Add images to this project's <code style="background:var(--surface);padding:2px 6px;font-size:11px;">gallery</code> array in the CONFIG.</div>
+        <div class="gm-viewer" id="gm-viewer" style="min-height: 340px">
+          <button class="gm-nav prev" id="gm-prev" aria-label="Previous image">
+            ◀
+          </button>
+          <img
+            class="gm-main-img"
+            id="gm-main-img"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <div class="gm-placeholder" id="gm-placeholder">
+            <div class="gm-placeholder-icon" id="gm-ph-icon">📷</div>
+            <div class="gm-placeholder-title">No screenshots yet</div>
+            <div class="gm-placeholder-sub">
+              Add images to this project's
+              <code
+                style="
+                  background: var(--surface);
+                  padding: 2px 6px;
+                  font-size: 11px;
+                "
+                >gallery</code
+              >
+              array in the CONFIG.
+            </div>
+          </div>
+          <button class="gm-nav next" id="gm-next" aria-label="Next image">
+            ▶
+          </button>
         </div>
-        <button class="gm-nav next" id="gm-next" aria-label="Next image">▶</button>
+        <div class="gm-caption" id="gm-caption-bar" style="display: none">
+          <span class="gm-caption-text" id="gm-caption"></span>
+          <span class="gm-counter" id="gm-counter"></span>
+        </div>
+        <div class="gm-info">
+          <p class="gm-info-desc" id="gm-info-desc"></p>
+          <div class="gm-info-links" id="gm-info-links"></div>
+        </div>
+        <div class="gm-tags" id="gm-tags"></div>
+        <div class="gm-thumbs" id="gm-thumbs" style="display: none"></div>
+        <div class="gm-add-hint">
+          ESC to close &nbsp;·&nbsp; ← → to navigate
+        </div>
       </div>
-      <div class="gm-caption" id="gm-caption-bar" style="display:none">
-        <span class="gm-caption-text" id="gm-caption"></span>
-        <span class="gm-counter" id="gm-counter"></span>
-      </div>
-      <div class="gm-info">
-        <p class="gm-info-desc" id="gm-info-desc"></p>
-        <div class="gm-info-links" id="gm-info-links"></div>
-      </div>
-      <div class="gm-tags" id="gm-tags"></div>
-      <div class="gm-thumbs" id="gm-thumbs" style="display:none"></div>
-      <div class="gm-add-hint">ESC to close &nbsp;·&nbsp; ← → to navigate</div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════
+    <!-- ═══════════════════════════════════════════════════════
        SELLING MODAL (markdown preview + gallery)
   ═══════════════════════════════════════════════════════ -->
-  <div id="selling-modal" role="dialog" aria-modal="true" aria-label="Selling item">
-    <div class="gm-backdrop" id="sm-backdrop"></div>
-    <div class="gm-shell">
-      <div class="gm-titlebar">
-        <div class="gm-title-left">
-          <div class="gm-accent-dot" id="sm-accent-dot"></div>
-          <span class="gm-project-name" id="sm-title"></span>
+    <div
+      id="selling-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Selling item"
+    >
+      <div class="gm-backdrop" id="sm-backdrop"></div>
+      <div class="gm-shell">
+        <div class="gm-titlebar">
+          <div class="gm-title-left">
+            <div class="gm-accent-dot" id="sm-accent-dot"></div>
+            <span class="gm-project-name" id="sm-title"></span>
+          </div>
+          <button class="gm-close" id="sm-close" aria-label="Close selling">
+            ✕
+          </button>
         </div>
-        <button class="gm-close" id="sm-close" aria-label="Close selling">✕</button>
-      </div>
-      <div class="gm-viewer" id="sm-viewer" style="min-height:280px;">
-        <button class="gm-nav prev" id="sm-prev" aria-label="Previous image">◀</button>
-        <img class="gm-main-img" id="sm-main-img" src="" alt="" style="display:none">
-        <div class="gm-placeholder" id="sm-placeholder">
-          <div class="gm-placeholder-icon" id="sm-ph-icon">📦</div>
-          <div class="gm-placeholder-title">No images</div>
+        <div class="gm-viewer" id="sm-viewer" style="min-height: 280px">
+          <button class="gm-nav prev" id="sm-prev" aria-label="Previous image">
+            ◀
+          </button>
+          <img
+            class="gm-main-img"
+            id="sm-main-img"
+            src=""
+            alt=""
+            style="display: none"
+          />
+          <div class="gm-placeholder" id="sm-placeholder">
+            <div class="gm-placeholder-icon" id="sm-ph-icon">📦</div>
+            <div class="gm-placeholder-title">No images</div>
+          </div>
+          <button class="gm-nav next" id="sm-next" aria-label="Next image">
+            ▶
+          </button>
         </div>
-        <button class="gm-nav next" id="sm-next" aria-label="Next image">▶</button>
-      </div>
-      <div class="gm-caption" id="sm-caption-bar" style="display:none">
-        <span class="gm-caption-text" id="sm-caption"></span>
-        <span class="gm-counter" id="sm-counter"></span>
-      </div>
+        <div class="gm-caption" id="sm-caption-bar" style="display: none">
+          <span class="gm-caption-text" id="sm-caption"></span>
+          <span class="gm-counter" id="sm-counter"></span>
+        </div>
 
-      <div class="gm-info">
-        <div style="flex:1">
-          <div id="sm-desc" class="gm-info-desc"></div>
+        <div class="gm-info">
+          <div style="flex: 1">
+            <div id="sm-desc" class="gm-info-desc"></div>
+          </div>
+          <div class="gm-info-links" id="sm-links"></div>
         </div>
-        <div class="gm-info-links" id="sm-links"></div>
-      </div>
 
-      <div class="gm-thumbs" id="sm-thumbs" style="display:none"></div>
-      <div class="gm-add-hint">This preview renders Markdown. Click the description to expand.</div>
+        <div class="gm-thumbs" id="sm-thumbs" style="display: none"></div>
+        <div class="gm-add-hint">
+          This preview renders Markdown. Click the description to expand.
+        </div>
+      </div>
     </div>
-  </div>
 
-  <script src="config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script src="index.js" defer></script>
-</body>
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="index.js" defer></script>
+  </body>
 </html>
