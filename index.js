@@ -85,17 +85,17 @@ function normalizeIndent(md) {
   // remove leading/trailing blank lines
   while (lines.length && lines[0].trim() === "") lines.shift();
   while (lines.length && lines[lines.length - 1].trim() === "") lines.pop();
-  // find minimum indentation among non-empty lines that start with whitespace
-  const indents = [];
-  lines.forEach((l) => {
-    const m = l.match(/^\s+/);
-    if (m && l.trim() !== "") indents.push(m[0].length);
+  // compute leading whitespace length for all non-empty lines (include zeros)
+  const indents = lines.map((l) => {
+    if (l.trim() === "") return 0;
+    const m = l.match(/^\s*/);
+    return m ? m[0].length : 0;
   });
-  if (indents.length === 0) return lines.join("\n");
   const minIndent = Math.min(...indents);
-  // remove up to `minIndent` leading whitespace characters (spaces or tabs) from each line
-  const rg = new RegExp("^\\s{0," + minIndent + "}");
-  const out = lines.map((l) => l.replace(rg, "")).join("\n");
+  // if there's no common indentation, return as-is (this preserves nested list indents)
+  if (!minIndent) return lines.join("\n");
+  // remove exactly minIndent characters from the start of each line
+  const out = lines.map((l) => (l.length >= minIndent ? l.slice(minIndent) : "")).join("\n");
   return out;
 }
 
