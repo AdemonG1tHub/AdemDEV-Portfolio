@@ -143,6 +143,7 @@ const CONFIG = {
 A project I have been working on for a couple of months. AstralCraft Engine is a TypeScript Add-on with a high amount of features, modules, textures, UIs, and more!
 
 **Modules**:
+
 - Factions
   - Create factions
   - Manage members and perms
@@ -198,12 +199,16 @@ A project I have been working on for a couple of months. AstralCraft Engine is a
   - Manage auctions
   - Manage donator plans / grant plans
   - Create leaderboards and floating texts
+
 **Features**:
+
 - Custom font(s) - multiple fonts 
 - Custom UIs - multiple different UIs
 - Leaderboards
 - Sidebar and smaller sidebar 
+
 **Development**:
+
 Taking over the code and making changes have been made easy!
 - Files are in appropriate folders
 - There is a main configuration file for most modules
@@ -212,11 +217,13 @@ Taking over the code and making changes have been made easy!
 - NO OBFUSCATED CODE!!
 
 **Extra Info**
+
 - No AI was used to generate code (only to partially *assist* my coding in some debugging situations)
 - The main branding is for "AstralCraft", however you can change the branding to suit your needs. Just use a texture editor like BlockBench to modify some textures. 
 - Endstone is **not required**. HOWEVER, for *some* features such as the Discord Integration; Endstone is required.
 
 **Tech Stack**:
+
 - TypeScript (Scripting API)
 - Python (Endstone Plugin)`,
       links: [{ label: "Buy via PayPal", url: "https://paypal.me/ademdev" }],
