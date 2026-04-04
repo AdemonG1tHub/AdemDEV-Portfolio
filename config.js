@@ -25,15 +25,16 @@ const CONFIG = {
   projects: [
     {
       icon: "🌌",
-      title: "AstralCraft Engine",
+      title: "CrabSMP Engine",
       desc: "Full-featured Minecraft Bedrock server engine — RPG levelling, factions, quest system, custom shop menu, NPC handlers, sidebar HUD, and Discord embed integration.",
       tags: ["TypeScript", "Python", "Endstone", "Discord.js"],
       status: "active",
       color: "#29B6F6",
       links: [
-        { label: "Join the Discord", url: "https://discord.gg/astralcraft" },
+        { label: "Join the Discord", url: "https://discord.gg/crabsmp" },
+        { label: "Visit the Website", url: "https://crabsmp.net" },
       ],
-      gallery: [],
+      gallery: [{url: "images/crab-engine1.png", caption: "Main Menu"}],
     },
     {
       icon: "🌐",
@@ -55,19 +56,6 @@ const CONFIG = {
       status: "wip",
       color: "#F5C518",
       links: [],
-      gallery: [],
-    },
-    {
-      icon: "📬",
-      title: "Dev / Owner @ CrabSMP",
-      desc: "CrabSMP is a Lifesteal survival server, where the goal is to essentially slay bosses, get rich, and become the best player!",
-      tags: ["Python", "TypeScript", "JSON UI", "Discord"],
-      status: "active",
-      color: "#FF7043",
-      links: [
-        { label: "Visit Website", url: "https://crabsmp.net" },
-        { label: "Join Discord", url: "https://discord.gg/crabsmp" },
-      ],
       gallery: [],
     },
     {
@@ -226,7 +214,7 @@ Taking over the code and making changes have been made easy!
 
 - TypeScript (Scripting API)
 - Python (Endstone Plugin)`,
-      links: [{ label: "Buy via PayPal", url: "https://paypal.me/ademdev" }],
+      links: [{ label: "Buy via PayPal", url: "https://paypal.me/ademusman8" }],
     },
   ],
 };
