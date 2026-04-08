@@ -4,6 +4,8 @@ A custom Minecraft-themed portfolio and storefront website built with plain HTML
 
 This site is fully config-driven, so most updates can be done from a single file without touching most code.
 
+Based off: [BetterBedrock.com](https://betterbedrock.com)
+
 ## Features
 
 - Config-driven content rendering for projects, services, stats, and store items
