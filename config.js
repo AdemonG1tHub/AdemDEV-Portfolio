@@ -1,17 +1,45 @@
+// -----------------------------------------------------------------------------
+// Portfolio Config
+// -----------------------------------------------------------------------------
+// Everything shown on the website is driven by this object.
+// Edit this file to add/update your content without touching HTML/JS.
+//
+// Tips:
+// - Keep URLs absolute (https://...) for external links.
+// - Keep local file paths relative to website root (example: images/foo.png).
+// - Markdown files can be used in `currentlySelling[].md`.
+// -----------------------------------------------------------------------------
+
 const CONFIG = {
+  // ---------------------------------------------------------------------------
+  // Identity / Hero
+  // ---------------------------------------------------------------------------
   name: "AdemDEV",
   tagline: "Minecraft & Discord Development",
   subtitle:
     "A developer specialising in MC Bedrock Scripting, Discord bots, and Endstone Plugins. Creating new projects every month.",
+
+  // Contact + social
   email: "contact@ademdev.xyz",
   github: "https://github.com/AdemonG1tHub",
   discord: "ademondiscrd",
+
+  // ---------------------------------------------------------------------------
+  // Stats (displayed in hero/stats area if enabled by layout)
+  // ---------------------------------------------------------------------------
+  // Shape: { num: string, label: string }
+  // Example:
+  // { num: "10+", label: "Production Deployments" }
   stats: [
     { num: "3+", label: "Years of Experience" },
     { num: "5+", label: "Projects Built" },
     { num: "Owner", label: "of Realm Explorer" },
     { num: "Intermediate", label: "Developer" },
   ],
+
+  // ---------------------------------------------------------------------------
+  // Skills chips
+  // ---------------------------------------------------------------------------
   skills: [
     "TypeScript",
     "Python",
@@ -22,6 +50,31 @@ const CONFIG = {
     "GitHub Apps",
     "HTML / CSS",
   ],
+
+  // ---------------------------------------------------------------------------
+  // Projects
+  // ---------------------------------------------------------------------------
+  // Required fields:
+  // - title, desc
+  // Optional fields:
+  // - icon (emoji), tags (string[]), status ("active" | "wip" | "archived")
+  // - color (hex), cover (image path), links ([{label,url}]), gallery ([{url,caption}])
+  //
+  // Example project template:
+  // {
+  //   icon: "🧩",
+  //   title: "Project Name",
+  //   desc: "Short description.",
+  //   tags: ["TypeScript", "API"],
+  //   status: "active",
+  //   color: "#42A5F5",
+  //   cover: "images/project-cover.png",
+  //   links: [{ label: "GitHub", url: "https://github.com/user/repo" }],
+  //   gallery: [
+  //     { url: "images/project-1.png", caption: "Dashboard" },
+  //     { url: "images/project-2.png", caption: "Settings" },
+  //   ],
+  // }
   projects: [
     {
       icon: "🌌",
@@ -30,11 +83,13 @@ const CONFIG = {
       tags: ["TypeScript", "Python", "Endstone", "Discord.js"],
       status: "active",
       color: "#29B6F6",
+      // Optional: project cards also support cover images now.
+      cover: "images/cover-art/CrabSMP.png",
       links: [
         { label: "Join the Discord", url: "https://discord.gg/crabsmp" },
         { label: "Visit the Website", url: "https://crabsmp.net" },
       ],
-      gallery: [{url: "images/crab-engine1.png", caption: "Main Menu"}],
+      gallery: [{ url: "images/crab-engine/crab-engine1.png", caption: "Main Menu" }],
     },
     {
       icon: "🌐",
@@ -43,6 +98,7 @@ const CONFIG = {
       tags: ["Scripting API", "Discord"],
       status: "active",
       color: "#4CAF50",
+      cover: "images/cover-art/RealmExplorer.png",
       links: [
         { label: "Join the Discord", url: "https://discord.gg/realmexplorer" },
       ],
@@ -55,6 +111,7 @@ const CONFIG = {
       tags: ["TypeScript", "JSON UI"],
       status: "wip",
       color: "#F5C518",
+      cover: "images/cover-art/EndrodUtilities.png",
       links: [],
       gallery: [],
     },
@@ -65,10 +122,18 @@ const CONFIG = {
       tags: ["Python", "discord.py"],
       status: "wip",
       color: "#9E9E9E",
+      cover: "images/cover-art/EmbedCreator.png",
       links: [],
       gallery: [],
     },
   ],
+
+  // ---------------------------------------------------------------------------
+  // Services
+  // ---------------------------------------------------------------------------
+  // Shape: { icon: string, name: string, desc: string }
+  // Example:
+  // { icon: "🛠", name: "Plugin Maintenance", desc: "Bug fixes and updates." }
   services: [
     {
       icon: "🎮",
@@ -92,128 +157,58 @@ const CONFIG = {
     },
   ],
 
-  // ── Currently Selling: paste markdown into the `md` field for each item
+  // ---------------------------------------------------------------------------
+  // Currently Selling (store cards + selling modal)
+  // ---------------------------------------------------------------------------
+  // `md` supports either:
+  // - inline markdown string
+  // - local markdown path (example: "markdown/astral-engine.md")
+  //
+  // Store item template:
+  // {
+  //   id: "unique-id",
+  //   title: "Product Name",
+  //   price: "$20 USD",
+  //   cover: "images/product-cover.png",
+  //   images: [{ url: "images/product-1.png", caption: "Screenshot 1" }],
+  //   tags: ["engine", "minecraft"],
+  //   md: "markdown/product.md",
+  //   links: [{ label: "Buy", url: "https://..." }],
+  // }
   currentlySelling: [
     {
       id: "astral-engine",
       title: "AstralCraft Engine",
       price: "$50 USD",
-      cover: "images/astral-engine1.png",
+      cover: "images/cover-art/AstralCraft.png",
       images: [
-        { url: "images/astral-engine1.png", caption: "Screenshot 1" },
-        { url: "images/astral-engine2.png", caption: "Screenshot 2" },
-        { url: "images/astral-engine3.png", caption: "Screenshot 3" },
-        { url: "images/astral-engine4.png", caption: "Screenshot 4" },
-        { url: "images/astral-engine5.png", caption: "Screenshot 5" },
-        { url: "images/astral-engine6.png", caption: "Screenshot 6" },
-        { url: "images/astral-engine7.png", caption: "Screenshot 7" },
-        { url: "images/astral-engine8.png", caption: "Screenshot 8" },
-        { url: "images/astral-engine9.png", caption: "Screenshot 9" },
-        { url: "images/astral-engine10.png", caption: "Screenshot 10" },
-        { url: "images/astral-engine11.png", caption: "Screenshot 11" },
-        { url: "images/astral-engine12.png", caption: "Screenshot 12" },
-        { url: "images/astral-engine13.png", caption: "Screenshot 13" },
-        { url: "images/astral-engine14.png", caption: "Screenshot 14" },
-        { url: "images/astral-engine15.png", caption: "Screenshot 15" },
-        { url: "images/astral-engine16.png", caption: "Screenshot 16" },
-        { url: "images/astral-engine17.png", caption: "Screenshot 17" },
-        { url: "images/astral-engine18.png", caption: "Screenshot 18" },
-        { url: "images/astral-engine19.png", caption: "Screenshot 19" },
-        { url: "images/astral-engine20.png", caption: "Screenshot 20" },
-        { url: "images/astral-engine21.png", caption: "Screenshot 21" },
-        { url: "images/astral-engine22.png", caption: "Screenshot 22" },
-        { url: "images/astral-engine23.png", caption: "Screenshot 23" },
-        { url: "images/astral-engine24.png", caption: "Screenshot 24" },
+        { url: "images/astral-engine/astral-engine1.png", caption: "Screenshot 1" },
+        { url: "images/astral-engine/astral-engine2.png", caption: "Screenshot 2" },
+        { url: "images/astral-engine/astral-engine3.png", caption: "Screenshot 3" },
+        { url: "images/astral-engine/astral-engine4.png", caption: "Screenshot 4" },
+        { url: "images/astral-engine/astral-engine5.png", caption: "Screenshot 5" },
+        { url: "images/astral-engine/astral-engine6.png", caption: "Screenshot 6" },
+        { url: "images/astral-engine/astral-engine7.png", caption: "Screenshot 7" },
+        { url: "images/astral-engine/astral-engine8.png", caption: "Screenshot 8" },
+        { url: "images/astral-engine/astral-engine9.png", caption: "Screenshot 9" },
+        { url: "images/astral-engine/astral-engine10.png", caption: "Screenshot 10" },
+        { url: "images/astral-engine/astral-engine11.png", caption: "Screenshot 11" },
+        { url: "images/astral-engine/astral-engine12.png", caption: "Screenshot 12" },
+        { url: "images/astral-engine/astral-engine13.png", caption: "Screenshot 13" },
+        { url: "images/astral-engine/astral-engine14.png", caption: "Screenshot 14" },
+        { url: "images/astral-engine/astral-engine15.png", caption: "Screenshot 15" },
+        { url: "images/astral-engine/astral-engine16.png", caption: "Screenshot 16" },
+        { url: "images/astral-engine/astral-engine17.png", caption: "Screenshot 17" },
+        { url: "images/astral-engine/astral-engine18.png", caption: "Screenshot 18" },
+        { url: "images/astral-engine/astral-engine19.png", caption: "Screenshot 19" },
+        { url: "images/astral-engine/astral-engine20.png", caption: "Screenshot 20" },
+        { url: "images/astral-engine/astral-engine21.png", caption: "Screenshot 21" },
+        { url: "images/astral-engine/astral-engine22.png", caption: "Screenshot 22" },
+        { url: "images/astral-engine/astral-engine23.png", caption: "Screenshot 23" },
+        { url: "images/astral-engine/astral-engine24.png", caption: "Screenshot 24" },
       ],
       tags: ["engine", "minecraft", "download"],
-      // Markdown content for the item. Inlined so it displays without network requests.
-      md: `
-A project I have been working on for a couple of months. AstralCraft Engine is a TypeScript Add-on with a high amount of features, modules, textures, UIs, and more!
-
-**Modules**:
-
-- Factions
-  - Create factions
-  - Manage members and perms
-  - Claim Faction land
-  - Shared faction bank
-  - Logs for every action
-- Warps
-  - Set admin warps
-- Homes
-  - Set user homes
-  - Free homes / paid homes / donator homes
-  - Purchase more homes
-- TPA
-  - Send / receive TPA requests
-- Donator
-  - Set donator plans
-  - Tebex integration for automated purchases
-  - Purchase Crate Keys
-  - Set cosmetics
-  - Buy Money drops
-  - Manage your plans
-- Shop
-  - Buy / sell items
-  - Different categories and sub categories
-- Auction House
-  - List items
-  - Browse auctions
-  - Mailbox integration
-  - Bid on items
-- Mailbox 
-  - Send and receive mail
-  - Attach money and items
-- Money Transfer
-  - Transfer money to players and offline transfers
-- Stats
-  - View your stats
-  - View other users stats
-- Discord Integration
-  - Chat relay
-  - Broadcast relays
-  - Logging for EVERY action
-- Bounties
-  - Set and view bounties
-  - Claim bounties
-- User Settings
-  - Change settings from every module / feature
-- Staff Management
-  - Mute / ban / kick
-  - View inventories 
-  - Add / remove money (also from offline users)
-  - Manage user homes
-  - Manage factions
-  - Manage auctions
-  - Manage donator plans / grant plans
-  - Create leaderboards and floating texts
-
-**Features**:
-
-- Custom font(s) - multiple fonts 
-- Custom UIs - multiple different UIs
-- Leaderboards
-- Sidebar and smaller sidebar 
-
-**Development**:
-
-Taking over the code and making changes have been made easy!
-- Files are in appropriate folders
-- There is a main configuration file for most modules
-- Building the pack is quick and easy!
-- Easy development guide inside README.md file
-- NO OBFUSCATED CODE!!
-
-**Extra Info**
-
-- No AI was used to generate code (only to partially *assist* my coding in some debugging situations)
-- The main branding is for "AstralCraft", however you can change the branding to suit your needs. Just use a texture editor like BlockBench to modify some textures. 
-- Endstone is **not required**. HOWEVER, for *some* features such as the Discord Integration; Endstone is required.
-
-**Tech Stack**:
-
-- TypeScript (Scripting API)
-- Python (Endstone Plugin)`,
+      md: "markdown/astral-engine.md",
       links: [{ label: "Buy via PayPal", url: "https://paypal.me/ademusman8" }],
     },
   ],

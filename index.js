@@ -1,56 +1,94 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const byId = (id) => document.getElementById(id);
+  const uiSfx = createUISoundSystem();
+  window.__uiSfx = uiSfx;
+
+  if (window.marked && typeof window.marked.setOptions === "function") {
+    window.marked.setOptions({ gfm: true, breaks: true });
+  }
+
   // Basic rendering
-  document.getElementById("logo-text").innerHTML = CONFIG.name.replace(
-    "DEV",
-    "<span>DEV</span>",
-  );
-  document.getElementById("hero-title").innerHTML =
-    `<span class="br">= </span>${CONFIG.name}<span class="br"> =</span>`;
-  document.getElementById("hero-sub").textContent = CONFIG.subtitle;
-  document.getElementById("about-body").textContent = CONFIG.subtitle;
-  document.getElementById("footer-copy").textContent =
-    `© ${new Date().getFullYear()} ${CONFIG.name} — Not affiliated with Mojang Studios.`;
-  if (CONFIG.github) document.getElementById("footer-gh").href = CONFIG.github;
+  const logoText = byId("logo-text");
+  if (logoText) logoText.textContent = CONFIG.name;
+
+  const heroTitle = byId("hero-title");
+  if (heroTitle) heroTitle.textContent = CONFIG.name;
+
+  const heroSub = byId("hero-sub");
+  if (heroSub) heroSub.textContent = CONFIG.subtitle;
+
+  const footerCopy = byId("footer-copy");
+  if (footerCopy)
+    footerCopy.textContent =
+      `© ${new Date().getFullYear()} ${CONFIG.name} — Not affiliated with Mojang Studios.`;
+
+  const footerGh = byId("footer-gh");
+  if (footerGh && CONFIG.github) footerGh.href = CONFIG.github;
 
   // Stats
-  const sr = document.getElementById("stats-row");
-  CONFIG.stats.forEach((s) =>
-    sr.insertAdjacentHTML(
-      "beforeend",
-      `<div class="stat-item"><span class="stat-num">${s.num}</span><span class="stat-label">${s.label}</span></div>`,
-    ),
-  );
+  const sr = byId("stats-row");
+  if (sr) {
+    CONFIG.stats.forEach((s) =>
+      sr.insertAdjacentHTML(
+        "beforeend",
+        `<div class="stat-item"><span class="stat-num">${s.num}</span><span class="stat-label">${s.label}</span></div>`,
+      ),
+    );
+  }
 
   // Skills
-  CONFIG.skills.forEach((sk) =>
-    document
-      .getElementById("skills-wrap")
-      .insertAdjacentHTML("beforeend", `<span class="skill-chip">${sk}</span>`),
-  );
+  const skillsWrap = byId("skills-wrap");
+  if (skillsWrap) {
+    CONFIG.skills.forEach((sk) =>
+      skillsWrap.insertAdjacentHTML("beforeend", `<span class="skill-chip">${sk}</span>`),
+    );
+  }
 
   // Services
-  CONFIG.services.forEach((s) =>
-    document
-      .getElementById("services-grid")
-      .insertAdjacentHTML(
+  const servicesGrid = byId("services-grid");
+  if (servicesGrid) {
+    CONFIG.services.forEach((s) =>
+      servicesGrid.insertAdjacentHTML(
         "beforeend",
         `<div class="service-block"><span class="service-icon">${s.icon}</span><div class="service-name">${s.name}</div><p class="service-desc">${s.desc}</p></div>`,
       ),
-  );
+    );
+  }
 
   // Contact
-  const cl = document.getElementById("contact-links");
-  if (CONFIG.email)
+  const cl = byId("contact-links");
+  if (cl && CONFIG.email)
     cl.insertAdjacentHTML(
       "beforeend",
-      `<a href="mailto:${CONFIG.email}" class="btn btn-green">✉ Email Me</a>`,
+      `<a href="mailto:${CONFIG.email}" class="bb-btn green"><span>Email Me</span></a>`,
     );
-  if (CONFIG.github)
+  if (cl && CONFIG.github)
     cl.insertAdjacentHTML(
       "beforeend",
-      `<a href="${CONFIG.github}" target="_blank" class="btn btn-stone">⌨ GitHub</a>`,
+      `<a href="${CONFIG.github}" target="_blank" class="bb-btn white"><span>GitHub</span></a>`,
     );
-  document.getElementById("discord-tag").textContent = CONFIG.discord;
+  const discordTag = byId("discord-tag");
+  if (discordTag) discordTag.textContent = CONFIG.discord;
+
+  const discordBox = byId("discord-box");
+  if (discordBox) discordBox.addEventListener("click", async () => {
+    const copyLabel = discordBox.querySelector(".discord-copy");
+    if (!copyLabel) return;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(CONFIG.discord);
+      }
+      copyLabel.textContent = "Copied";
+      setTimeout(() => {
+        copyLabel.textContent = "Click to copy";
+      }, 1200);
+    } catch (e) {
+      copyLabel.textContent = "Copy failed";
+      setTimeout(() => {
+        copyLabel.textContent = "Click to copy";
+      }, 1200);
+    }
+  });
 
   // Projects
   renderCards(CONFIG.projects, "projects");
@@ -59,11 +97,22 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCards(CONFIG.currentlySelling, "selling");
 
   // Wire nav toggle
-  document
-    .getElementById("nav-toggle")
-    .addEventListener("click", () =>
-      document.getElementById("nav").classList.toggle("open"),
-    );
+  const navToggle = byId("nav-toggle");
+  const navEl = byId("nav");
+  if (navToggle && navEl) {
+    navToggle.addEventListener("click", () => navEl.classList.toggle("open"));
+  }
+
+  document.querySelectorAll("#nav a").forEach((a) => {
+    a.addEventListener("click", () => {
+      if (navEl) navEl.classList.remove("open");
+    });
+  });
+
+  uiSfx.bind(".bb-btn, .card-btn, .discord-box, .gm-close, .gm-nav, #nav-toggle, #nav a, .yt-shell");
+
+  initYoutubeEmbeds();
+  initButtonPressStates();
 
   // Init modals
   initProjectModal();
@@ -77,6 +126,53 @@ document.addEventListener("DOMContentLoaded", () => {
 function revealAll() {
   const rev = Array.from(document.querySelectorAll(".reveal"));
   rev.forEach((el, i) => setTimeout(() => el.classList.add("in"), i * 40));
+}
+
+function createUISoundSystem() {
+  const clickAudio = new Audio("sounds/minecraft_click.mp3");
+  clickAudio.volume = 0.25;
+
+  function playAudio(a) {
+    try {
+      a.currentTime = 0;
+      a.play();
+    } catch (e) {
+      // ignore autoplay guard
+    }
+  }
+
+  function play(kind) {
+    return playAudio(clickAudio);
+  }
+
+  function bind(selector) {
+    document.querySelectorAll(selector).forEach((el) => {
+      el.addEventListener("click", () => play("click"));
+    });
+  }
+
+  return { play, bind };
+}
+
+function initButtonPressStates() {
+  document.querySelectorAll(".bb-btn").forEach((el) => {
+    el.addEventListener("pointerdown", () => el.classList.add("pressed"));
+    const clear = () => el.classList.remove("pressed");
+    el.addEventListener("pointerup", clear);
+    el.addEventListener("pointerleave", clear);
+    el.addEventListener("blur", clear);
+  });
+}
+
+function initYoutubeEmbeds() {
+  document.querySelectorAll(".yt-shell").forEach((shell) => {
+    const id = shell.getAttribute("data-youtube-id");
+    const title = shell.getAttribute("data-youtube-title") || "YouTube video";
+    if (!id) return;
+    shell.addEventListener("click", () => {
+      shell.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${id}?autoplay=1" title="${title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>`;
+    }, { once: true });
+  });
 }
 
 function normalizeIndent(md) {
@@ -105,47 +201,77 @@ async function fetchMarkdown(mdField) {
   if (typeof mdField !== "string") return { text: String(mdField), tried: [] };
   const trimmed = mdField.trim();
   const looksLikePath =
-    /^\.\.?\/?[\w\-./]+\.md$/i.test(trimmed) ||
-    /^https?:\/\/.+\.md$/i.test(trimmed);
+    /\.md(\?.*)?$/i.test(trimmed) && !trimmed.includes("\n");
   if (!looksLikePath || trimmed.includes("\n"))
     return { text: mdField, tried: [] };
+
+  const fetchViaXhr = (url) =>
+    new Promise((resolve, reject) => {
+      try {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState !== 4) return;
+          if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
+            resolve(xhr.responseText || "");
+          } else {
+            reject(new Error(`XHR ${xhr.status}`));
+          }
+        };
+        xhr.onerror = () => reject(new Error("XHR network error"));
+        xhr.send();
+      } catch (err) {
+        reject(err);
+      }
+    });
+
   const tried = [];
-  const origin =
-    typeof window !== "undefined" && window.location && window.location.origin
-      ? window.location.origin.replace(/\/$/, "")
+  const href =
+    typeof window !== "undefined" && window.location && window.location.href
+      ? window.location.href
       : "";
+
   const candidates = [];
-  // prefer origin-based absolute path first when available
-  if (origin) candidates.push(origin + "/" + trimmed.replace(/^\/+/, ""));
+
+  // Absolute URL handling first.
+  if (/^(https?:|file:)/i.test(trimmed)) {
+    candidates.push(trimmed);
+  }
+
+  // Resolve relative path against current page URL.
+  if (href) {
+    try {
+      candidates.push(new URL(trimmed, href).toString());
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  // Extra common local variants.
   candidates.push(trimmed);
   if (!trimmed.startsWith("./") && !trimmed.startsWith("/")) {
     candidates.push("./" + trimmed);
     candidates.push("/" + trimmed);
-    if (origin) candidates.push(origin + "/" + trimmed);
-  } else if (trimmed.startsWith("/")) {
-    if (origin) candidates.push(origin + trimmed);
   }
 
   for (const c of candidates) {
     try {
       tried.push(c);
-      console.debug("fetchMarkdown trying", c);
       const res = await fetch(c, { cache: "no-store" });
       if (res && res.ok) {
         const txt = await res.text();
         return { text: txt, tried };
-      } else {
-        console.debug("fetchMarkdown non-ok", c, res && res.status);
       }
     } catch (inner) {
-      console.debug(
-        "fetchMarkdown candidate failed",
-        c,
-        inner && inner.message,
-      );
+      // Fallback for local/dev environments where fetch can fail for file/relative paths.
+      try {
+        const txt = await fetchViaXhr(c);
+        if (txt) return { text: txt, tried };
+      } catch (xhrErr) {
+        /* keep trying candidates */
+      }
     }
   }
-  console.warn("fetchMarkdown: all attempts failed for", trimmed, tried);
   return { text: "", tried };
 }
 
@@ -180,15 +306,16 @@ function renderCards(items, type) {
           ? "CLICK TO VIEW"
           : "NO IMAGES";
 
-    const coverSrc =
-      type === "selling"
-        ? resolveImagePath(
-            p.cover || (p.images && p.images[0] && p.images[0].url) || "",
-          )
-        : "";
-    const coverHtml = coverSrc
-      ? `<div class="card-cover" style="background-image:url('${coverSrc}');background-size:cover;background-position:center;height:110px;border-radius:6px;margin-bottom:8px"></div>`
-      : "";
+    const coverSrc = resolveImagePath(
+      p.cover ||
+        (p.images && p.images[0] && p.images[0].url) ||
+        (p.gallery && p.gallery[0] && p.gallery[0].url) ||
+        "",
+    );
+    const hasCover = !!coverSrc;
+    const coverHtml = hasCover
+      ? `<div class="card-cover" style="background-image:url('${coverSrc}')"></div>`
+      : `<div class="card-cover is-placeholder"><span class="card-cover-icon">${p.icon || "📦"}</span></div>`;
 
     const el = document.createElement("div");
     el.className = "card reveal";
@@ -197,18 +324,22 @@ function renderCards(items, type) {
       <div class="card-accent" style="background:${p.color || "#666"}"></div>
       <div class="card-inner">
         ${coverHtml}
+        <div class="card-chip-row">
+          <span class="card-chip">${type === "selling" ? "STORE ITEM" : "PROJECT"}</span>
+        </div>
         <div class="card-icon-row">
           <span class="card-emoji">${p.icon || "📦"}</span>
           ${p.status ? `<span class="status-pill ${p.status === "wip" ? "pill-wip" : p.status === "active" ? "pill-active" : "pill-archived"}">${p.status}</span>` : ""}
         </div>
         <div class="card-title">${p.title}</div>
-        <p class="card-desc">${type === "selling" ? (p.price ? `<strong>${p.price}</strong> — ` : "") + (p.short || "") : p.desc || ""}</p>
+        <p class="card-desc">${type === "selling" ? (p.price ? `<strong>${p.price}</strong><span class="card-sep"> — </span>` : "") + (p.short || "") : p.desc || ""}</p>
+        <div class="card-links${links ? "" : " is-empty"}">${links}</div>
         <div class="card-tags">${tags}</div>
-        ${links ? `<div class="card-links">${links}</div>` : ""}
         <div class="card-gallery-hint"><div class="gallery-hint-dot"></div>${hintText}</div>
       </div>`;
 
     el.addEventListener("click", () => {
+      if (window.__uiSfx) window.__uiSfx.play("click");
       if (type === "projects") openGallery(i);
       else openSelling(i);
     });
@@ -232,14 +363,12 @@ function initProjectModal() {
   const thumbsEl = document.getElementById("gm-thumbs");
   const prevBtn = document.getElementById("gm-prev");
   const nextBtn = document.getElementById("gm-next");
-
-  let currentProject = null,
-    currentIndex = 0;
+    let currentItem = null,
+      currentIndex = 0;
 
   window.openGallery = function (projectIdx) {
     currentProject = CONFIG.projects[projectIdx];
     currentIndex = 0;
-    document.getElementById("gm-project-name").textContent =
       currentProject.title;
     document.getElementById("gm-accent-dot").style.background =
       currentProject.color || "#666";
@@ -252,7 +381,7 @@ function initProjectModal() {
       const a = document.createElement("a");
       a.href = l.url;
       a.target = "_blank";
-      a.className = "card-btn";
+      a.className = "card-btn modal-btn";
       a.textContent = l.label;
       linksEl.appendChild(a);
     });
@@ -330,16 +459,30 @@ function initProjectModal() {
       prevBtn.disabled = idx === 0;
       nextBtn.disabled = idx === gallery.length - 1;
       const active = thumbsEl.querySelector(".gm-thumb.active");
-      if (active)
-        active.scrollIntoView({
-          behavior: "smooth",
-          inline: "nearest",
-          block: "nearest",
-        });
+      if (active && thumbsEl) {
+        const left = active.offsetLeft - thumbsEl.clientWidth / 2 + active.clientWidth / 2;
+        thumbsEl.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+      }
     }
 
-    prevBtn.onclick = () => showImage(currentIndex - 1);
-    nextBtn.onclick = () => showImage(currentIndex + 1);
+    prevBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showImage(currentIndex - 1);
+    };
+    nextBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showImage(currentIndex + 1);
+    };
+    prevBtn.onpointerdown = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    nextBtn.onpointerdown = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
 
     document.getElementById("gm-close").onclick = closeGallery;
     document.getElementById("gm-backdrop").onclick = closeGallery;
@@ -379,14 +522,12 @@ function initSellingModal() {
   const descEl = document.getElementById("sm-desc");
   const linksEl = document.getElementById("sm-links");
   let currentItem = null,
-    currentIndex = 0,
-    expanded = false;
+    currentIndex = 0;
   // no custom scrollbar — use native modal scrollbar
 
   window.openSelling = function (idx) {
     currentItem = CONFIG.currentlySelling[idx];
     currentIndex = 0;
-    expanded = false;
     document.getElementById("sm-title").textContent = currentItem.title;
     document.getElementById("sm-accent-dot").style.background =
       currentItem.color || "#666";
@@ -396,7 +537,7 @@ function initSellingModal() {
       const a = document.createElement("a");
       a.href = l.url;
       a.target = "_blank";
-      a.className = "card-btn";
+      a.className = "card-btn modal-btn";
       a.textContent = l.label;
       linksEl.appendChild(a);
     });
@@ -474,15 +615,31 @@ function initSellingModal() {
             .replace(/>/g, "&gt;");
         descEl.innerHTML = `<div class="gm-placeholder-sub">Description unavailable — failed to load <strong>${esc(rawMdField)}</strong>.</div>`;
       } else {
-        renderMarkdownTruncated(loadedMd);
+        renderMarkdownFull(loadedMd);
       }
     })();
 
     modal.classList.add("open");
     document.body.style.overflow = "hidden";
 
-    prevBtn.onclick = () => showImage(currentIndex - 1);
-    nextBtn.onclick = () => showImage(currentIndex + 1);
+    prevBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showImage(currentIndex - 1);
+    };
+    nextBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showImage(currentIndex + 1);
+    };
+    prevBtn.onpointerdown = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    nextBtn.onpointerdown = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
     document.getElementById("sm-close").onclick = closeSelling;
     document.getElementById("sm-backdrop").onclick = closeSelling;
     document.addEventListener("keydown", sellingKeydown);
@@ -493,7 +650,7 @@ function initSellingModal() {
         const d = document.createElement("div");
         d.className = "gm-thumb" + (i === 0 ? " active" : "");
         d.dataset.idx = i;
-        d.innerHTML = `<img src="${img.url}" alt="${img.caption || ""}" loading="lazy">`;
+        d.innerHTML = `<img src="${resolveImagePath(img.url)}" alt="${img.caption || ""}" loading="lazy">`;
         d.addEventListener("click", () => showImage(i));
         thumbsElLocal.appendChild(d);
       });
@@ -520,12 +677,10 @@ function initSellingModal() {
       prevBtn.disabled = idx === 0;
       nextBtn.disabled = idx === gallery.length - 1;
       const active = thumbsEl.querySelector(".gm-thumb.active");
-      if (active)
-        active.scrollIntoView({
-          behavior: "smooth",
-          inline: "nearest",
-          block: "nearest",
-        });
+      if (active && thumbsEl) {
+        const left = active.offsetLeft - thumbsEl.clientWidth / 2 + active.clientWidth / 2;
+        thumbsEl.scrollTo({ left: Math.max(0, left), behavior: "smooth" });
+      }
     }
 
     function sellingKeydown(e) {
@@ -541,12 +696,9 @@ function initSellingModal() {
       document.removeEventListener("keydown", sellingKeydown);
     }
 
-    // clicking desc toggles full md (only after content is loaded)
+    // Keep click inside description from closing modal.
     descEl.onclick = (e) => {
       e.stopPropagation();
-      if (!loadedMd) return;
-      expanded = !expanded;
-      renderMarkdownTruncated(loadedMd, expanded);
     };
 
     // handle wheel events so the description scrolls when possible and outer modal doesn't steal the scroll
@@ -571,74 +723,14 @@ function initSellingModal() {
       { passive: false },
     );
 
-    function renderMarkdownTruncated(md, forceFull = false) {
+    function renderMarkdownFull(md) {
       if (!md) {
         descEl.textContent = "No description provided.";
         return;
       }
-      // When not expanded, show a plain-text truncated preview (no markdown formatting)
-      if (!forceFull) {
-        descEl.classList.remove("expanded");
-        // cleanup any previous wrapper or custom scrollbar left over
-        try {
-          const oldScroll = document.querySelector(".sm-scrollbar");
-          if (oldScroll) oldScroll.remove();
-        } catch (e) {}
-        const parent = descEl.parentElement;
-        if (
-          parent &&
-          parent.classList &&
-          parent.classList.contains("sm-desc-wrap")
-        ) {
-          parent.parentElement.replaceChild(descEl, parent);
-        }
-        // render to HTML then extract plain text to strip formatting
-        const fullHtml = marked.parse(md);
-        const tmp = document.createElement("div");
-        tmp.innerHTML = fullHtml;
-        const plain = (tmp.textContent || tmp.innerText || "").trim();
-        let cut = plain.slice(0, 280);
-        cut = cut.replace(/\s+\S*$/, "");
-        const preview = cut + (plain.length > cut.length ? "..." : "");
-
-        descEl.innerHTML = "";
-        const textNode = document.createTextNode(preview);
-        descEl.appendChild(textNode);
-
-        if (plain.length > cut.length) {
-          const more = document.createElement("div");
-          more.style.marginTop = "10px";
-          more.innerHTML =
-            '<a class="card-btn" style="font-size:10px;padding:6px 10px;">Read more</a>';
-          more.querySelector("a").addEventListener("click", (e) => {
-            e.stopPropagation();
-            renderMarkdownTruncated(md, true);
-          });
-          descEl.appendChild(more);
-        }
-      } else {
-        // Expanded: render full markdown with formatting and allow native scrolling within the desc box
-        descEl.innerHTML = marked.parse(md || "*No description provided.*");
-        descEl.classList.add("expanded");
-        // remove any leftover custom scrollbar element or wrapper from earlier iterations
-        try {
-          const oldScroll = document.querySelector(".sm-scrollbar");
-          if (oldScroll) oldScroll.remove();
-        } catch (e) {}
-        // if a wrapper was created earlier, unwrap the desc element back into place
-        const parent = descEl.parentElement;
-        if (
-          parent &&
-          parent.classList &&
-          parent.classList.contains("sm-desc-wrap")
-        ) {
-          parent.parentElement.replaceChild(descEl, parent);
-        }
-        // make sure the box can be focused and scrolled
-        descEl.tabIndex = -1;
-        descEl.focus({ preventScroll: true });
-        descEl.scrollTop = 0;
-      }
+      descEl.innerHTML = marked.parse(md || "*No description provided.*");
+      descEl.classList.add("expanded");
+      descEl.scrollTop = 0;
     }
   };
 }
