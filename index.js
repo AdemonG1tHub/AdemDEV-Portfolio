@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const footerCopy = byId("footer-copy");
   if (footerCopy)
     footerCopy.textContent =
-      `© ${new Date().getFullYear()} ${CONFIG.name} — Not affiliated with Mojang Studios.`;
+      `© ${new Date().getFullYear()} ${CONFIG.name} — ${CONFIG.FOOTER.tagLine}`;
 
   const footerGh = byId("footer-gh");
   if (footerGh && CONFIG.github) footerGh.href = CONFIG.github;

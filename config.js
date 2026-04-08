@@ -24,6 +24,10 @@ const CONFIG = {
   github: "https://github.com/AdemonG1tHub",
   discord: "ademondiscrd",
 
+  FOOTER: {
+    tagLine: "Not affiliated with Mojang Studios.",
+  },
+
   // ---------------------------------------------------------------------------
   // Stats (displayed in hero/stats area if enabled by layout)
   // ---------------------------------------------------------------------------
