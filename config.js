@@ -9,7 +9,7 @@
 // - Keep local file paths relative to website root (example: images/foo.png).
 // - Markdown files can be used in `currentlySelling[].md`.
 // -----------------------------------------------------------------------------
-
+// 
 const CONFIG = {
   // ---------------------------------------------------------------------------
   // Identity / Hero
