@@ -122,11 +122,151 @@ document.addEventListener("DOMContentLoaded", () => {
   // Init modals
   initProjectModal();
   initSellingModal();
+  initDetailRouting();
   initHeroCanvas();
 
   // Reveal hidden elements (they start with class 'reveal')
   setTimeout(() => revealAll(), 80);
 });
+
+const DETAIL_ROUTE_STATE = {
+  basePath: "/",
+  syncing: false,
+  projectSlugs: [],
+  sellingSlugs: [],
+};
+
+function toSlug(input) {
+  const slug = String(input || "")
+    .trim()
+    .replace(/[^A-Za-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "item";
+}
+
+function getUniqueSlug(seed, used) {
+  const base = toSlug(seed);
+  let out = base;
+  let n = 2;
+  while (used.has(out.toLowerCase())) {
+    out = `${base}-${n}`;
+    n += 1;
+  }
+  used.add(out.toLowerCase());
+  return out;
+}
+
+function rebuildDetailSlugs() {
+  const used = new Set();
+  DETAIL_ROUTE_STATE.projectSlugs = (CONFIG.projects || []).map((p) =>
+    getUniqueSlug(p.slug || p.title, used),
+  );
+  DETAIL_ROUTE_STATE.sellingSlugs = (CONFIG.currentlySelling || []).map((p) =>
+    getUniqueSlug(p.slug || p.id || p.title, used),
+  );
+}
+
+function buildDetailPath(slug) {
+  const encoded = encodeURIComponent(slug);
+  return `#/${encoded}`;
+}
+
+function setDetailPath(path, replace = false) {
+  const targetHash = path.startsWith("#") ? path : `#${path}`;
+  if (window.location.hash === targetHash) return;
+  if (replace) {
+    window.history.replaceState({}, "", `${window.location.pathname}${window.location.search}${targetHash}`);
+    return;
+  }
+  window.location.hash = targetHash;
+}
+
+function clearDetailPath(replace = false) {
+  if (!window.location.hash) return;
+  if (replace) {
+    window.history.replaceState({}, "", `${window.location.pathname}${window.location.search}`);
+    return;
+  }
+  window.history.pushState({}, "", `${window.location.pathname}${window.location.search}`);
+}
+
+function closeAnyOpenDetailModal() {
+  const galleryModal = document.getElementById("gallery-modal");
+  const sellingModal = document.getElementById("selling-modal");
+
+  if (galleryModal && galleryModal.classList.contains("open")) {
+    const btn = document.getElementById("gm-close");
+    if (btn) btn.click();
+  }
+
+  if (sellingModal && sellingModal.classList.contains("open")) {
+    const btn = document.getElementById("sm-close");
+    if (btn) btn.click();
+  }
+}
+
+function openDetailFromPath() {
+  const params = new URLSearchParams(window.location.search || "");
+  const queryDetail = (params.get("detail") || "").trim();
+
+  const rawHash = (window.location.hash || "").replace(/^#/, "").trim();
+  const hashDetail = rawHash.startsWith("/") ? rawHash.slice(1) : "";
+
+  const path = window.location.pathname || "/";
+  const cleaned = path.replace(/\/+$/, "");
+  const segment = cleaned.split("/").pop() || "";
+  const fromPath = segment && !/^index\.html$/i.test(segment) ? decodeURIComponent(segment) : "";
+  const requestedSlug = decodeURIComponent(queryDetail || hashDetail || fromPath).toLowerCase();
+
+  if (!requestedSlug) {
+    closeAnyOpenDetailModal();
+    return;
+  }
+
+  const projectIdx = DETAIL_ROUTE_STATE.projectSlugs.findIndex((s) => s.toLowerCase() === requestedSlug);
+  if (projectIdx >= 0 && typeof window.openGallery === "function") {
+    closeAnyOpenDetailModal();
+    window.openGallery(projectIdx, { skipRouteUpdate: true });
+    if (queryDetail || fromPath) {
+      setDetailPath(buildDetailPath(DETAIL_ROUTE_STATE.projectSlugs[projectIdx]), true);
+    }
+    return;
+  }
+
+  const showStoreSection = CONFIG.featureFlags?.showStoreSection !== false;
+  const sellingIdx = DETAIL_ROUTE_STATE.sellingSlugs.findIndex((s) => s.toLowerCase() === requestedSlug);
+  if (showStoreSection && sellingIdx >= 0 && typeof window.openSelling === "function") {
+    closeAnyOpenDetailModal();
+    window.openSelling(sellingIdx, { skipRouteUpdate: true });
+    if (queryDetail || fromPath) {
+      setDetailPath(buildDetailPath(DETAIL_ROUTE_STATE.sellingSlugs[sellingIdx]), true);
+    }
+    return;
+  }
+
+  closeAnyOpenDetailModal();
+  clearDetailPath(true);
+}
+
+function initDetailRouting() {
+  rebuildDetailSlugs();
+
+  window.addEventListener("hashchange", () => {
+    DETAIL_ROUTE_STATE.syncing = true;
+    try {
+      openDetailFromPath();
+    } finally {
+      DETAIL_ROUTE_STATE.syncing = false;
+    }
+  });
+
+  DETAIL_ROUTE_STATE.syncing = true;
+  try {
+    openDetailFromPath();
+  } finally {
+    DETAIL_ROUTE_STATE.syncing = false;
+  }
+}
 
 function revealAll() {
   const rev = Array.from(document.querySelectorAll(".reveal"));
@@ -442,13 +582,14 @@ function initProjectModal() {
   const thumbsEl = document.getElementById("gm-thumbs");
   const prevBtn = document.getElementById("gm-prev");
   const nextBtn = document.getElementById("gm-next");
-    let currentItem = null,
-      currentIndex = 0;
+  let currentProject = null,
+    currentIndex = 0;
 
-  window.openGallery = function (projectIdx) {
+  window.openGallery = function (projectIdx, options = {}) {
+    if (projectIdx < 0 || projectIdx >= (CONFIG.projects || []).length) return;
     currentProject = CONFIG.projects[projectIdx];
     currentIndex = 0;
-      currentProject.title;
+    document.getElementById("gm-project-name").textContent = currentProject.title || "Project";
     document.getElementById("gm-accent-dot").style.background =
       currentProject.color || "#666";
     document.getElementById("gm-info-desc").textContent =
@@ -491,6 +632,11 @@ function initProjectModal() {
 
     modal.classList.add("open");
     document.body.style.overflow = "hidden";
+
+    if (!options.skipRouteUpdate) {
+      const slug = DETAIL_ROUTE_STATE.projectSlugs[projectIdx] || toSlug(currentProject.title);
+      setDetailPath(buildDetailPath(slug));
+    }
 
     function resolveImagePath(u) {
       if (!u) return "";
@@ -579,6 +725,7 @@ function initProjectModal() {
       modal.classList.remove("open");
       document.body.style.overflow = "";
       document.removeEventListener("keydown", projectKeydown);
+      if (!DETAIL_ROUTE_STATE.syncing) clearDetailPath();
     }
   };
 }
@@ -604,7 +751,8 @@ function initSellingModal() {
     currentIndex = 0;
   // no custom scrollbar — use native modal scrollbar
 
-  window.openSelling = function (idx) {
+  window.openSelling = function (idx, options = {}) {
+    if (idx < 0 || idx >= (CONFIG.currentlySelling || []).length) return;
     currentItem = CONFIG.currentlySelling[idx];
     currentIndex = 0;
     document.getElementById("sm-title").textContent = currentItem.title;
@@ -701,6 +849,11 @@ function initSellingModal() {
     modal.classList.add("open");
     document.body.style.overflow = "hidden";
 
+    if (!options.skipRouteUpdate) {
+      const slug = DETAIL_ROUTE_STATE.sellingSlugs[idx] || toSlug(currentItem.id || currentItem.title);
+      setDetailPath(buildDetailPath(slug));
+    }
+
     prevBtn.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
@@ -773,6 +926,7 @@ function initSellingModal() {
       modal.classList.remove("open");
       document.body.style.overflow = "";
       document.removeEventListener("keydown", sellingKeydown);
+      if (!DETAIL_ROUTE_STATE.syncing) clearDetailPath();
     }
 
     // Keep click inside description from closing modal.

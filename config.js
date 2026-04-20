@@ -62,6 +62,7 @@ const CONFIG = {
   // - title, desc
   // Optional fields:
   // - icon (emoji), tags (string[]), status ("active" | "wip" | "archived")
+  // - slug (custom URL slug, example: "CrabSMP-Engine")
   // - color (hex), cover (image path), links ([{label,url}]), gallery ([{url,caption}])
   //
   // Example project template:
@@ -216,6 +217,7 @@ const CONFIG = {
   // Store item template:
   // {
   //   id: "unique-id",
+  //   slug: "AstralCraft-Engine",
   //   title: "Product Name",
   //   price: "$20 USD",
   //   cover: "images/product-cover.png", (size: 1000x400)
