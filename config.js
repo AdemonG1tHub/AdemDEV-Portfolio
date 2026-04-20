@@ -96,6 +96,28 @@ const CONFIG = {
       gallery: [{ url: "images/crab-engine/crab-engine1.png", caption: "Main Menu" }],
     },
     {
+      icon: "🛡️",
+      title: "Pixel Badge Icon Pack",
+      desc: "A collection of 9 pixel art badge like icons for Discord bots, Minecraft servers, or any other project. Free to use with attribution.",
+      tags: ["Pixel Art", "Free Resource"],
+      status: "active",
+      color: "#E91E63",
+      cover: "images/cover-art/PixelBadgePack.png",
+      links: [
+        { label: "Download on Discord", url: "https://discord.gg/jJT58SFTEy" },
+      ],
+      gallery: [{url: "images/pixel-badge/red.png", caption: "Red Badge"},
+                {url: "images/pixel-badge/orange.png", caption: "Orange Badge"},
+                {url: "images/pixel-badge/yellow.png", caption: "Yellow Badge"},
+                {url: "images/pixel-badge/lime.png", caption: "Lime Badge"},
+                {url: "images/pixel-badge/lightgreen.png", caption: "Light Green Badge"},
+                {url: "images/pixel-badge/cyan.png", caption: "Cyan Badge"},
+                {url: "images/pixel-badge/blue.png", caption: "Blue Badge"},
+                {url: "images/pixel-badge/purple.png", caption: "Purple Badge"},
+                {url: "images/pixel-badge/pink.png", caption: "Pink Badge"},
+      ],
+    },
+    {
       icon: "🌐",
       title: "Realm Explorer",
       desc: "A discovery platform for Minecraft Bedrock Realms & Servers. Featuring RE Hub which allows you to join Bedrock servers on console.",
@@ -162,6 +184,29 @@ const CONFIG = {
   ],
 
   // ---------------------------------------------------------------------------
+  // Feature flags
+  // ---------------------------------------------------------------------------
+  // Set to false to temporarily hide the Store section and related links.
+  featureFlags: {
+    showStoreSection: false,
+  },
+
+  // ---------------------------------------------------------------------------
+  // Store hidden fallback CTA (hero top button)
+  // ---------------------------------------------------------------------------
+  // Used only when `featureFlags.showStoreSection` is false.
+  // action: "copy" | "url"
+  // - "copy": copies `copyText` to clipboard
+  // - "url": opens `url`
+  // If omitted, defaults to copying `discord`.
+  storeHiddenCta: {
+    action: "url",
+    label: "Join Discord ↩",
+    copyText: "ademondiscrd",
+    url: "https://discord.gg/jJT58SFTEy",
+  },
+
+  // ---------------------------------------------------------------------------
   // Currently Selling (store cards + selling modal)
   // ---------------------------------------------------------------------------
   // `md` supports either:
@@ -173,7 +218,7 @@ const CONFIG = {
   //   id: "unique-id",
   //   title: "Product Name",
   //   price: "$20 USD",
-  //   cover: "images/product-cover.png",
+  //   cover: "images/product-cover.png", (size: 1000x400)
   //   images: [{ url: "images/product-1.png", caption: "Screenshot 1" }],
   //   tags: ["engine", "minecraft"],
   //   md: "markdown/product.md",

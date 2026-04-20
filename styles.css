@@ -355,6 +355,14 @@ li {
   border-image-source: url("ui/buttons/white/unchecked_hover.png");
 }
 
+.bb-btn.blue > span {
+  border-image-source: url("ui/buttons/blue/unchecked.png");
+}
+
+.bb-btn.blue:hover > span {
+  border-image-source: url("ui/buttons/blue/unchecked_hover.png");
+}
+
 .bb-btn.gold > span {
   color: #000;
   text-shadow: none;

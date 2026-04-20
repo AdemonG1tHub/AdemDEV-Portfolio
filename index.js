@@ -94,7 +94,12 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCards(CONFIG.projects, "projects");
 
   // Selling
-  renderCards(CONFIG.currentlySelling, "selling");
+  const showStoreSection = CONFIG.featureFlags?.showStoreSection !== false;
+  if (showStoreSection) {
+    renderCards(CONFIG.currentlySelling, "selling");
+  } else {
+    hideStoreSection();
+  }
 
   // Wire nav toggle
   const navToggle = byId("nav-toggle");
@@ -279,6 +284,80 @@ function resolveImagePath(u) {
   if (!u) return "";
   if (/^(https?:|data:|\/\/)/i.test(u)) return u;
   return u;
+}
+
+function hideStoreSection() {
+  replaceHeroStoreButtonWithDiscord();
+
+  const sellingSection = document.getElementById("selling");
+  if (sellingSection) {
+    const prev = sellingSection.previousElementSibling;
+    if (prev && prev.classList.contains("creative-separator")) prev.style.display = "none";
+    sellingSection.style.display = "none";
+  }
+
+  document.querySelectorAll('a[href="#selling"]').forEach((link) => {
+    link.style.display = "none";
+  });
+}
+
+function replaceHeroStoreButtonWithDiscord() {
+  const heroStoreCta = document.getElementById("hero-store-cta");
+  if (!heroStoreCta) return;
+
+  const ctaCfg = CONFIG.storeHiddenCta || {};
+  const action = ctaCfg.action === "url" ? "url" : "copy";
+  const buttonLabel =
+    typeof ctaCfg.label === "string" && ctaCfg.label.trim()
+      ? ctaCfg.label.trim()
+      : action === "url"
+        ? "Open Link"
+        : "Copy Discord";
+  const copyText =
+    typeof ctaCfg.copyText === "string" && ctaCfg.copyText.trim()
+      ? ctaCfg.copyText
+      : CONFIG.discord;
+  const url =
+    typeof ctaCfg.url === "string" && ctaCfg.url.trim()
+      ? ctaCfg.url.trim()
+      : "#contact";
+
+  heroStoreCta.classList.remove("white", "green", "gold");
+  heroStoreCta.classList.add("blue");
+
+  const label = heroStoreCta.querySelector("span");
+  if (label) label.textContent = buttonLabel;
+
+  if (action === "url") {
+    heroStoreCta.href = url;
+    heroStoreCta.target = "_blank";
+    heroStoreCta.rel = "noopener noreferrer";
+    return;
+  }
+
+  heroStoreCta.href = "#contact";
+  heroStoreCta.removeAttribute("target");
+  heroStoreCta.removeAttribute("rel");
+
+  if (heroStoreCta.dataset.copyBound === "true") return;
+  heroStoreCta.dataset.copyBound = "true";
+  heroStoreCta.addEventListener("click", async (event) => {
+    event.preventDefault();
+    if (!label) return;
+
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(copyText);
+      }
+      label.textContent = "Copied";
+    } catch (e) {
+      label.textContent = "Copy failed";
+    }
+
+    setTimeout(() => {
+      label.textContent = buttonLabel;
+    }, 1200);
+  });
 }
 
 function renderCards(items, type) {
