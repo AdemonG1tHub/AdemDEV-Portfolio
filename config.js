@@ -263,7 +263,7 @@ const CONFIG = {
       ],
       tags: ["engine", "minecraft", "download"],
       md: "markdown/astral-engine.md",
-      links: [{ label: "Buy via PayPal", url: "https://paypal.me/ademusman8" }],
+      links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy" }],
     },
   ],
 };
