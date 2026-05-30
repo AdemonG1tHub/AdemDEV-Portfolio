@@ -9,7 +9,7 @@
 // - Keep local file paths relative to website root (example: images/foo.png).
 // - Markdown files can be used in `currentlySelling[].md`.
 // -----------------------------------------------------------------------------
-// 
+//
 const CONFIG = {
   // ---------------------------------------------------------------------------
   // Identity / Hero
@@ -94,7 +94,9 @@ const CONFIG = {
         { label: "Join the Discord", url: "https://discord.gg/crabsmp" },
         { label: "Visit the Website", url: "https://crabsmp.net" },
       ],
-      gallery: [{ url: "images/crab-engine/crab-engine1.png", caption: "Main Menu" }],
+      gallery: [
+        { url: "images/crab-engine/crab-engine1.png", caption: "Main Menu" },
+      ],
     },
     {
       icon: "🛡️",
@@ -107,15 +109,19 @@ const CONFIG = {
       links: [
         { label: "Download on Discord", url: "https://discord.gg/jJT58SFTEy" },
       ],
-      gallery: [{url: "images/pixel-badge/red.png", caption: "Red Badge"},
-                {url: "images/pixel-badge/orange.png", caption: "Orange Badge"},
-                {url: "images/pixel-badge/yellow.png", caption: "Yellow Badge"},
-                {url: "images/pixel-badge/lime.png", caption: "Lime Badge"},
-                {url: "images/pixel-badge/lightgreen.png", caption: "Light Green Badge"},
-                {url: "images/pixel-badge/cyan.png", caption: "Cyan Badge"},
-                {url: "images/pixel-badge/blue.png", caption: "Blue Badge"},
-                {url: "images/pixel-badge/purple.png", caption: "Purple Badge"},
-                {url: "images/pixel-badge/pink.png", caption: "Pink Badge"},
+      gallery: [
+        { url: "images/pixel-badge/red.png", caption: "Red Badge" },
+        { url: "images/pixel-badge/orange.png", caption: "Orange Badge" },
+        { url: "images/pixel-badge/yellow.png", caption: "Yellow Badge" },
+        { url: "images/pixel-badge/lime.png", caption: "Lime Badge" },
+        {
+          url: "images/pixel-badge/lightgreen.png",
+          caption: "Light Green Badge",
+        },
+        { url: "images/pixel-badge/cyan.png", caption: "Cyan Badge" },
+        { url: "images/pixel-badge/blue.png", caption: "Blue Badge" },
+        { url: "images/pixel-badge/purple.png", caption: "Purple Badge" },
+        { url: "images/pixel-badge/pink.png", caption: "Pink Badge" },
       ],
     },
     {
@@ -189,7 +195,7 @@ const CONFIG = {
   // ---------------------------------------------------------------------------
   // Set to false to temporarily hide the Store section and related links.
   featureFlags: {
-    showStoreSection: false,
+    showStoreSection: true,
   },
 
   // ---------------------------------------------------------------------------
@@ -230,33 +236,30 @@ const CONFIG = {
     {
       id: "astral-engine",
       title: "AstralCraft Engine",
-      price: "$50 USD",
+      price: "$300 USD",
       cover: "images/cover-art/AstralCraft.png",
       images: [
-        { url: "images/astral-engine/astral-engine1.png", caption: "Screenshot 1" },
-        { url: "images/astral-engine/astral-engine2.png", caption: "Screenshot 2" },
-        { url: "images/astral-engine/astral-engine3.png", caption: "Screenshot 3" },
-        { url: "images/astral-engine/astral-engine4.png", caption: "Screenshot 4" },
-        { url: "images/astral-engine/astral-engine5.png", caption: "Screenshot 5" },
-        { url: "images/astral-engine/astral-engine6.png", caption: "Screenshot 6" },
-        { url: "images/astral-engine/astral-engine7.png", caption: "Screenshot 7" },
-        { url: "images/astral-engine/astral-engine8.png", caption: "Screenshot 8" },
-        { url: "images/astral-engine/astral-engine9.png", caption: "Screenshot 9" },
-        { url: "images/astral-engine/astral-engine10.png", caption: "Screenshot 10" },
-        { url: "images/astral-engine/astral-engine11.png", caption: "Screenshot 11" },
-        { url: "images/astral-engine/astral-engine12.png", caption: "Screenshot 12" },
-        { url: "images/astral-engine/astral-engine13.png", caption: "Screenshot 13" },
-        { url: "images/astral-engine/astral-engine14.png", caption: "Screenshot 14" },
-        { url: "images/astral-engine/astral-engine15.png", caption: "Screenshot 15" },
-        { url: "images/astral-engine/astral-engine16.png", caption: "Screenshot 16" },
-        { url: "images/astral-engine/astral-engine17.png", caption: "Screenshot 17" },
-        { url: "images/astral-engine/astral-engine18.png", caption: "Screenshot 18" },
-        { url: "images/astral-engine/astral-engine19.png", caption: "Screenshot 19" },
-        { url: "images/astral-engine/astral-engine20.png", caption: "Screenshot 20" },
-        { url: "images/astral-engine/astral-engine21.png", caption: "Screenshot 21" },
-        { url: "images/astral-engine/astral-engine22.png", caption: "Screenshot 22" },
-        { url: "images/astral-engine/astral-engine23.png", caption: "Screenshot 23" },
-        { url: "images/astral-engine/astral-engine24.png", caption: "Screenshot 24" },
+        { url: "images/astral-engine/mainmenu.png", caption: "Main Menu" },
+        { url: "images/astral-engine/othermenu.png", caption: "Other Menu" },
+        { url: "images/astral-engine/auction.png", caption: "Auction" },
+        { url: "images/astral-engine/shop.png", caption: "Shop" },
+        { url: "images/astral-engine/factions.png", caption: "Factions" },
+        { url: "images/astral-engine/warps.png", caption: "Warps" },
+        { url: "images/astral-engine/donator.png", caption: "Donator" },
+        { url: "images/astral-engine/settings.png", caption: "Settings" },
+        { url: "images/astral-engine/stats.png", caption: "Stats" },
+        { url: "images/astral-engine/guide.png", caption: "Guide" },
+        { url: "images/astral-engine/crate.png", caption: "Crate" },
+        { url: "images/astral-engine/claim.png", caption: "Claim" },
+        { url: "images/astral-engine/logs.png", caption: "Logs" },
+        { url: "images/astral-engine/pause.png", caption: "Pause" },
+        { url: "images/astral-engine/hud.png", caption: "HUD" },
+        { url: "images/astral-engine/relay.png", caption: "Relay" },
+        { url: "images/astral-engine/log.png", caption: "Log" },
+        { url: "images/astral-engine/discord.png", caption: "Discord" },
+        { url: "images/astral-engine/codeconfig.png", caption: "Config" },
+        { url: "images/astral-engine/codelayout.png", caption: "Code Layout" },
+        { url: "images/astral-engine/codereadme.png", caption: "README" },
       ],
       tags: ["engine", "minecraft", "download"],
       md: "markdown/astral-engine.md",

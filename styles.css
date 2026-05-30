@@ -974,6 +974,42 @@ footer {
   border-bottom: 1px solid #666;
 }
 
+.sm-font-toggle {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.sm-font-row {
+  display: flex;
+  justify-content: flex-start;
+  padding: 6px 10px;
+  border-top: 1px solid #555;
+}
+
+.sm-font-btn {
+  border: 1px solid #54575c;
+  background: #1b1c1e;
+  color: #e7e7e7;
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 2px;
+  text-shadow: var(--text-shadow);
+  font-family: "Minecraft", monospace;
+}
+
+.sm-font-btn:hover {
+  border-color: #7a7f86;
+  background: #222427;
+}
+
+.sm-font-btn.active,
+.sm-font-btn[aria-pressed="true"] {
+  border-color: #6fe784;
+  background: #1f2922;
+}
+
 .gm-title-left {
   display: flex;
   align-items: center;
@@ -1147,13 +1183,17 @@ footer {
   overflow-wrap: anywhere;
 }
 
+#sm-desc {
+  font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
 #sm-desc h1,
 #sm-desc h2,
 #sm-desc h3,
 #sm-desc h4,
 #sm-desc h5,
 #sm-desc h6 {
-  font-family: "Minecraft", monospace;
+  font-family: inherit;
   margin: 0.35rem 0;
   line-height: 1.12;
   text-align: left;
@@ -1185,7 +1225,7 @@ footer {
 #sm-desc blockquote,
 #sm-desc td,
 #sm-desc th {
-  font-family: "Mojangles", monospace;
+  font-family: inherit;
   font-size: 0.93rem;
   line-height: 1.24;
   text-align: left;
@@ -1217,10 +1257,28 @@ footer {
 
 #sm-desc pre,
 #sm-desc code {
+  font-family: ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, "Liberation Mono", Menlo, monospace;
   font-size: 0.85rem;
   background: #17191a;
   border: 1px solid #4b4d4f;
   padding: 0.2rem 0.4rem;
+}
+
+#selling-modal.sm-font-minecraft #sm-desc h1,
+#selling-modal.sm-font-minecraft #sm-desc h2,
+#selling-modal.sm-font-minecraft #sm-desc h3,
+#selling-modal.sm-font-minecraft #sm-desc h4,
+#selling-modal.sm-font-minecraft #sm-desc h5,
+#selling-modal.sm-font-minecraft #sm-desc h6 {
+  font-family: "Minecraft", monospace;
+}
+
+#selling-modal.sm-font-minecraft #sm-desc p,
+#selling-modal.sm-font-minecraft #sm-desc li,
+#selling-modal.sm-font-minecraft #sm-desc blockquote,
+#selling-modal.sm-font-minecraft #sm-desc td,
+#selling-modal.sm-font-minecraft #sm-desc th {
+  font-family: "Mojangles", monospace;
 }
 
 #sm-desc ul,

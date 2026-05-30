@@ -747,9 +747,60 @@ function initSellingModal() {
   const nextBtn = document.getElementById("sm-next");
   const descEl = document.getElementById("sm-desc");
   const linksEl = document.getElementById("sm-links");
+  const fontDefaultBtn = document.getElementById("sm-font-default");
+  const fontMinecraftBtn = document.getElementById("sm-font-minecraft");
   let currentItem = null,
     currentIndex = 0;
   // no custom scrollbar — use native modal scrollbar
+
+  const FONT_STORAGE_KEY = "sellingModalFont";
+  const validFontModes = new Set(["default", "minecraft"]);
+
+  function getStoredFontMode() {
+    try {
+      const stored = localStorage.getItem(FONT_STORAGE_KEY);
+      return validFontModes.has(stored) ? stored : "default";
+    } catch (e) {
+      return "default";
+    }
+  }
+
+  function setStoredFontMode(mode) {
+    try {
+      localStorage.setItem(FONT_STORAGE_KEY, mode);
+    } catch (e) {
+      // ignore storage failures (private mode, blocked, etc.)
+    }
+  }
+
+  function applyFontMode(mode) {
+    const resolvedMode = validFontModes.has(mode) ? mode : "default";
+    modal.classList.toggle("sm-font-minecraft", resolvedMode === "minecraft");
+    if (fontDefaultBtn) {
+      const isDefault = resolvedMode === "default";
+      fontDefaultBtn.setAttribute("aria-pressed", String(isDefault));
+      fontDefaultBtn.classList.toggle("active", isDefault);
+    }
+    if (fontMinecraftBtn) {
+      const isMinecraft = resolvedMode === "minecraft";
+      fontMinecraftBtn.setAttribute("aria-pressed", String(isMinecraft));
+      fontMinecraftBtn.classList.toggle("active", isMinecraft);
+    }
+  }
+
+  if (fontDefaultBtn) {
+    fontDefaultBtn.addEventListener("click", () => {
+      applyFontMode("default");
+      setStoredFontMode("default");
+    });
+  }
+
+  if (fontMinecraftBtn) {
+    fontMinecraftBtn.addEventListener("click", () => {
+      applyFontMode("minecraft");
+      setStoredFontMode("minecraft");
+    });
+  }
 
   window.openSelling = function (idx, options = {}) {
     if (idx < 0 || idx >= (CONFIG.currentlySelling || []).length) return;
@@ -813,6 +864,8 @@ function initSellingModal() {
       prevBtn.style.display = "none";
       nextBtn.style.display = "none";
     }
+
+    applyFontMode(getStoredFontMode());
 
     // Render markdown (truncated). Support `md` as inline content or a path to a .md file.
     let loadedMd = "";
