@@ -266,4 +266,19 @@ const CONFIG = {
       links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy" }],
     },
   ],
+
+  // ---------------------------------------------------------------------------
+  // Profile menu (markdown modal)
+  // ---------------------------------------------------------------------------
+  profileMenu: {
+    enabled: true,
+    navLabel: "Profile",
+    title: "AdemDEV Profile",
+    markdownUrl: "https://raw.githubusercontent.com/AdemonG1tHub/AdemonG1tHub/main/README.md",
+    buttons: [
+      { label: "GitHub", url: "https://github.com/AdemonG1tHub" },
+      { label: "Website", url: "https://ademdev.xyz" },
+      { label: "Join Discord", url: "https://discord.gg/jJT58SFTEy" },
+    ],
+  },
 };

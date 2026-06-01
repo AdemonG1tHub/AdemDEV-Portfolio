@@ -30,6 +30,7 @@
       <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
       <nav id="nav">
         <a href="#hero">Home</a>
+        <a href="#profile" id="nav-profile">Profile</a>
         <a href="#selling">Store</a>
         <a href="#projects">Projects</a>
         <a href="#services">Services</a>
@@ -199,6 +200,31 @@
         </div>
         <div class="gm-thumbs" id="sm-thumbs" style="display: none"></div>
         <div class="gm-add-hint">Markdown rendering enabled · Full formatting supported</div>
+      </div>
+    </div>
+
+    <div id="profile-modal" role="dialog" aria-modal="true" aria-label="Profile menu">
+      <div class="gm-backdrop" id="pm-backdrop"></div>
+      <div class="gm-shell pm-shell">
+        <div class="gm-titlebar">
+          <div class="gm-title-left">
+            <div class="gm-accent-dot" id="pm-accent-dot"></div>
+            <span class="gm-project-name" id="pm-title">Profile</span>
+          </div>
+          <button type="button" class="gm-close" id="pm-close" aria-label="Close profile">✕</button>
+        </div>
+        <div class="pm-font-row">
+          <div class="pm-font-toggle" role="group" aria-label="Profile font">
+            <button type="button" class="pm-font-btn" id="pm-font-default" aria-pressed="true">Default</button>
+            <button type="button" class="pm-font-btn" id="pm-font-minecraft" aria-pressed="false">Minecraft</button>
+          </div>
+        </div>
+        <div class="pm-body">
+          <div class="pm-desc-wrap">
+            <div id="pm-desc" class="pm-desc"></div>
+          </div>
+          <div class="pm-links" id="pm-links"></div>
+        </div>
       </div>
     </div>
 

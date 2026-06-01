@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Init modals
   initProjectModal();
   initSellingModal();
+  initProfileMenu();
   initDetailRouting();
   initHeroCanvas();
 
@@ -1019,6 +1020,152 @@ function initSellingModal() {
       descEl.scrollTop = 0;
     }
   };
+}
+
+/* --------------------- Profile menu (markdown) --------------------- */
+function initProfileMenu() {
+  const cfg = CONFIG.profileMenu || {};
+  const navLink = document.getElementById("nav-profile");
+  const modal = document.getElementById("profile-modal");
+  const titleEl = document.getElementById("pm-title");
+  const accentEl = document.getElementById("pm-accent-dot");
+  const descEl = document.getElementById("pm-desc");
+  const linksEl = document.getElementById("pm-links");
+  const closeBtn = document.getElementById("pm-close");
+  const backdrop = document.getElementById("pm-backdrop");
+  const fontDefaultBtn = document.getElementById("pm-font-default");
+  const fontMinecraftBtn = document.getElementById("pm-font-minecraft");
+
+  if (!modal || !navLink || !descEl || !linksEl) return;
+
+  if (cfg.enabled === false) {
+    navLink.style.display = "none";
+    return;
+  }
+
+  if (cfg.navLabel) navLink.textContent = cfg.navLabel;
+  if (titleEl && cfg.title) titleEl.textContent = cfg.title;
+  if (accentEl) accentEl.style.background = cfg.accentColor || "#6fe784";
+
+  const FONT_STORAGE_KEY = "profileModalFont";
+  const validFontModes = new Set(["default", "minecraft"]);
+
+  function getStoredFontMode() {
+    try {
+      const stored = localStorage.getItem(FONT_STORAGE_KEY);
+      return validFontModes.has(stored) ? stored : "default";
+    } catch (e) {
+      return "default";
+    }
+  }
+
+  function setStoredFontMode(mode) {
+    try {
+      localStorage.setItem(FONT_STORAGE_KEY, mode);
+    } catch (e) {
+      // ignore storage failures
+    }
+  }
+
+  function applyFontMode(mode) {
+    const resolvedMode = validFontModes.has(mode) ? mode : "default";
+    modal.classList.toggle("pm-font-minecraft", resolvedMode === "minecraft");
+    if (fontDefaultBtn) {
+      const isDefault = resolvedMode === "default";
+      fontDefaultBtn.setAttribute("aria-pressed", String(isDefault));
+      fontDefaultBtn.classList.toggle("active", isDefault);
+    }
+    if (fontMinecraftBtn) {
+      const isMinecraft = resolvedMode === "minecraft";
+      fontMinecraftBtn.setAttribute("aria-pressed", String(isMinecraft));
+      fontMinecraftBtn.classList.toggle("active", isMinecraft);
+    }
+  }
+
+  if (fontDefaultBtn) {
+    fontDefaultBtn.addEventListener("click", () => {
+      applyFontMode("default");
+      setStoredFontMode("default");
+    });
+  }
+
+  if (fontMinecraftBtn) {
+    fontMinecraftBtn.addEventListener("click", () => {
+      applyFontMode("minecraft");
+      setStoredFontMode("minecraft");
+    });
+  }
+
+  function normalizeGithubUrl(url) {
+    if (!url) return "";
+    const blobMatch = url.match(
+      /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/blob\/(.+)$/i,
+    );
+    if (!blobMatch) return url;
+    const [, owner, repo, path] = blobMatch;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${path}`;
+  }
+
+  async function loadMarkdown() {
+    const mdSource = normalizeGithubUrl(cfg.markdownUrl || "");
+    descEl.innerHTML = "<div class=\"gm-placeholder-sub\">Loading...</div>";
+    try {
+      const res = await fetchMarkdown(mdSource);
+      const md = normalizeIndent(res && res.text ? res.text : "");
+      if (!md) {
+        descEl.innerHTML = "<div class=\"gm-placeholder-sub\">No content available.</div>";
+        return;
+      }
+      descEl.innerHTML = marked.parse(md);
+    } catch (e) {
+      descEl.innerHTML = "<div class=\"gm-placeholder-sub\">Failed to load content.</div>";
+    }
+  }
+
+  function renderButtons() {
+    linksEl.innerHTML = "";
+    (cfg.buttons || []).forEach((btn) => {
+      if (!btn || !btn.label || !btn.url) return;
+      const a = document.createElement("a");
+      a.href = btn.url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "card-btn modal-btn";
+      a.textContent = btn.label;
+      linksEl.appendChild(a);
+    });
+  }
+
+  function openProfileMenu() {
+    renderButtons();
+    loadMarkdown();
+    applyFontMode(getStoredFontMode());
+    modal.classList.add("open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeProfileMenu() {
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+    document.removeEventListener("keydown", onKeydown);
+  }
+
+  function onKeydown(e) {
+    if (!modal.classList.contains("open")) return;
+    if (e.key === "Escape") closeProfileMenu();
+  }
+
+  navLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    const nav = document.getElementById("nav");
+    if (nav) nav.classList.remove("open");
+    openProfileMenu();
+    document.addEventListener("keydown", onKeydown);
+  });
+
+  if (closeBtn) closeBtn.addEventListener("click", closeProfileMenu);
+  if (backdrop) backdrop.addEventListener("click", closeProfileMenu);
+  window.openProfileMenu = openProfileMenu;
 }
 
 /* --------------------- Tiny hero canvas (keeps original behavior) --------------------- */
