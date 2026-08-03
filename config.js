@@ -82,21 +82,44 @@ const CONFIG = {
   // }
   projects: [
     {
-      icon: "🌌",
-      title: "CrabSMP Engine",
-      desc: "Full-featured Minecraft Bedrock server engine — RPG levelling, factions, quest system, custom shop menu, NPC handlers, sidebar HUD, and Discord embed integration.",
-      tags: ["TypeScript", "Python", "Endstone", "Discord.js"],
+      icon: "🔥",
+      title: "NetherGate LLC",
+      desc: "NetherGate is a Minecraft network built around communities, projects, and creators working toward a shared goal. We connect servers, developers, builders, content creators, and players under one ecosystem.",
+      tags: ["Free Public Resources", "Opportunities for Creators", "Minecraft Network"],
+      status: "wip",
+      color: "#F44336",
+      links: [{ label: "Join the Discord", url: "https://discord.gg/nethergate" }, { label: "Visit the Website", url: "https://nethergate.llc" }],
+    },
+    {
+      icon: "🧩",
+      title: "Octane Skygen",
+      desc: "The Shop System for Octane Skygen, additionally featuring customisable NPCs which can be used to open Shops via Chest UI menus.",
+      tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
-      color: "#29B6F6",
-      // Optional: project cards also support cover images now.
-      cover: "images/cover-art/CrabSMP.png",
-      links: [
-        { label: "Join the Discord", url: "https://discord.gg/crabsmp" },
-        { label: "Visit the Website", url: "https://crabsmp.net" },
-      ],
-      gallery: [
-        { url: "images/crab-engine/crab-engine1.png", caption: "Main Menu" },
-      ],
+      color: "#42A5F5",
+    },
+    {
+      icon: "💫",
+      title: "Realm Transfer",
+      desc: "An add-on which transfers players from a Realm to a server, via the @minecraft/server-admin Scripting API. (Mojang has now patched this)",
+      tags: ["TypeScript", "Scripting API"],
+      status: "archived",
+      color: "#9E9E9E",
+    },
+    {
+      icon: "⚔️",
+      title: "Kits System",
+      desc: "A completely customisable Kits Add-on. Featuring a GUI menu, Custom Commands, and a Chest UI menu for easy kit selection. Also featuring cooldowns, tag requirements, and more.",
+      tags: ["TypeScript", "JSON UI", "Chest UI"],
+      status: "active",
+      color: "#F5C518",
+    },
+    {
+      icon: "🛒",
+      title: "Blaze Network",
+      desc: "Another fully customisable Shop Add-on, featuring a Donut SMP like Chest UI menu for buying / selling items for money.",
+      tags: ["TypeScript", "JSON UI", "Chest UI"],
+      status: "active",
     },
     {
       icon: "🛡️",
@@ -127,8 +150,8 @@ const CONFIG = {
     {
       icon: "🌐",
       title: "Realm Explorer",
-      desc: "A discovery platform for Minecraft Bedrock Realms & Servers. Featuring RE Hub which allows you to join Bedrock servers on console.",
-      tags: ["Scripting API", "Discord"],
+      desc: "A discovery platform for Minecraft Bedrock Realms & Servers. Featuring RE Hub which allows you to join Bedrock servers on console. (I am no longer the owner of this network)",
+      tags: ["Python Bot", "Discord Setup", "Discovery Realm Platform"],
       status: "active",
       color: "#4CAF50",
       cover: "images/cover-art/RealmExplorer.png",
@@ -236,7 +259,7 @@ const CONFIG = {
     {
       id: "astral-engine",
       title: "AstralCraft Engine",
-      price: "$300 USD",
+      price: "$100 USD",
       cover: "images/cover-art/AstralCraft.png",
       images: [
         { url: "images/astral-engine/mainmenu.png", caption: "Main Menu" },
@@ -265,6 +288,18 @@ const CONFIG = {
       md: "markdown/astral-engine.md",
       links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy" }],
     },
+    {
+      id: "plots-system",
+      title: "Plots System",
+      price: "$20 USD",
+      cover: "images/cover-art/PlotsSystem.png",
+      images: [
+        { url: "images/plots-system/plots.mov", caption: "Video Example" },
+      ],
+      tags: ["addon", "minecraft", "download"],
+      md: "markdown/plots-system.md",
+      links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy" }],
+    }
   ],
 
   // ---------------------------------------------------------------------------

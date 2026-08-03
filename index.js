@@ -427,6 +427,70 @@ function resolveImagePath(u) {
   return u;
 }
 
+/* --------------------- Media helpers (images + video) --------------------- */
+const VIDEO_EXT_RE = /\.(mp4|m4v|mov|webm|ogv)(?:[?#]|$)/i;
+
+// A gallery entry is a video when it says so (`type: "video"`) or its url ends
+// in a known video extension.
+function isVideoMedia(item) {
+  if (!item) return false;
+  if (item.type) return String(item.type).toLowerCase() === "video";
+  return VIDEO_EXT_RE.test(String(item.url || ""));
+}
+
+function mediaThumbHtml(item) {
+  const src = resolveImagePath(item.url);
+  const alt = (item.caption || "").replace(/"/g, "&quot;");
+  if (isVideoMedia(item)) {
+    const poster = item.poster
+      ? ` poster="${resolveImagePath(item.poster)}"`
+      : "";
+    return `<video src="${src}"${poster} muted playsinline preload="metadata"></video><span class="gm-thumb-play">▶</span>`;
+  }
+  return `<img src="${src}" alt="${alt}" loading="lazy">`;
+}
+
+// Swap the viewer between its <img> and <video> element for the given entry.
+function showMainMedia(imgEl, videoEl, item, noteEl) {
+  if (!item) return;
+  const src = resolveImagePath(item.url);
+  if (noteEl) noteEl.style.display = "none";
+  if (videoEl) videoEl.pause();
+
+  if (videoEl && isVideoMedia(item)) {
+    imgEl.style.display = "none";
+    imgEl.removeAttribute("src");
+    videoEl.style.display = "block";
+    if (item.poster) videoEl.poster = resolveImagePath(item.poster);
+    else videoEl.removeAttribute("poster");
+    if (videoEl.getAttribute("src") !== src) {
+      videoEl.setAttribute("src", src);
+      videoEl.load();
+    }
+    return;
+  }
+
+  if (videoEl) {
+    videoEl.style.display = "none";
+    videoEl.removeAttribute("src");
+    videoEl.removeAttribute("poster");
+    videoEl.load();
+  }
+  imgEl.style.display = "block";
+  imgEl.src = src;
+  imgEl.alt = item.caption || "";
+}
+
+// Shown when the browser refuses the container/codec (e.g. .mov in Firefox).
+function initVideoFallback(videoEl, noteEl) {
+  if (!videoEl || !noteEl) return;
+  videoEl.addEventListener("error", () => {
+    if (!videoEl.getAttribute("src")) return;
+    videoEl.style.display = "none";
+    noteEl.style.display = "flex";
+  });
+}
+
 function hideStoreSection() {
   replaceHeroStoreButtonWithDiscord();
 
@@ -518,18 +582,24 @@ function renderCards(items, type) {
           `<a class="card-btn" href="${l.url}" target="_blank" onclick="event.stopPropagation()">${l.label}</a>`,
       )
       .join("");
-    const imgCount = (p.gallery || p.images || []).length;
+    const media = p.gallery || p.images || [];
+    const videoCount = media.filter(isVideoMedia).length;
+    const mediaNoun =
+      videoCount === 0 ? "IMAGE" : videoCount === media.length ? "VIDEO" : "ITEM";
     const hintText =
-      imgCount > 0
-        ? `${imgCount} IMAGE${imgCount !== 1 ? "S" : ""}`
+      media.length > 0
+        ? `${media.length} ${mediaNoun}${media.length !== 1 ? "S" : ""}`
         : type === "projects"
           ? "CLICK TO VIEW"
           : "NO IMAGES";
 
+    // a video can't be a CSS background — fall back to the first still image
+    const firstStill = media.find((m) => !isVideoMedia(m));
+    const firstPoster = media.find((m) => isVideoMedia(m) && m.poster);
     const coverSrc = resolveImagePath(
       p.cover ||
-        (p.images && p.images[0] && p.images[0].url) ||
-        (p.gallery && p.gallery[0] && p.gallery[0].url) ||
+        (firstStill && firstStill.url) ||
+        (firstPoster && firstPoster.poster) ||
         "",
     );
     const hasCover = !!coverSrc;
@@ -572,10 +642,14 @@ function renderCards(items, type) {
 function initProjectModal() {
   const modal = document.getElementById("gallery-modal");
   const mainImg = document.getElementById("gm-main-img");
+  const mainVideo = document.getElementById("gm-main-video");
+  const videoNote = document.getElementById("gm-video-note");
   // fallback to local placeholder if image fails to load
   mainImg.addEventListener("error", () => {
+    if (!mainImg.getAttribute("src")) return;
     mainImg.src = "images/placeholder.svg";
   });
+  initVideoFallback(mainVideo, videoNote);
   const placeholder = document.getElementById("gm-placeholder");
   const captionEl = document.getElementById("gm-caption");
   const captionBar = document.getElementById("gm-caption-bar");
@@ -615,7 +689,6 @@ function initProjectModal() {
     const gallery = currentProject.gallery || [];
     if (gallery.length > 0) {
       placeholder.style.display = "none";
-      mainImg.style.display = "block";
       captionBar.style.display = "flex";
       prevBtn.style.display = "flex";
       nextBtn.style.display = "flex";
@@ -625,6 +698,8 @@ function initProjectModal() {
     } else {
       placeholder.style.display = "flex";
       mainImg.style.display = "none";
+      mainVideo.style.display = "none";
+      videoNote.style.display = "none";
       captionBar.style.display = "none";
       thumbsEl.style.display = "none";
       prevBtn.style.display = "none";
@@ -651,13 +726,15 @@ function initProjectModal() {
       thumbsElLocal.innerHTML = "";
       gallery.forEach((img, i) => {
         const d = document.createElement("div");
-        d.className = "gm-thumb" + (i === 0 ? " active" : "");
+        d.className =
+          "gm-thumb" +
+          (isVideoMedia(img) ? " is-video" : "") +
+          (i === 0 ? " active" : "");
         d.dataset.idx = i;
-        const src = resolveImagePath(img.url);
-        d.innerHTML = `<img src="${src}" alt="${img.caption || ""}" loading="lazy">`;
-        const imageEl = d.querySelector("img");
-        imageEl.addEventListener("error", () => {
-          d.innerHTML = '<div class="gm-thumb-placeholder">📷</div>';
+        d.innerHTML = mediaThumbHtml(img);
+        const mediaEl = d.querySelector("img, video");
+        mediaEl.addEventListener("error", () => {
+          d.innerHTML = `<div class="gm-thumb-placeholder">${isVideoMedia(img) ? "🎞️" : "📷"}</div>`;
         });
         d.addEventListener("click", () => showImage(i));
         thumbsElLocal.appendChild(d);
@@ -670,10 +747,11 @@ function initProjectModal() {
       idx = Math.max(0, Math.min(idx, gallery.length - 1));
       currentIndex = idx;
       mainImg.classList.add("switching");
+      mainVideo.classList.add("switching");
       setTimeout(() => {
-        mainImg.src = resolveImagePath(gallery[idx].url);
-        mainImg.alt = gallery[idx].caption || "";
+        showMainMedia(mainImg, mainVideo, gallery[idx], videoNote);
         mainImg.classList.remove("switching");
+        mainVideo.classList.remove("switching");
       }, 180);
       captionEl.textContent = gallery[idx].caption || "";
       counterEl.textContent = `${idx + 1} / ${gallery.length}`;
@@ -718,6 +796,8 @@ function initProjectModal() {
     function projectKeydown(e) {
       if (!modal.classList.contains("open")) return;
       if (e.key === "Escape") closeGallery();
+      // let arrow keys seek when the video player itself has focus
+      if (e.target === mainVideo) return;
       if (e.key === "ArrowLeft") showImage(currentIndex - 1);
       if (e.key === "ArrowRight") showImage(currentIndex + 1);
     }
@@ -725,6 +805,7 @@ function initProjectModal() {
     function closeGallery() {
       modal.classList.remove("open");
       document.body.style.overflow = "";
+      mainVideo.pause();
       document.removeEventListener("keydown", projectKeydown);
       if (!DETAIL_ROUTE_STATE.syncing) clearDetailPath();
     }
@@ -735,10 +816,14 @@ function initProjectModal() {
 function initSellingModal() {
   const modal = document.getElementById("selling-modal");
   const mainImg = document.getElementById("sm-main-img");
+  const mainVideo = document.getElementById("sm-main-video");
+  const videoNote = document.getElementById("sm-video-note");
   // fallback to local placeholder if image fails to load
   mainImg.addEventListener("error", () => {
+    if (!mainImg.getAttribute("src")) return;
     mainImg.src = "images/placeholder.svg";
   });
+  initVideoFallback(mainVideo, videoNote);
   const placeholder = document.getElementById("sm-placeholder");
   const captionEl = document.getElementById("sm-caption");
   const captionBar = document.getElementById("sm-caption-bar");
@@ -827,39 +912,17 @@ function initSellingModal() {
     const gallery = currentItem.images || [];
     if (gallery.length > 0) {
       placeholder.style.display = "none";
-      mainImg.style.display = "block";
       captionBar.style.display = "flex";
       prevBtn.style.display = "flex";
       nextBtn.style.display = "flex";
       thumbsEl.style.display = "flex";
-      function resolveImagePath(u) {
-        if (!u) return "";
-        if (/^(https?:|data:|\/\/)/i.test(u)) return u;
-        return u;
-      }
-
-      function buildThumbs(gallery, thumbsElLocal) {
-        thumbsElLocal.innerHTML = "";
-        gallery.forEach((img, i) => {
-          const d = document.createElement("div");
-          d.className = "gm-thumb" + (i === 0 ? " active" : "");
-          d.dataset.idx = i;
-          const src = resolveImagePath(img.url);
-          d.innerHTML = `<img src="${src}" alt="${img.caption || ""}" loading="lazy">`;
-          const imageEl = d.querySelector("img");
-          imageEl.addEventListener("error", () => {
-            d.innerHTML = '<div class="gm-thumb-placeholder">📷</div>';
-          });
-          d.addEventListener("click", () => showImage(i));
-          thumbsElLocal.appendChild(d);
-        });
-      }
-
       buildThumbs(gallery, thumbsEl);
       showImage(0);
     } else {
       placeholder.style.display = "flex";
       mainImg.style.display = "none";
+      mainVideo.style.display = "none";
+      videoNote.style.display = "none";
       captionBar.style.display = "none";
       thumbsEl.style.display = "none";
       prevBtn.style.display = "none";
@@ -934,9 +997,16 @@ function initSellingModal() {
       thumbsElLocal.innerHTML = "";
       gallery.forEach((img, i) => {
         const d = document.createElement("div");
-        d.className = "gm-thumb" + (i === 0 ? " active" : "");
+        d.className =
+          "gm-thumb" +
+          (isVideoMedia(img) ? " is-video" : "") +
+          (i === 0 ? " active" : "");
         d.dataset.idx = i;
-        d.innerHTML = `<img src="${resolveImagePath(img.url)}" alt="${img.caption || ""}" loading="lazy">`;
+        d.innerHTML = mediaThumbHtml(img);
+        const mediaEl = d.querySelector("img, video");
+        mediaEl.addEventListener("error", () => {
+          d.innerHTML = `<div class="gm-thumb-placeholder">${isVideoMedia(img) ? "🎞️" : "📷"}</div>`;
+        });
         d.addEventListener("click", () => showImage(i));
         thumbsElLocal.appendChild(d);
       });
@@ -948,10 +1018,11 @@ function initSellingModal() {
       idx = Math.max(0, Math.min(idx, gallery.length - 1));
       currentIndex = idx;
       mainImg.classList.add("switching");
+      mainVideo.classList.add("switching");
       setTimeout(() => {
-        mainImg.src = resolveImagePath(gallery[idx].url);
-        mainImg.alt = gallery[idx].caption || "";
+        showMainMedia(mainImg, mainVideo, gallery[idx], videoNote);
         mainImg.classList.remove("switching");
+        mainVideo.classList.remove("switching");
       }, 180);
       captionEl.textContent = gallery[idx].caption || "";
       counterEl.textContent = `${idx + 1} / ${gallery.length}`;
@@ -972,6 +1043,8 @@ function initSellingModal() {
     function sellingKeydown(e) {
       if (!modal.classList.contains("open")) return;
       if (e.key === "Escape") closeSelling();
+      // let arrow keys seek when the video player itself has focus
+      if (e.target === mainVideo) return;
       if (e.key === "ArrowLeft") showImage(currentIndex - 1);
       if (e.key === "ArrowRight") showImage(currentIndex + 1);
     }
@@ -979,6 +1052,7 @@ function initSellingModal() {
     function closeSelling() {
       modal.classList.remove("open");
       document.body.style.overflow = "";
+      mainVideo.pause();
       document.removeEventListener("keydown", sellingKeydown);
       if (!DETAIL_ROUTE_STATE.syncing) clearDetailPath();
     }
