@@ -20,7 +20,7 @@ const CONFIG = {
     "A developer specialising in MC Bedrock Scripting, Discord bots, and Endstone Plugins. Creating new projects every month.",
 
   // Contact + social
-  email: "contact@ademdev.xyz",
+  email: "ademdev@nethergate.llc",
   github: "https://github.com/AdemonG1tHub",
   discord: "ademondiscrd",
 
