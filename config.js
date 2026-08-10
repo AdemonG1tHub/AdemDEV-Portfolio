@@ -82,15 +82,6 @@ const CONFIG = {
   // }
   projects: [
     {
-      icon: "🔥",
-      title: "NetherGate LLC",
-      desc: "NetherGate is a Minecraft network built around communities, projects, and creators working toward a shared goal. We connect servers, developers, builders, content creators, and players under one ecosystem.",
-      tags: ["Free Public Resources", "Opportunities for Creators", "Minecraft Network"],
-      status: "wip",
-      color: "#F44336",
-      links: [{ label: "Join the Discord", url: "https://discord.gg/nethergate" }, { label: "Visit the Website", url: "https://nethergate.llc" }],
-    },
-    {
       icon: "🧩",
       title: "Octane Skygen",
       desc: "The Shop System for Octane Skygen, additionally featuring customisable NPCs which can be used to open Shops via Chest UI menus.",
