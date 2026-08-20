@@ -1,3 +1,20 @@
+const ALLOWED_LINK_COLORS = new Set(["green", "white", "blue", "gold", "dark", "red"]);
+const DEFAULT_LINK_COLOR =
+  (typeof CONFIG !== "undefined" && CONFIG.defaults && CONFIG.defaults.linkColor) || "gold";
+
+function resolveLinkColor(c) {
+  if (!c) return DEFAULT_LINK_COLOR;
+  return ALLOWED_LINK_COLORS.has(c) ? c : DEFAULT_LINK_COLOR;
+}
+
+// Accepts hex (#fff, #ffcc00), rgb()/hsl(), or named colors; anything else is ignored.
+function resolveLinkTextColor(c) {
+  if (typeof c !== "string") return "";
+  const v = c.trim();
+  const ok = /^(#[0-9a-fA-F]{3,8}|[a-zA-Z]+|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\))$/.test(v);
+  return ok ? v : "";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const byId = (id) => document.getElementById(id);
   const uiSfx = createUISoundSystem();
@@ -9,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Basic rendering
   const logoText = byId("logo-text");
-  if (logoText) logoText.textContent = CONFIG.name;
+  if (logoText) logoText.textContent = CONFIG.brandText || CONFIG.name;
 
   const heroTitle = byId("hero-title");
   if (heroTitle) heroTitle.textContent = CONFIG.name;
@@ -42,6 +59,32 @@ document.addEventListener("DOMContentLoaded", () => {
     CONFIG.skills.forEach((sk) =>
       skillsWrap.insertAdjacentHTML("beforeend", `<span class="skill-chip">${sk}</span>`),
     );
+  }
+
+  // Team (section stays hidden unless CONFIG.team has members)
+  const teamGrid = byId("team-grid");
+  const teamSection = byId("team");
+  const teamMembers = (CONFIG.team && CONFIG.team.members) || [];
+  if (teamGrid && teamMembers.length > 0) {
+    const teamLabel = byId("team-label");
+    const teamHeading = byId("team-heading");
+    if (teamLabel && CONFIG.team.label) teamLabel.textContent = CONFIG.team.label;
+    if (teamHeading && CONFIG.team.heading) teamHeading.textContent = CONFIG.team.heading;
+    teamMembers.forEach((m) =>
+      teamGrid.insertAdjacentHTML(
+        "beforeend",
+        `<div class="team-card reveal"><span class="team-badge">${m.role || "Role"}</span><h3>${m.name || "Name"}</h3><p class="team-note">${m.text || ""}</p></div>`,
+      ),
+    );
+  } else {
+    if (teamSection) teamSection.remove();
+    const teamSep = byId("team-separator");
+    if (teamSep) teamSep.remove();
+    const teamNav = byId("nav-team");
+    if (teamNav) teamNav.remove();
+    // Team took over the alternating band, hand it back to Services.
+    const servicesSection = byId("services");
+    if (servicesSection) servicesSection.classList.add("section-alt");
   }
 
   // Services
@@ -572,15 +615,27 @@ function renderCards(items, type) {
       : document.getElementById("selling-grid");
   if (!items || !container) return;
 
+  const sellingLabel =
+    CONFIG.labels && CONFIG.labels.sellingCardLabel
+      ? CONFIG.labels.sellingCardLabel
+      : "STORE ITEM";
+  const projectLabel =
+    CONFIG.labels && CONFIG.labels.projectCardLabel
+      ? CONFIG.labels.projectCardLabel
+      : "PROJECT";
+  const cardLabel = type === "selling" ? sellingLabel : projectLabel;
+
   items.forEach((p, i) => {
     const tags = (p.tags || [])
       .map((t) => `<span class="tag">${t}</span>`)
       .join("");
     const links = (p.links || [])
-      .map(
-        (l) =>
-          `<a class="card-btn" href="${l.url}" target="_blank" onclick="event.stopPropagation()">${l.label}</a>`,
-      )
+      .map((l) => {
+        const color = resolveLinkColor(l.color);
+        const textColor = resolveLinkTextColor(l.textColor);
+        const styleAttr = textColor ? ` style="color:${textColor}"` : "";
+        return `<a class="card-btn ${color}"${styleAttr} href="${l.url}" target="_blank" onclick="event.stopPropagation()">${l.label}</a>`;
+      })
       .join("");
     const media = p.gallery || p.images || [];
     const videoCount = media.filter(isVideoMedia).length;
@@ -615,13 +670,12 @@ function renderCards(items, type) {
       <div class="card-inner">
         ${coverHtml}
         <div class="card-chip-row">
-          <span class="card-chip">${type === "selling" ? "STORE ITEM" : "PROJECT"}</span>
+          <span class="card-chip">${cardLabel}</span>
         </div>
-        <div class="card-icon-row">
-          <span class="card-emoji">${p.icon || "📦"}</span>
+        <div class="card-title-row">
+          <div class="card-title">${p.title}</div>
           ${p.status ? `<span class="status-pill ${p.status === "wip" ? "pill-wip" : p.status === "active" ? "pill-active" : "pill-archived"}">${p.status}</span>` : ""}
         </div>
-        <div class="card-title">${p.title}</div>
         <p class="card-desc">${type === "selling" ? (p.price ? `<strong>${p.price}</strong><span class="card-sep"> — </span>` : "") + (p.short || "") : p.desc || ""}</p>
         <div class="card-links${links ? "" : " is-empty"}">${links}</div>
         <div class="card-tags">${tags}</div>
@@ -676,7 +730,10 @@ function initProjectModal() {
       const a = document.createElement("a");
       a.href = l.url;
       a.target = "_blank";
-      a.className = "card-btn modal-btn";
+      const color = resolveLinkColor(l.color);
+      a.className = `card-btn modal-btn ${color}`;
+      const textColor = resolveLinkTextColor(l.textColor);
+      if (textColor) a.style.color = textColor;
       a.textContent = l.label;
       linksEl.appendChild(a);
     });
@@ -901,7 +958,10 @@ function initSellingModal() {
       const a = document.createElement("a");
       a.href = l.url;
       a.target = "_blank";
-      a.className = "card-btn modal-btn";
+      const color = resolveLinkColor(l.color);
+      a.className = `card-btn modal-btn ${color}`;
+      const textColor = resolveLinkTextColor(l.textColor);
+      if (textColor) a.style.color = textColor;
       a.textContent = l.label;
       linksEl.appendChild(a);
     });
@@ -1204,7 +1264,10 @@ function initProfileMenu() {
       a.href = btn.url;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
-      a.className = "card-btn modal-btn";
+      const color = resolveLinkColor(btn.color);
+      a.className = `card-btn modal-btn ${color}`;
+      const textColor = resolveLinkTextColor(btn.textColor);
+      if (textColor) a.style.color = textColor;
       a.textContent = btn.label;
       linksEl.appendChild(a);
     });

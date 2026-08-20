@@ -15,6 +15,8 @@ const CONFIG = {
   // Identity / Hero
   // ---------------------------------------------------------------------------
   name: "AdemDEV",
+  // Optional: overrides the top-bar logo text only. Falls back to `name`.
+  // brandText: "AdemDEV.xyz",
   tagline: "Minecraft & Discord Development",
   subtitle:
     "A developer specialising in MC Bedrock Scripting, Discord bots, and Endstone Plugins. Creating new projects every month.",
@@ -26,6 +28,15 @@ const CONFIG = {
 
   FOOTER: {
     tagLine: "Not affiliated with Mojang Studios.",
+  },
+
+  // ---------------------------------------------------------------------------
+  // Defaults
+  // ---------------------------------------------------------------------------
+  defaults: {
+    // Colour used for link buttons that don't set one (or set an unknown one).
+    // Allowed: "green" | "white" | "blue" | "gold" | "dark" | "red"
+    linkColor: "gold",
   },
 
   // ---------------------------------------------------------------------------
@@ -63,7 +74,11 @@ const CONFIG = {
   // Optional fields:
   // - icon (emoji), tags (string[]), status ("active" | "wip" | "archived")
   // - slug (custom URL slug, example: "CrabSMP-Engine")
-  // - color (hex), cover (image path), links ([{label,url}]), gallery ([{url,caption}])
+  // - color (hex), cover (image path), gallery ([{url,caption}])
+  // - links ([{label,url,color,textColor}])
+  //   link `color`: "green" | "white" | "blue" | "gold" | "dark" | "red"
+  //     (unset/unknown falls back to `defaults.linkColor`)
+  //   link `textColor`: optional CSS colour for the label, example: "#ffcc00"
   //
   // Example project template:
   // {
@@ -74,7 +89,7 @@ const CONFIG = {
   //   status: "active",
   //   color: "#42A5F5",
   //   cover: "images/project-cover.png",
-  //   links: [{ label: "GitHub", url: "https://github.com/user/repo" }],
+  //   links: [{ label: "GitHub", url: "https://github.com/user/repo", color: "blue", textColor: "#ffcc00" }],
   //   gallery: [
   //     { url: "images/project-1.png", caption: "Dashboard" },
   //     { url: "images/project-2.png", caption: "Settings" },
@@ -88,14 +103,6 @@ const CONFIG = {
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
       color: "#42A5F5",
-    },
-    {
-      icon: "💫",
-      title: "Realm Transfer",
-      desc: "An add-on which transfers players from a Realm to a server, via the @minecraft/server-admin Scripting API. (Mojang has now patched this)",
-      tags: ["TypeScript", "Scripting API"],
-      status: "archived",
-      color: "#9E9E9E",
     },
     {
       icon: "⚔️",
@@ -121,7 +128,7 @@ const CONFIG = {
       color: "#E91E63",
       cover: "images/cover-art/PixelBadgePack.png",
       links: [
-        { label: "Download on Discord", url: "https://discord.gg/jJT58SFTEy" },
+        { label: "Download on Discord", url: "https://discord.gg/jJT58SFTEy", color: "blue" },
       ],
       gallery: [
         { url: "images/pixel-badge/red.png", caption: "Red Badge" },
@@ -147,13 +154,21 @@ const CONFIG = {
       color: "#4CAF50",
       cover: "images/cover-art/RealmExplorer.png",
       links: [
-        { label: "Join the Discord", url: "https://discord.gg/realmexplorer" },
+        { label: "Join the Discord", url: "https://discord.gg/realmexplorer", color: "blue" },
       ],
       gallery: [],
     },
     {
+      icon: "💫",
+      title: "Realm Transfer",
+      desc: "An add-on which transfers players from a Realm to a server, via the @minecraft/server-admin Scripting API. (Mojang has now patched this)",
+      tags: ["TypeScript", "Scripting API"],
+      status: "archived",
+      color: "#9E9E9E",
+    },
+    {
       icon: "⚔️",
-      title: "Endrod Utilities",
+      title: "Gilded Utilities",
       desc: "An open-sourced server / realm management tool for Minecraft Bedrock. Featuring Homes, Warps, Player Stats, and more planned.",
       tags: ["TypeScript", "JSON UI"],
       status: "wip",
@@ -174,6 +189,21 @@ const CONFIG = {
       gallery: [],
     },
   ],
+
+  // ---------------------------------------------------------------------------
+  // Team (section between Projects and Services)
+  // ---------------------------------------------------------------------------
+  // Shape: { role: string, name: string, text: string }
+  // Leave `members` empty and the whole section (plus its nav link) is removed.
+  // Example:
+  // members: [
+  //   { role: "Developer", name: "AdemDEV", text: "Scripting and infrastructure" },
+  // ]
+  team: {
+    label: "TEAM",
+    heading: "The Crew",
+    members: [],
+  },
 
   // ---------------------------------------------------------------------------
   // Services
@@ -277,7 +307,7 @@ const CONFIG = {
       ],
       tags: ["engine", "minecraft", "download"],
       md: "markdown/astral-engine.md",
-      links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy" }],
+      links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy", color: "green" }],
     },
     {
       id: "plots-system",
@@ -289,7 +319,7 @@ const CONFIG = {
       ],
       tags: ["addon", "minecraft", "download"],
       md: "markdown/plots-system.md",
-      links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy" }],
+      links: [{ label: "Contact to Purchase", url: "https://discord.gg/jJT58SFTEy", color: "green" }],
     }
   ],
 
@@ -302,9 +332,18 @@ const CONFIG = {
     title: "AdemDEV Profile",
     markdownUrl: "https://raw.githubusercontent.com/AdemonG1tHub/AdemonG1tHub/main/README.md",
     buttons: [
-      { label: "GitHub", url: "https://github.com/AdemonG1tHub" },
-      { label: "Website", url: "https://ademdev.xyz" },
-      { label: "Join Discord", url: "https://discord.gg/jJT58SFTEy" },
+      { label: "GitHub", url: "https://github.com/AdemonG1tHub", color: "dark" },
+      { label: "Website", url: "https://ademdev.xyz", color: "gold" },
+      { label: "Join Discord", url: "https://discord.gg/jJT58SFTEy", color: "blue" },
     ],
+  },
+
+  // ---------------------------------------------------------------------------
+  // Card chip labels
+  // ---------------------------------------------------------------------------
+  // The small chip shown at the top of each card.
+  labels: {
+    sellingCardLabel: "STORE ITEM",
+    projectCardLabel: "PROJECT",
   },
 };
