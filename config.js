@@ -22,7 +22,7 @@ const CONFIG = {
     "A developer specialising in MC Bedrock Scripting, Discord bots, and Endstone Plugins. Creating new projects every month.",
 
   // Contact + social
-  email: "ademdev@nethergate.llc",
+  email: "ademdev@skyrosmc.com",
   github: "https://github.com/AdemonG1tHub",
   discord: "ademondiscrd",
 
@@ -88,7 +88,7 @@ const CONFIG = {
   //   tags: ["TypeScript", "API"],
   //   status: "active",
   //   color: "#42A5F5",
-  //   cover: "images/project-cover.png",
+  //   cover: "images/project-cover.png", must be 1000x400px
   //   links: [{ label: "GitHub", url: "https://github.com/user/repo", color: "blue", textColor: "#ffcc00" }],
   //   gallery: [
   //     { url: "images/project-1.png", caption: "Dashboard" },
@@ -97,12 +97,67 @@ const CONFIG = {
   // }
   projects: [
     {
+      icon: "🍌",
+      title: "Arkadia",
+      desc: "A custom add-on for Arkadia, featuring land claiming, teams, God affinity system, external DB backup system, a bedrock-protocol bot, and much more!",
+      tags: ["TypeScript", "JSON UI", "MongoDB", "Node.js"],
+      status: "active",
+      color: "#ee7905",
+      cover: "images/cover-art/Arkadia.png",
+      links: [
+        { label: "Join the Discord", url: "https://discord.gg/vGJUTEWjUM", color: "blue" },
+      ],
+      gallery: [
+        { url: "images/arkadia/mainmenu.png", caption: "Main Menu" },
+        { url: "images/arkadia/teammenu.png", caption: "Team Menu" },
+        { url: "images/arkadia/claimchunk.png", caption: "Claiming Land" },
+        { url: "images/arkadia/raids.png", caption: "Raid a Team" },
+        { url: "images/arkadia/choosegod.png", caption: "Choose a God" },
+        { url: "images/arkadia/challenge.png", caption: "Confirmation Screen" },
+        { url: "images/arkadia/god.png", caption: "God Menu" },
+        { url: "images/arkadia/admin.png", caption: "Admin Panel" },
+      ]
+    },
+    {
+      icon: "🔥",
+      title: "Blaze Network",
+      desc: "A fully custom DonutSMP Shop like add-on for MCBE, but featuring other content like Stats, Warps, /pay, a custom sidebar, and even fully configurable modules inside a /admin command.",
+      tags: ["TypeScript", "JSON UI", "Chest UI"],
+      status: "active",
+      color: "#eeab18",
+      cover: "images/cover-art/BlazeNetwork.png",
+      links: [
+        { label: "Join the Discord", url: "https://discord.gg/6bQ2JXeVE", color: "blue" },
+      ],
+      gallery: [
+        { url: "images/blaze/mainmenu.png", caption: "Main Menu" },
+        { url: "images/blaze/scoreboard.png", caption: "Scoreboard" },
+        { url: "images/blaze/buyshop.png", caption: "Buy Shop" },
+        { url: "images/blaze/buyshopconfirm.png", caption: "Amount Selection" },
+        { url: "images/blaze/sellshop.png", caption: "Sell Shop" },        
+        { url: "images/blaze/stats.png", caption: "Stats" },
+        { url: "images/blaze/admin.png", caption: "Admin Menu" },
+        { url: "images/blaze/payuser.png", caption: "/pay" },
+      ]
+    },
+    {
       icon: "🧩",
       title: "Octane Skygen",
       desc: "The Shop System for Octane Skygen, additionally featuring customisable NPCs which can be used to open Shops via Chest UI menus.",
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
       color: "#42A5F5",
+      cover: "images/cover-art/OctaneSkygen.png",
+      links: [
+        { label: "Join the Discord", url: "https://discord.gg/3wfj3DWB3", color: "blue" },
+      ],
+      images: [
+        { url: "images/octane/npc.png", caption: "NPC" },
+        { url: "images/octane/shopmenu.png", caption: "Shop Menu Example" },
+        { url: "images/octane/admin.png", caption: "Admin Menu" },
+        { url: "images/octane/createshop.png", caption: "Create Shop" },
+        { url: "images/octane/createnpc.png", caption: "Create NPC" }
+      ]
     },
     {
       icon: "⚔️",
@@ -110,14 +165,13 @@ const CONFIG = {
       desc: "A completely customisable Kits Add-on. Featuring a GUI menu, Custom Commands, and a Chest UI menu for easy kit selection. Also featuring cooldowns, tag requirements, and more.",
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
-      color: "#F5C518",
-    },
-    {
-      icon: "🛒",
-      title: "Blaze Network",
-      desc: "Another fully customisable Shop Add-on, featuring a Donut SMP like Chest UI menu for buying / selling items for money.",
-      tags: ["TypeScript", "JSON UI", "Chest UI"],
-      status: "active",
+      color: "#9b9b99",
+      cover: "images/cover-art/Kits.png",
+      gallery: [
+        { url: "images/kits/kitspage.png", caption: "Kits Menu" },
+        { url: "images/kits/admin.png", caption: "Configuration Menu" },
+        { url: "images/kits/commands.png", caption: "Commands" },
+      ]
     },
     {
       icon: "🛡️",
