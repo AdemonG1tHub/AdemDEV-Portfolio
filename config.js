@@ -141,6 +141,20 @@ const CONFIG = {
       ]
     },
     {
+      icon: "🪙",
+      title: "Gilded Utilities",
+      desc: "A free MCBE Realm / Server Utility Add-on. Featuring many configurable modules, including: Warps, Homes, Mailbox, Shop System, Ranks, and more!",
+      tags: ["TypeScript", "JSON UI", "Free Add-on"],
+      status: "wip",
+      color: "#fde799",
+      cover: "images/cover-art/GildedUtilities.png",
+      links: [
+        { label: "Follow the Development", url: "https://discord.gg/CN4U5kkfTm", color: "blue" },
+        { label: "View Add-on", url: "https://ademdev.xyz/gilded-utilities", color: "gold" },
+      ],
+      gallery: [],
+    },
+    {
       icon: "🧩",
       title: "Octane Skygen",
       desc: "The Shop System for Octane Skygen, additionally featuring customisable NPCs which can be used to open Shops via Chest UI menus.",
@@ -157,6 +171,18 @@ const CONFIG = {
         { url: "images/octane/admin.png", caption: "Admin Menu" },
         { url: "images/octane/createshop.png", caption: "Create Shop" },
         { url: "images/octane/createnpc.png", caption: "Create NPC" }
+      ]
+    },
+    {
+      icon: "🍃",
+      title: "MongoDB-MCBE-Bridge",
+      desc: "A Minecraft Scripting API library for MongoDB integration. Designed for better storage saving / access.",
+      tags: ["Open-sourced", "MongoDB", "Node.js", "TypeScript"],
+      status: "active",
+      color: "#4CAF50",
+      cover: "images/cover-art/MongoDB.png",
+      links: [
+        { label: "GitHub", url: "https://github.com/AdemonG1tHub/MCBE-MongoDB-API", color: "green" },
       ]
     },
     {
@@ -219,17 +245,6 @@ const CONFIG = {
       tags: ["TypeScript", "Scripting API"],
       status: "archived",
       color: "#9E9E9E",
-    },
-    {
-      icon: "⚔️",
-      title: "Gilded Utilities",
-      desc: "An open-sourced server / realm management tool for Minecraft Bedrock. Featuring Homes, Warps, Player Stats, and more planned.",
-      tags: ["TypeScript", "JSON UI"],
-      status: "wip",
-      color: "#F5C518",
-      cover: "images/cover-art/EndrodUtilities.png",
-      links: [],
-      gallery: [],
     },
     {
       icon: "🐍",
