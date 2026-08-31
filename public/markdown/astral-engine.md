@@ -92,7 +92,7 @@ This whole add-on has taken months of development time, I was originally going t
 - **Can I use this on Realms?** Yes this is completely supported for Realms, BDS, and Worlds. 
 - **Why does this look similar to Crab-Engine?** This is because Crab-Engine was a fork of this project! A *lighter* copy was given to it's owner. However it has been heavily modified for CrabSMP. 
 
-**Payment - $300 USD**
+**Payment**
 - PayPal
 - UK Banking (with Account Number, and Sort Code)
 
