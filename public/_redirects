@@ -3,6 +3,7 @@
 /gilded-utilities/*    /gilded-utilities/index.html  200
 /blockbay              /blockbay/index.html          200
 /blockbay/*            /blockbay/index.html          200
+/discord               /discord/index.html           200
 
 # Everything else is the single-page portfolio (hash routing for detail modals).
 /*                     /index.html                   200

@@ -59,6 +59,7 @@ export default defineConfig({
         portfolio: fileURLToPath(new URL("./index.html", import.meta.url)),
         gilded: fileURLToPath(new URL("./gilded-utilities/index.html", import.meta.url)),
         blockbay: fileURLToPath(new URL("./blockbay/index.html", import.meta.url)),
+        discord: fileURLToPath(new URL("./discord/index.html", import.meta.url)),
       },
     },
   },
