@@ -1,0 +1,528 @@
+/* ---------------------------------------------------------------------------
+   Add-on pages (Gilded Utilities, Block-Bay, ...).
+
+   Shared with the portfolio: same chrome and components. The palette is NOT set
+   here — `initAddonPage` writes the `--accent-*` and surface tokens from each
+   add-on's `theme` config, so one stylesheet serves every add-on and nothing in
+   layout.css or components.css needs to know these pages exist.
+   --------------------------------------------------------------------------- */
+
+@import "./tokens.css";
+@import "./layout.css";
+@import "./components.css";
+@import "./mcui.css";
+
+/* --------------------------------- hero ---------------------------------- */
+
+.addon-hero .bb-inner {
+  width: min(78%, 1160px);
+}
+
+.hero-badge {
+  display: inline-block;
+  font-family: "Minecraft", monospace;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: #1a1710;
+  background: var(--accent);
+  border: 2px solid #0f0e0b;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.55);
+  padding: 6px 12px;
+}
+
+.addon-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin-top: 22px;
+}
+
+.addon-stat {
+  border: 2px solid var(--line);
+  background: rgba(20, 19, 16, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  padding: 12px;
+  text-align: center;
+}
+
+.addon-stat__num {
+  display: block;
+  font-family: "Minecraft", monospace;
+  font-size: 1.5rem;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.addon-stat__label {
+  display: block;
+  font-family: "Mojangles", monospace;
+  font-size: 0.9rem;
+  color: #ded8c9;
+  margin-top: 4px;
+}
+
+/* ------------------------------- features -------------------------------- */
+
+.feature-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.feature-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 760px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.feature-tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px;
+  background: linear-gradient(180deg, #33312c, #2a2925);
+  border: 2px solid var(--line);
+  border-left-width: 4px;
+  border-left-color: #4a453b;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    border-color 0.12s ease,
+    transform 0.12s ease,
+    background 0.12s ease;
+}
+
+.feature-tile:hover {
+  border-color: var(--accent-line);
+  transform: translateX(2px);
+}
+
+.feature-tile.is-active {
+  border-color: var(--accent-line);
+  border-left-color: var(--accent);
+  background: linear-gradient(180deg, #3d382c, #322e26);
+}
+
+/* Holds either an emoji or an <img>; images size themselves off 1em. */
+.feature-tile__icon {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.feature-tile__icon img,
+.feature-detail__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.feature-tile__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.feature-tile__name {
+  font-family: "Minecraft", monospace;
+  font-size: 1.05rem;
+  line-height: 1.1;
+}
+
+.feature-tile__summary {
+  font-family: "Mojangles", monospace;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  color: #c9c3b4;
+}
+
+.feature-tile__status {
+  margin-left: auto;
+  align-self: flex-start;
+  font-family: "Minecraft", monospace;
+  font-size: 0.68rem;
+  padding: 3px 6px;
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+}
+
+.feature-tile__status.is-beta {
+  color: #f8d86a;
+}
+
+.feature-tile__status.is-planned {
+  color: #a9a396;
+}
+
+/* ----------------------------- detail panel ------------------------------ */
+
+.feature-detail {
+  border: 2px solid var(--line);
+  border-top: 4px solid var(--accent);
+  background: linear-gradient(180deg, #2f2d28, #26251f);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 22px;
+  max-height: 760px;
+  overflow-y: auto;
+}
+
+.feature-detail__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.feature-detail__icon {
+  width: 58px;
+  height: 58px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  line-height: 1;
+}
+
+.feature-detail__name {
+  font-family: "Minecraft", monospace;
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.feature-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.feature-detail__overview {
+  font-family: "Mojangles", monospace;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  color: #ded8c9;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #3d3a33;
+}
+
+.feature-detail__label {
+  font-family: "Minecraft", monospace;
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  margin: 20px 0 10px;
+  text-transform: uppercase;
+}
+
+/* ---- steps -------------------------------------------------------------- */
+
+.feature-steps {
+  list-style: none;
+  counter-reset: addon-step;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feature-step {
+  counter-increment: addon-step;
+  position: relative;
+  padding-left: 40px;
+}
+
+.feature-step::before {
+  content: counter(addon-step);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-family: "Minecraft", monospace;
+  font-size: 0.9rem;
+  color: #1a1710;
+  background: var(--accent);
+  border: 2px solid #0f0e0b;
+}
+
+/* A rail connecting the numbered markers. */
+.feature-step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 30px;
+  bottom: -14px;
+  width: 2px;
+  background: #45413a;
+}
+
+.feature-step__title {
+  font-family: "Minecraft", monospace;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  margin-bottom: 5px;
+}
+
+.feature-step__text {
+  font-family: "Mojangles", monospace;
+  font-size: 0.98rem;
+  line-height: 1.3;
+  color: #cec8ba;
+}
+
+.feature-step__code,
+.feature-command__name,
+.feature-requires code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.86rem;
+  background: #17160f;
+  border: 1px solid #4a453a;
+  border-left: 3px solid var(--accent);
+  color: var(--accent-bright);
+  padding: 6px 9px;
+  display: inline-block;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+/* ---- commands ----------------------------------------------------------- */
+
+.feature-commands {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feature-command {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  border: 2px solid #3d3a33;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 8px 10px;
+}
+
+.feature-command__name {
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.feature-command__desc {
+  font-family: "Mojangles", monospace;
+  font-size: 0.95rem;
+  color: #cec8ba;
+  flex: 1;
+  min-width: 140px;
+}
+
+.feature-command__perm {
+  font-family: "Minecraft", monospace;
+  font-size: 0.72rem;
+  color: #1a1710;
+  background: #a9a396;
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+
+/* ---- requires / options ------------------------------------------------- */
+
+.feature-requires {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.feature-requires code {
+  margin-top: 0;
+}
+
+.feature-options {
+  display: grid;
+  grid-template-columns: minmax(120px, 220px) minmax(0, 1fr);
+  gap: 6px 14px;
+}
+
+.feature-options dt {
+  font-family: "Minecraft", monospace;
+  font-size: 0.92rem;
+  color: var(--accent-bright);
+  line-height: 1.25;
+}
+
+.feature-options dd {
+  font-family: "Mojangles", monospace;
+  font-size: 0.95rem;
+  line-height: 1.25;
+  color: #cec8ba;
+}
+
+.feature-detail__demo {
+  margin-top: 22px;
+}
+
+/* ---------------------------- live menu section -------------------------- */
+
+.menu-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.menu-jumps {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.menu-jump {
+  font-family: "Minecraft", monospace;
+  font-size: 0.82rem;
+  color: #ede6d5;
+  background: #34312a;
+  border: 2px solid #45413a;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.menu-jump:hover {
+  border-color: var(--accent);
+  color: var(--accent-bright);
+}
+
+.menu-reset {
+  font-family: "Minecraft", monospace;
+  font-size: 0.82rem;
+  color: #1a1710;
+  background: var(--accent);
+  border: 2px solid #0f0e0b;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.menu-reset:hover {
+  background: var(--accent-bright);
+}
+
+.menu-note {
+  font-family: "Mojangles", monospace;
+  font-size: 0.95rem;
+  color: #b9b3a5;
+  margin-top: 14px;
+  text-align: center;
+}
+
+/* ------------------------------- download -------------------------------- */
+
+.download-band {
+  border: 2px solid var(--accent-line);
+  border-top-width: 4px;
+  border-top-color: var(--accent);
+  background:
+    linear-gradient(180deg, rgba(58, 51, 34, 0.92), rgba(36, 33, 24, 0.92)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 2px, rgba(0, 0, 0, 0.03) 2px 4px);
+  padding: 30px;
+  display: grid;
+  gap: 16px;
+  justify-items: center;
+  text-align: center;
+}
+
+.download-heading {
+  font-family: "Minecraft", monospace;
+  font-size: clamp(22px, 2.6vw, 34px);
+}
+
+.download-file {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 0.9rem;
+  color: var(--accent-bright);
+  background: #17160f;
+  border: 1px solid #4a453a;
+  padding: 6px 12px;
+}
+
+.download-note {
+  font-family: "Mojangles", monospace;
+  font-size: 1rem;
+  line-height: 1.3;
+  color: #cec8ba;
+  max-width: 620px;
+}
+
+.download-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.download-btn {
+  min-height: 3.2rem;
+  font-size: 1.1rem;
+}
+
+/* ------------------------------ responsive ------------------------------- */
+
+@media (max-width: 980px) {
+  .feature-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-grid {
+    max-height: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .feature-detail {
+    max-height: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .addon-hero .bb-inner {
+    width: 90%;
+  }
+
+  .feature-detail {
+    padding: 16px;
+  }
+
+  .feature-options {
+    grid-template-columns: 1fr;
+    gap: 2px 0;
+  }
+
+  .feature-options dd {
+    margin-bottom: 10px;
+  }
+
+  .menu-reset {
+    margin-left: 0;
+  }
+}

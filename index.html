@@ -2,32 +2,52 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="title" content="AdemDEV" />
-    <meta name="description" content="Developer for Minecraft, Discord, and other apps. Check out my projects." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="Keywords" content="HTML, Python, CSS, SQL, JavaScript, How to, PHP, Java, C, C++, C#, jQuery, Bootstrap, Colors, W3.CSS, XML, MySQL, Icons, NodeJS, React, Graphics, Angular, R, AI, Git, Data Science, Code Game, Tutorials, Programming, Web Development, Training, Learning, Quiz, Exercises, Courses, Lessons, References, Examples, Learn to code, Source code, Demos, Tips, Website">
-    
+    <title>AdemDEV</title>
+    <meta name="title" content="AdemDEV" />
+    <meta
+      name="description"
+      content="Developer for Minecraft, Discord, and other apps. Check out my projects."
+    />
+    <meta
+      name="keywords"
+      content="Minecraft Bedrock, Script API, add-on developer, Discord bots, Endstone, TypeScript, JSON UI, MCBE"
+    />
+    <link rel="canonical" href="https://ademdev.xyz/" />
+
     <!-- Discord / Open Graph embed -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://ademdev.xyz/" />
     <meta property="og:title" content="AdemDEV" />
-    <meta property="og:description" content="Developer for Minecraft, Discord, and other apps. Check out my projects." />
+    <meta
+      property="og:description"
+      content="Developer for Minecraft, Discord, and other apps. Check out my projects."
+    />
     <meta property="og:image" content="https://ademdev.xyz/A.png" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Controls the left-side colour bar in Discord -->
+    <!-- Left-side colour bar in Discord embeds -->
     <meta name="theme-color" content="#22c55e" />
-    <title>AdemDEV</title>
-    <link rel="stylesheet" href="styles.css" />
 
-    <link rel="icon" type="image/png" sizes="32x32" href="A.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="A.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/A.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/A.png" />
+
+    <script type="module" src="/src/portfolio/main.ts"></script>
   </head>
   <body>
     <header class="topbar">
       <a href="#hero" class="brand">
         <span class="brand-text" id="logo-text">AdemDEV</span>
       </a>
-      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+      <button
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-label="Toggle menu"
+        aria-controls="nav"
+        aria-expanded="false"
+      >
+        ☰
+      </button>
       <nav id="nav">
         <a href="#hero">Home</a>
         <a href="#profile" id="nav-profile">Profile</a>
@@ -43,7 +63,7 @@
       <section
         id="hero"
         class="bb-section hero-bg"
-        style="--bg-url:url('images/crosshair_backgrounds/9.webp')"
+        style="--bg-url: url('/images/crosshair_backgrounds/9.webp')"
       >
         <div class="bb-inner hero-inner reveal">
           <h1 id="hero-title" class="bb-title">AdemDEV</h1>
@@ -127,7 +147,7 @@
             <h2 class="section-heading section-heading-center">Contact</h2>
             <div class="contact-links" id="contact-links"></div>
             <div class="divider-row">or find me on Discord</div>
-            <div class="discord-box" id="discord-box">
+            <div class="discord-box" id="discord-box" role="button" tabindex="0">
               <span class="discord-tag" id="discord-tag"></span>
               <span class="discord-copy">Click to copy</span>
             </div>
@@ -141,6 +161,7 @@
       <div class="footer-links">
         <a href="#hero">Home</a>
         <a href="#projects">Projects</a>
+        <a href="/gilded-utilities">Gilded Utilities</a>
         <a href="#contact">Contact</a>
         <a href="#" id="footer-gh">GitHub</a>
       </div>
@@ -159,7 +180,14 @@
         <div class="gm-viewer" id="gm-viewer">
           <button type="button" class="gm-nav prev" id="gm-prev" aria-label="Previous image">◀</button>
           <img class="gm-main-img" id="gm-main-img" src="" alt="" style="display: none" />
-          <video class="gm-main-img gm-main-video" id="gm-main-video" controls playsinline preload="metadata" style="display: none"></video>
+          <video
+            class="gm-main-img gm-main-video"
+            id="gm-main-video"
+            controls
+            playsinline
+            preload="metadata"
+            style="display: none"
+          ></video>
           <div class="gm-video-note" id="gm-video-note" style="display: none">
             <div class="gm-placeholder-icon">🎞️</div>
             <div class="gm-placeholder-sub">This video can't be played in this browser.</div>
@@ -167,7 +195,7 @@
           <div class="gm-placeholder" id="gm-placeholder">
             <div class="gm-placeholder-icon" id="gm-ph-icon">📷</div>
             <div class="gm-placeholder-title">No screenshots yet</div>
-            <div class="gm-placeholder-sub">Add images to this project's gallery array in CONFIG.</div>
+            <div class="gm-placeholder-sub">Add images to this project's gallery array in the config.</div>
           </div>
           <button type="button" class="gm-nav next" id="gm-next" aria-label="Next image">▶</button>
         </div>
@@ -175,8 +203,14 @@
           <span class="gm-caption-text" id="gm-caption"></span>
           <span class="gm-counter" id="gm-counter"></span>
         </div>
+        <div class="sm-font-row" id="gm-font-row" hidden>
+          <div class="sm-font-toggle" role="group" aria-label="Description font">
+            <button type="button" class="sm-font-btn" id="gm-font-default" aria-pressed="true">Default</button>
+            <button type="button" class="sm-font-btn" id="gm-font-minecraft" aria-pressed="false">Minecraft</button>
+          </div>
+        </div>
         <div class="gm-info">
-          <p class="gm-info-desc" id="gm-info-desc"></p>
+          <div class="sm-desc-slot"><div class="gm-info-desc" id="gm-info-desc"></div></div>
           <div class="gm-info-links" id="gm-info-links"></div>
         </div>
         <div class="gm-tags" id="gm-tags"></div>
@@ -185,7 +219,7 @@
       </div>
     </div>
 
-    <div id="selling-modal" role="dialog" aria-modal="true" aria-label="Selling item">
+    <div id="selling-modal" role="dialog" aria-modal="true" aria-label="Store item">
       <div class="gm-backdrop" id="sm-backdrop"></div>
       <div class="gm-shell">
         <div class="gm-titlebar">
@@ -193,12 +227,19 @@
             <div class="gm-accent-dot" id="sm-accent-dot"></div>
             <span class="gm-project-name" id="sm-title"></span>
           </div>
-          <button type="button" class="gm-close" id="sm-close" aria-label="Close selling">✕</button>
+          <button type="button" class="gm-close" id="sm-close" aria-label="Close store item">✕</button>
         </div>
         <div class="gm-viewer" id="sm-viewer">
           <button type="button" class="gm-nav prev" id="sm-prev" aria-label="Previous image">◀</button>
           <img class="gm-main-img" id="sm-main-img" src="" alt="" style="display: none" />
-          <video class="gm-main-img gm-main-video" id="sm-main-video" controls playsinline preload="metadata" style="display: none"></video>
+          <video
+            class="gm-main-img gm-main-video"
+            id="sm-main-video"
+            controls
+            playsinline
+            preload="metadata"
+            style="display: none"
+          ></video>
           <div class="gm-video-note" id="sm-video-note" style="display: none">
             <div class="gm-placeholder-icon">🎞️</div>
             <div class="gm-placeholder-sub">This video can't be played in this browser.</div>
@@ -252,9 +293,5 @@
         </div>
       </div>
     </div>
-
-    <script src="config.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="index.js" defer></script>
   </body>
 </html>

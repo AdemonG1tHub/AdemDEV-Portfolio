@@ -1,0 +1,128 @@
+/* ---------------------------------------------------------------------------
+   Fonts, design tokens, reset and scrollbar.
+
+   Every accent colour on the site comes from a variable defined here. The
+   Gilded Utilities page re-declares the `--accent-*` block in gilded.css to
+   recolour the whole theme without touching any component rule.
+   --------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Minecraft";
+  src: url("/fonts/minecraft/MinecraftTen.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "MinecraftFive";
+  src: url("/fonts/minecraft/MinecraftFive.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Mojangles";
+  src: url("/fonts/mojangles/Mojangles.ttf") format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "MojanglesBold";
+  src: url("/fonts/mojangles/MojanglesBold.otf") format("opentype");
+  font-display: swap;
+}
+
+:root {
+  --minecraftdepth: 2.5px;
+  --nav-h: 66px;
+  --text-shadow: 0 0.25rem 0 #000;
+
+  /* Surfaces */
+  --surface: #2f2f30;
+  --surface-alt: #38393a;
+  --surface-dark: #2a2a2b;
+  --surface-card: #242526;
+  --surface-sunken: #17191a;
+  --line: #4f5051;
+  --line-soft: #5e5f60;
+
+  /* Accents — overridden per page */
+  --accent: #7ce667;
+  --accent-bright: #96ff72;
+  --accent-soft: #8de671;
+  --accent-light: #4bf97d;
+  --accent-deep: #25c85c;
+  --accent-line: #169544;
+  --accent-ink: #1b912f;
+  --accent-link: #9dff84;
+
+  /* Button skin used by generic `.card-btn` with no colour class */
+  --btn-default-skin: url("/ui/buttons/gold/unchecked.png");
+  --btn-default-skin-hover: url("/ui/buttons/gold/unchecked_hover.png");
+  --btn-default-ink: #000;
+  --btn-default-shadow: none;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-deep) #1f2228;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background:
+    linear-gradient(180deg, #1f232b, #181b21),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.03) 0 1px, rgba(0, 0, 0, 0.06) 1px 3px);
+  border-left: 1px solid #2e333d;
+  border-right: 1px solid #0f1217;
+}
+
+*::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(180deg, var(--accent-light), var(--accent-deep)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0 2px, rgba(0, 0, 0, 0.08) 2px 4px);
+  border: 1px solid var(--accent-line);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, var(--accent-bright), var(--accent-light)),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 2px, rgba(0, 0, 0, 0.06) 2px 4px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, var(--accent-deep), var(--accent-line));
+}
+
+*::-webkit-scrollbar-corner {
+  background: #171a20;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--surface);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

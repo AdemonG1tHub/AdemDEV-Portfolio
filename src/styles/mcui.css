@@ -1,0 +1,950 @@
+/* ---------------------------------------------------------------------------
+   Live menu viewer — a CSS recreation of the Gilded Utilities in-game UI.
+
+   Where possible this uses the add-on's own resource-pack textures (copied to
+   public/gilded/ui/), sliced with the same nine-slice values their .json
+   siblings declare, so the frames, buttons, slots, toggles and sliders are the
+   real artwork rather than a lookalike:
+
+     custom/background.png   nineslice 8   window frame        #D46A68
+     custom/button.png       nineslice 6   action buttons      #D46A68 / #FF8A88
+     item_background.png     nineslice 1   chest slots         #8B8B8B
+     gilded/slider_bg.png    nineslice 1   slider track
+     gilded/toggle_on|off    24x13         modal toggle
+     custom2/close.png       9x9           window close glyph
+
+   The blue/orange split header is drawn with clip-path instead of
+   custom/header_bg.png + custom/title_bg.png, because the diagonal has to stay
+   crisp at any title length — the colours are taken from those textures.
+   --------------------------------------------------------------------------- */
+
+.mcui {
+  --mcui-salmon: #d46a68;
+  --mcui-salmon-lit: #ff8a88;
+  --mcui-salmon-shadow: #2d0504;
+  --mcui-blue: #5abef7;
+  --mcui-blue-lit: #68e1f7;
+  --mcui-orange: #ff7c2a;
+  --mcui-orange-lit: #ffa06e;
+  --mcui-modal-red: #de3b3a;
+  --mcui-modal-red-lit: #ff7672;
+  --mcui-panel: #414c5a;
+  --mcui-panel-lit: #4b5666;
+  --mcui-sky: #a8cbee;
+  --mcui-slot: #8b8b8b;
+  /* Chest skin defaults (vanilla grey). Per-add-on textures/colours are set on
+     the .mcui-chest element by the renderer from the config's `chest` block. */
+  --mcui-chest-panel: #c6c6c6;
+  --mcui-chest-border: #000;
+  --mcui-chest-title: #fff;
+  --mcui-chest-close: #3c3c3c;
+  --mcui-slot-texture: url("/gilded/ui/item_background.png");
+  --mcui-ink: 0 2px 0 #3f3f3f;
+  --mcui-diagonal: 42px;
+  /* Width of the orange title plate. Fixed, like the 400px title_bg texture —
+     it does not grow or shrink with the server name. */
+  --mcui-title-width: 44%;
+  --mcui-columns: 3;
+
+  position: relative;
+  background:
+    linear-gradient(180deg, #bcd9f4 0%, var(--mcui-sky) 60%, #94bce4 100%);
+  border: 2px solid #1b1c1e;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+/* ------------------------------ breadcrumb ------------------------------- */
+/* Not part of the in-game UI — a web affordance so visitors can see where they
+   are and get back out. Sits above the window on the sky background. */
+
+.mcui-breadcrumb {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: rgba(20, 24, 30, 0.82);
+  border: 2px solid #11141a;
+  padding: 6px 8px;
+  font-family: "Mojangles", monospace;
+}
+
+.mcui-breadcrumb__back,
+.mcui-breadcrumb__home {
+  font-family: "Mojangles", monospace;
+  font-size: 0.85rem;
+  color: #fff;
+  background: #2b313b;
+  border: 2px solid #171b21;
+  padding: 4px 10px;
+  cursor: pointer;
+  line-height: 1.1;
+}
+
+.mcui-breadcrumb__back:hover:not(:disabled),
+.mcui-breadcrumb__home:hover {
+  background: #39414e;
+  border-color: var(--accent);
+}
+
+.mcui-breadcrumb__back:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.mcui-breadcrumb__label {
+  font-size: 0.9rem;
+  color: #fff;
+  flex: 1;
+  min-width: 0;
+}
+
+.mcui-breadcrumb__kind {
+  font-size: 0.72rem;
+  font-family: ui-monospace, Consolas, monospace;
+  color: #0f1216;
+  background: var(--accent);
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+
+.mcui-breadcrumb__home {
+  background: transparent;
+  border-color: #3a424e;
+  color: #c9cfd8;
+}
+
+/* -------------------------------- window --------------------------------- */
+
+.mcui-window {
+  width: 100%;
+  max-width: 680px;
+  position: relative;
+  border-style: solid;
+  /* No top edge — the title bar covers that side entirely, so the salmon rails
+     start below it exactly like they do in game. */
+  border-width: 0 10px 10px;
+  border-image-source: url("/gilded/ui/custom/background.png");
+  border-image-slice: 8 fill;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Chest forms bring their own container chrome, so they skip the outer frame.
+   `--skin-chest` is for add-ons where every menu is a chest: their Modal forms
+   sit on the bare stage too, rather than inside a salmon window. */
+.mcui-window--chest,
+.mcui-window--skin-chest {
+  border: 0;
+  background: none;
+  align-items: center;
+}
+
+/* With no outer frame to sit in, a chest-skin modal is its own panel: the
+   title bar and body share one width instead of the bar shrinking to its text. */
+.mcui-window--skin-chest .mcui-header,
+.mcui-window--skin-chest .mcui-modal {
+  width: min(100%, 460px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mcui-window--skin-chest .mcui-header {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* -------------------------------- header --------------------------------- */
+
+/* In game the header_bg and title_bg images are anchored wider than the 400px
+   window and offset upward, so the bar overhangs the salmon frame on both sides
+   and sits proud of its top edge. The negative margins reproduce that: the
+   window's border is 10px, so -18px puts the bar 8px outside it. */
+.mcui-header {
+  position: relative;
+  z-index: 2;
+  height: 56px;
+  /* No bottom margin: any gap here shows the window's salmon fill as a red
+     strip between the bar and the body. */
+  margin: 0 -18px 0;
+  display: flex;
+  align-items: center;
+  background: var(--mcui-blue);
+  border: 2px solid #000;
+  box-shadow: inset 0 4px 0 var(--mcui-blue-lit);
+  padding-left: 12px;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.mcui-header__close {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border: 0;
+  padding: 0;
+  background: center / contain no-repeat url("/gilded/ui/custom2/close.png");
+  image-rendering: pixelated;
+  cursor: pointer;
+  /* The texture is a mid-grey glyph; lift it so it reads on the blue bar. */
+  filter: brightness(1.7);
+}
+
+.mcui-header__close:hover {
+  background-image: url("/gilded/ui/custom2/close_hover.png");
+}
+
+.mcui-header__brand {
+  font-family: "Minecraft", monospace;
+  font-size: 1.25rem;
+  color: #fff;
+  text-shadow: var(--mcui-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The orange plate: a parallelogram cut on its left edge, exactly like
+   custom/title_bg.png, drawn with clip-path so the angle survives any width. */
+.mcui-header__title {
+  margin-left: auto;
+  align-self: stretch;
+  flex: 0 0 var(--mcui-title-width);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 16px 0 calc(var(--mcui-diagonal) + 14px);
+  background: var(--mcui-orange);
+  box-shadow: inset 0 4px 0 var(--mcui-orange-lit);
+  clip-path: polygon(var(--mcui-diagonal) 0, 100% 0, 100% 100%, 0 100%);
+  font-family: "Minecraft", monospace;
+  font-size: 1.7rem;
+  color: #fff;
+  text-shadow: var(--mcui-ink);
+  white-space: nowrap;
+  position: relative;
+}
+
+/* Black bevel along the diagonal, matching the texture's outline. */
+.mcui-header__title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(var(--mcui-diagonal) + 3px);
+  background: #000;
+  clip-path: polygon(
+    var(--mcui-diagonal) 0,
+    calc(var(--mcui-diagonal) + 3px) 0,
+    3px 100%,
+    0 100%
+  );
+}
+
+/* Modal forms use the add-on's second skin: one solid salmon bar. */
+.mcui-header--modal {
+  background: var(--mcui-modal-red);
+  box-shadow: inset 0 4px 0 var(--mcui-modal-red-lit);
+  justify-content: center;
+  padding: 0 12px;
+  height: 50px;
+}
+
+.mcui-header--modal .mcui-header__title {
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  clip-path: none;
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+}
+
+.mcui-header--modal .mcui-header__title::before {
+  display: none;
+}
+
+.mcui-header__close--right {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* --------------------------------- body ---------------------------------- */
+
+.mcui-body {
+  background: var(--mcui-panel);
+  border: 2px solid #2b3440;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 12px;
+  max-height: 430px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cfd4da #2b3440;
+}
+
+.mcui-body::-webkit-scrollbar {
+  width: 10px;
+}
+
+.mcui-body::-webkit-scrollbar-track {
+  background: #333c48;
+  border: 1px solid #232b35;
+}
+
+.mcui-body::-webkit-scrollbar-thumb {
+  background: #cfd4da;
+  border: 1px solid #7d838c;
+}
+
+.mcui-body__text {
+  font-family: "Mojangles", monospace;
+  font-size: 1rem;
+  line-height: 1.35;
+  color: #fff;
+  text-shadow: var(--mcui-ink);
+  margin-bottom: 12px;
+}
+
+/* ---------------------------- grid (main menu) --------------------------- */
+
+.mcui-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--mcui-columns), minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* ------------------------------ list layout ------------------------------ */
+
+.mcui-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mcui-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mcui-row__icon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.mcui-row__icon--empty {
+  visibility: hidden;
+}
+
+.mcui-row .mcui-btn {
+  flex: 1;
+  min-width: 0;
+}
+
+/* -------------------------------- buttons -------------------------------- */
+
+.mcui-btn {
+  appearance: none;
+  background: none;
+  border-style: solid;
+  border-width: 8px;
+  border-image-source: url("/gilded/ui/custom/button.png");
+  border-image-slice: 6 fill;
+  border-image-width: 8px;
+  border-image-repeat: stretch;
+  image-rendering: pixelated;
+  cursor: pointer;
+  color: #fff;
+  font-family: "Minecraft", monospace;
+  text-shadow: var(--mcui-ink);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.08s ease;
+}
+
+.mcui-btn:hover:not(.is-disabled) {
+  border-image-source: url("/gilded/ui/custom/button_hover.png");
+}
+
+.mcui-btn:active:not(.is-disabled) {
+  filter: brightness(0.9);
+}
+
+.mcui-btn.is-disabled {
+  cursor: default;
+  filter: grayscale(0.65) brightness(0.75);
+}
+
+.mcui-btn.is-inert {
+  cursor: default;
+}
+
+.mcui-btn--grid {
+  flex-direction: column;
+  gap: 8px;
+  min-height: 140px;
+  justify-content: space-between;
+}
+
+.mcui-btn__icon {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.mcui-btn--grid .mcui-btn__label {
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.mcui-btn--list {
+  min-height: 58px;
+  text-align: center;
+}
+
+.mcui-btn--list .mcui-btn__label {
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+/* ------------------------------- chest form ------------------------------ */
+
+.mcui-chest {
+  position: relative;
+  background: var(--mcui-chest-panel);
+  border: 3px solid var(--mcui-chest-border);
+  padding: 8px;
+  display: inline-block;
+}
+
+.mcui-chest__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.mcui-chest__title {
+  font-family: "Mojangles", monospace;
+  font-size: 0.95rem;
+  color: var(--mcui-chest-title);
+  text-shadow: var(--mcui-ink);
+  line-height: 1.2;
+}
+
+.mcui-chest__close {
+  border: 0;
+  background: none;
+  color: var(--mcui-chest-close);
+  font-size: 1rem;
+  line-height: 1;
+  padding: 2px 4px;
+  cursor: pointer;
+  font-family: "Mojangles", monospace;
+}
+
+.mcui-chest__close:hover {
+  filter: brightness(1.6);
+}
+
+.mcui-chest__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--mcui-slot-columns, 9), 40px);
+  gap: 0;
+}
+
+.mcui-slot {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  border-style: solid;
+  border-width: 2px;
+  border-image-source: var(--mcui-slot-texture);
+  border-image-slice: 1 fill;
+  border-image-width: 2px;
+  border-image-repeat: stretch;
+  image-rendering: pixelated;
+  display: grid;
+  place-items: center;
+}
+
+.mcui-slot.is-filled {
+  cursor: pointer;
+}
+
+/* Glass-pane spacers from a `pattern(...)` call: visible, but not buttons. */
+.mcui-slot.is-filler {
+  cursor: default;
+}
+
+.mcui-slot.is-filler .mcui-slot__glyph {
+  color: #9a9a9a;
+  opacity: 0.55;
+  font-size: 16px;
+}
+
+.mcui-slot.is-filled:hover,
+.mcui-slot.is-filled:focus-visible {
+  box-shadow: inset 0 0 0 32px rgba(255, 255, 255, 0.45);
+  outline: none;
+}
+
+.mcui-slot__icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.mcui-slot__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.mcui-slot__glyph {
+  font-size: 23px;
+  line-height: 1;
+}
+
+/* Enchantment shimmer, approximated with a violet sweep. */
+.mcui-slot__icon.is-enchanted::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(115deg, rgba(180, 90, 255, 0) 35%, rgba(200, 130, 255, 0.75) 50%, rgba(180, 90, 255, 0) 65%);
+  background-size: 250% 100%;
+  animation: mcuiShimmer 2.6s linear infinite;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+@keyframes mcuiShimmer {
+  0% {
+    background-position: 130% 0;
+  }
+  100% {
+    background-position: -30% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mcui-slot__icon.is-enchanted::after {
+    animation: none;
+  }
+}
+
+.mcui-slot__stack {
+  position: absolute;
+  right: 1px;
+  bottom: -1px;
+  font-family: "Mojangles", monospace;
+  font-size: 0.8rem;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3f3f3f;
+  pointer-events: none;
+}
+
+/* -------------------------------- tooltip -------------------------------- */
+
+.mcui-tooltip {
+  position: absolute;
+  z-index: 5;
+  max-width: 240px;
+  padding: 5px 7px;
+  background: #100010;
+  border: 1px solid #2d0a63;
+  box-shadow: 0 0 0 1px #100010;
+  pointer-events: none;
+  font-family: "Mojangles", monospace;
+}
+
+.mcui-tooltip__name {
+  font-size: 0.92rem;
+  color: #fff;
+  line-height: 1.25;
+}
+
+.mcui-tooltip__lore {
+  font-size: 0.86rem;
+  color: #aaa;
+  line-height: 1.25;
+}
+
+/* ------------------------------- modal form ------------------------------ */
+
+.mcui-modal {
+  background: var(--mcui-panel);
+  border: 2px solid #2b3440;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 430px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #cfd4da #2b3440;
+}
+
+.mcui-modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.mcui-modal::-webkit-scrollbar-track {
+  background: #333c48;
+  border: 1px solid #232b35;
+}
+
+.mcui-modal::-webkit-scrollbar-thumb {
+  background: #cfd4da;
+  border: 1px solid #7d838c;
+}
+
+.mcui-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mcui-field--inline {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mcui-field__label {
+  font-family: "Mojangles", monospace;
+  font-size: 0.95rem;
+  color: #fff;
+  text-shadow: var(--mcui-ink);
+  line-height: 1.25;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.mcui-input {
+  font-family: "Mojangles", monospace;
+  font-size: 0.98rem;
+  color: #fff;
+  background: #6e6e6e;
+  border: 2px solid #000;
+  box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.28);
+  padding: 10px;
+  min-height: 44px;
+  width: 100%;
+}
+
+.mcui-input::placeholder {
+  color: #c2c2c2;
+}
+
+.mcui-input:focus {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
+/* Toggle uses the pack's own on/off artwork. */
+.mcui-toggle {
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  background: center / 100% 100% no-repeat url("/gilded/ui/gilded/toggle_off.png");
+  image-rendering: pixelated;
+}
+
+.mcui-toggle.is-on {
+  background-image: url("/gilded/ui/gilded/toggle_on.png");
+}
+
+.mcui-toggle__knob {
+  display: none;
+}
+
+.mcui-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 24px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mcui-slider::-webkit-slider-runnable-track {
+  height: 24px;
+  border-style: solid;
+  border-width: 2px;
+  border-image-source: url("/gilded/ui/gilded/slider_bg.png");
+  border-image-slice: 1 fill;
+  border-image-width: 2px;
+  image-rendering: pixelated;
+}
+
+.mcui-slider::-moz-range-track {
+  height: 24px;
+  background: #4c4c4c;
+  border: 2px solid #3b3b3b;
+}
+
+.mcui-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 24px;
+  margin-top: 0;
+  background: var(--mcui-salmon);
+  border: 2px solid #000;
+  box-shadow: inset 0 2px 0 var(--mcui-salmon-lit);
+}
+
+.mcui-slider::-moz-range-thumb {
+  width: 14px;
+  height: 24px;
+  border-radius: 0;
+  background: var(--mcui-salmon);
+  border: 2px solid #000;
+}
+
+.mcui-slider__value {
+  font-family: "Mojangles", monospace;
+  color: #ffe08a;
+}
+
+/* Dropdown: a light bar that expands into Bedrock's checkbox list. */
+.mcui-dropdown {
+  position: relative;
+}
+
+.mcui-dropdown__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 38px;
+  padding: 6px 10px;
+  background: var(--mcui-chest-panel);
+  border: 2px solid #000;
+  box-shadow: inset 0 -2px 0 #8f8f8f;
+  cursor: pointer;
+  font-family: "Mojangles", monospace;
+  font-size: 0.98rem;
+  color: #1b1b1b;
+  text-align: left;
+}
+
+.mcui-dropdown__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mcui-dropdown__caret {
+  font-size: 0.7rem;
+  color: #1b1b1b;
+  flex-shrink: 0;
+}
+
+.mcui-dropdown__list {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 6;
+  max-height: 180px;
+  overflow-y: auto;
+  background: var(--mcui-slot);
+  border: 2px solid #000;
+  scrollbar-width: thin;
+  scrollbar-color: #cfd4da #5f5f5f;
+}
+
+.mcui-dropdown__list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.mcui-dropdown__list::-webkit-scrollbar-track {
+  background: #5f5f5f;
+}
+
+.mcui-dropdown__list::-webkit-scrollbar-thumb {
+  background: #cfd4da;
+  border: 1px solid #7d838c;
+}
+
+.mcui-dropdown__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-family: "Mojangles", monospace;
+  font-size: 0.98rem;
+  color: #fff;
+  text-shadow: var(--mcui-ink);
+}
+
+.mcui-dropdown__option:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.mcui-dropdown__option.is-selected {
+  background: #1e8e1e;
+}
+
+.mcui-dropdown__check {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  background: #494949;
+  border: 2px solid #2b2b2b;
+}
+
+.mcui-dropdown__option.is-selected .mcui-dropdown__check {
+  border-color: #fff;
+}
+
+.mcui-submit {
+  min-height: 52px;
+  margin-top: 4px;
+  appearance: none;
+  background: none;
+  border-style: solid;
+  border-width: 8px;
+  border-image-source: url("/gilded/ui/custom/button.png");
+  border-image-slice: 6 fill;
+  border-image-width: 8px;
+  border-image-repeat: stretch;
+  image-rendering: pixelated;
+  cursor: pointer;
+  font-family: "Mojangles", monospace;
+  font-size: 1.05rem;
+  color: #d8d8d8;
+  text-shadow: var(--mcui-ink);
+}
+
+.mcui-submit:hover {
+  border-image-source: url("/gilded/ui/custom/button_hover.png");
+}
+
+/* --------------------------------- toast --------------------------------- */
+/* Stands in for the add-on's player.sendMessage chat feedback. */
+
+.mcui-toast {
+  width: 100%;
+  max-width: 680px;
+  padding: 8px 10px;
+  background: rgba(12, 14, 18, 0.88);
+  border-left: 4px solid var(--accent);
+  font-family: "Mojangles", monospace;
+  font-size: 0.95rem;
+  color: #fff;
+  text-shadow: var(--mcui-ink);
+  line-height: 1.3;
+}
+
+/* ------------------------------ responsive ------------------------------- */
+
+@media (max-width: 720px) {
+  .mcui {
+    padding: 10px;
+    --mcui-diagonal: 26px;
+    --mcui-title-width: 42%;
+  }
+
+  .mcui-btn--grid {
+    min-height: 108px;
+  }
+
+  .mcui-btn__icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .mcui-btn--grid .mcui-btn__label {
+    font-size: 0.8rem;
+  }
+
+  .mcui-row__icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .mcui-header {
+    height: 40px;
+    margin: 0 -14px 0;
+    padding-left: 7px;
+    gap: 7px;
+  }
+
+  .mcui-header--modal {
+    height: 36px;
+  }
+
+  .mcui-header--modal .mcui-header__title {
+    font-size: 0.95rem;
+  }
+
+  .mcui-header__close {
+    width: 15px;
+    height: 15px;
+  }
+
+  .mcui-header__brand {
+    font-size: 0.78rem;
+  }
+
+  .mcui-header__title {
+    font-size: 1.05rem;
+  }
+
+  .mcui-chest__grid {
+    grid-template-columns: repeat(var(--mcui-slot-columns, 9), 30px);
+  }
+
+  .mcui-slot {
+    width: 30px;
+    height: 30px;
+  }
+
+  .mcui-slot__icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mcui-chest {
+    transform: scale(0.82);
+    transform-origin: top center;
+  }
+}
