@@ -108,7 +108,7 @@ export const SITE: SiteConfig = {
         { url: "/images/blaze/admin.png", caption: "Admin Menu" },
         { url: "/images/blaze/payuser.png", caption: "/pay" },
       ],
-    },
+    },/*
     {
       icon: "🪙",
       title: "Gilded Utilities",
@@ -133,7 +133,7 @@ export const SITE: SiteConfig = {
       cover: "/images/cover-art/BlockBay.png",
       links: [{ label: "View Add-on Page:", url: "/blockbay", color: "gold" }],
       gallery: [],
-    },
+    },*/
     {
       title: "AstralCraft Engine",
       desc: "A custom Minecraft Bedrock Engine Add-on, featuring a custom GUI, Auction System, Shop System, Factions, Warps, Donator Perks, and much more!",
