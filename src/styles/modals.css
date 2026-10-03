@@ -30,6 +30,10 @@
   --ore-container-gap: 12px;
 
   align-content: start;
+  /* The body is a fixed-height scroll area. With `auto` rows the grid shrinks
+     them to fit, and scrollable children (the thumbnail strip) can collapse to
+     nothing — keep every row at its content height and scroll instead. */
+  grid-auto-rows: max-content;
 }
 
 .detail-footer {
