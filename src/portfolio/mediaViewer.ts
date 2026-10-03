@@ -89,8 +89,9 @@ export function createMediaViewer(els: MediaViewerElements, placeholderFallback 
     if (els.placeholder) els.placeholder.style.display = empty ? "flex" : "none";
     if (els.captionBar) els.captionBar.style.display = empty ? "none" : "flex";
     if (els.thumbs) els.thumbs.style.display = empty ? "none" : "flex";
-    if (els.prev) els.prev.style.display = empty ? "none" : "flex";
-    if (els.next) els.next.style.display = empty ? "none" : "flex";
+    // Cleared rather than set, so the stylesheet decides (and can hide them on mobile).
+    if (els.prev) els.prev.style.display = empty ? "none" : "";
+    if (els.next) els.next.style.display = empty ? "none" : "";
     if (empty) {
       els.image.style.display = "none";
       if (els.video) els.video.style.display = "none";

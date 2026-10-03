@@ -19,17 +19,6 @@ export function initNav(): void {
   });
 }
 
-/** Adds/removes `.pressed` so buttons dim while held. */
-export function initButtonPressStates(selector = ".bb-btn"): void {
-  qsa<HTMLElement>(selector).forEach((node) => {
-    node.addEventListener("pointerdown", () => node.classList.add("pressed"));
-    const clear = (): void => node.classList.remove("pressed");
-    node.addEventListener("pointerup", clear);
-    node.addEventListener("pointerleave", clear);
-    node.addEventListener("blur", clear);
-  });
-}
-
 /** Copy-to-clipboard box with a transient "Copied" label. */
 export function initCopyBox(boxId: string, labelSelector: string, value: string): void {
   const box = byId(boxId);

@@ -2,6 +2,8 @@ import { SITE } from "@/config/site.config";
 import { resolveLinkColor, resolveTextColor } from "@/lib/colors";
 import { byId, requireId } from "@/lib/dom";
 import { setIcon } from "@/lib/icon";
+import { setButtonColor, setButtonTextColor } from "@/lib/oreui";
+import { bindDialog, isTabTarget } from "./dialog";
 import { initFontToggle } from "./fontToggle";
 import { renderMarkdownInto } from "./markdownPane";
 import type { ModalController } from "./galleryModal";
@@ -10,7 +12,7 @@ import { clearDetailPath, routeState, setDetailPath, toSlug } from "./routing";
 
 /** Store item modal: media carousel plus a markdown description. */
 export function initSellingModal(): ModalController {
-  const modal = requireId("selling-modal");
+  const modal = requireId<HTMLDialogElement>("selling-modal");
   const viewer = createMediaViewer({
     image: requireId<HTMLImageElement>("sm-main-img"),
     video: byId<HTMLVideoElement>("sm-main-video"),
@@ -53,17 +55,10 @@ export function initSellingModal(): ModalController {
     { passive: false },
   );
 
-  function isOpen(): boolean {
-    return modal.classList.contains("open");
-  }
-
-  function close(): void {
-    if (!isOpen()) return;
-    modal.classList.remove("open");
-    document.body.style.overflow = "";
+  const dialog = bindDialog(modal, () => {
     viewer.pause();
     if (!routeState.syncing) clearDetailPath();
-  }
+  });
 
   function open(index: number, options: { skipRouteUpdate?: boolean } = {}): void {
     const item = SITE.currentlySelling[index];
@@ -81,9 +76,9 @@ export function initSellingModal(): ModalController {
         anchor.target = "_blank";
         anchor.rel = "noopener noreferrer";
       }
-      anchor.className = `card-btn modal-btn ${resolveLinkColor(link.color, SITE.defaults.linkColor)}`;
-      const textColor = resolveTextColor(link.textColor);
-      if (textColor) anchor.style.color = textColor;
+      anchor.className = "ore-button";
+      setButtonColor(anchor, resolveLinkColor(link.color, SITE.defaults.linkColor));
+      setButtonTextColor(anchor, resolveTextColor(link.textColor));
       anchor.textContent = link.label;
       linksEl.append(anchor);
     }
@@ -93,24 +88,22 @@ export function initSellingModal(): ModalController {
     descEl.classList.add("expanded");
     void renderMarkdownInto(descEl, item.md);
 
-    modal.classList.add("open");
-    document.body.style.overflow = "hidden";
+    dialog.open();
 
     if (!options.skipRouteUpdate) {
       setDetailPath(routeState.sellingSlugs[index] ?? toSlug(item.id || item.title));
     }
   }
 
-  byId("sm-close")?.addEventListener("click", close);
-  byId("sm-backdrop")?.addEventListener("click", close);
+  byId("sm-close")?.addEventListener("click", dialog.close);
 
+  // Escape and backdrop clicks are handled by the dialog itself.
   document.addEventListener("keydown", (event) => {
-    if (!isOpen()) return;
-    if (event.key === "Escape") close();
-    if (viewer.isVideoFocused(event.target)) return;
+    if (!dialog.isOpen()) return;
+    if (viewer.isVideoFocused(event.target) || isTabTarget(event.target)) return;
     if (event.key === "ArrowLeft") viewer.step(-1);
     if (event.key === "ArrowRight") viewer.step(1);
   });
 
-  return { open, close, isOpen };
+  return { open, close: dialog.close, isOpen: dialog.isOpen };
 }

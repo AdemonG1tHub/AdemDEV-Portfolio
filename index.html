@@ -36,26 +36,32 @@
   </head>
   <body>
     <header class="topbar">
-      <a href="#hero" class="brand">
-        <span class="brand-text" id="logo-text">AdemDEV</span>
-      </a>
-      <button
-        class="nav-toggle"
-        id="nav-toggle"
-        aria-label="Toggle menu"
-        aria-controls="nav"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
-      <nav id="nav">
-        <a href="#hero">Home</a>
-        <a href="#profile" id="nav-profile">Profile</a>
-        <a href="#selling">Store</a>
-        <a href="#projects">Projects</a>
-        <a href="#team" id="nav-team">Team</a>
-        <a href="#services">Services</a>
-        <a href="#contact" class="cta">Contact</a>
+      <nav class="ore-navbar topbar-nav" aria-label="Main navigation">
+        <div class="ore-navbar-start">
+          <a href="#hero" class="brand">
+            <span class="brand-text" id="logo-text">AdemDEV</span>
+          </a>
+        </div>
+        <div class="ore-navbar-actions">
+          <div class="topbar-links" id="nav">
+            <a class="ore-navbar-action" href="#hero"><span class="ore-navbar-action-label">Home</span></a>
+            <a class="ore-navbar-action" href="#profile" id="nav-profile"><span class="ore-navbar-action-label">Profile</span></a>
+            <a class="ore-navbar-action" href="#selling"><span class="ore-navbar-action-label">Store</span></a>
+            <a class="ore-navbar-action" href="#projects"><span class="ore-navbar-action-label">Projects</span></a>
+            <a class="ore-navbar-action" href="#team" id="nav-team"><span class="ore-navbar-action-label">Team</span></a>
+            <a class="ore-navbar-action" href="#services"><span class="ore-navbar-action-label">Services</span></a>
+            <a class="ore-navbar-action cta" href="#contact"><span class="ore-navbar-action-label">Contact</span></a>
+          </div>
+          <button
+            class="ore-navbar-button nav-toggle"
+            id="nav-toggle"
+            type="button"
+            aria-label="Toggle menu"
+            aria-controls="nav"
+            aria-expanded="false"
+            data-ore-icon="menu"
+          ></button>
+        </div>
       </nav>
     </header>
 
@@ -69,8 +75,8 @@
           <h1 id="hero-title" class="bb-title">AdemDEV</h1>
           <p id="hero-sub" class="bb-subtitle"></p>
           <div class="bb-actions" style="max-width: 760px">
-            <a class="bb-btn green" href="#projects"><span>Explore Projects</span></a>
-            <a class="bb-btn white" href="#selling" id="hero-store-cta"><span>View Products</span></a>
+            <a class="ore-button hero-btn" data-variant="hero" href="#projects">Explore Projects</a>
+            <a class="ore-button hero-btn" data-variant="hero" data-color="secondary" href="#selling" id="hero-store-cta">View Products</a>
           </div>
         </div>
       </section>
@@ -147,10 +153,10 @@
             <h2 class="section-heading section-heading-center">Contact</h2>
             <div class="contact-links" id="contact-links"></div>
             <div class="divider-row">or find me on Discord</div>
-            <div class="discord-box" id="discord-box" role="button" tabindex="0">
+            <button type="button" class="ore-button discord-box" data-color="blue" id="discord-box">
               <span class="discord-tag" id="discord-tag"></span>
               <span class="discord-copy">Click to copy</span>
-            </div>
+            </button>
           </div>
         </div>
       </section>
@@ -167,131 +173,128 @@
       </div>
     </footer>
 
-    <div id="gallery-modal" role="dialog" aria-modal="true" aria-label="Project gallery">
-      <div class="gm-backdrop" id="gm-backdrop"></div>
-      <div class="gm-shell">
-        <div class="gm-titlebar">
-          <div class="gm-title-left">
-            <div class="gm-accent-dot" id="gm-accent-dot"></div>
-            <span class="gm-project-name" id="gm-project-name"></span>
+    <!-- Modals are OreUI Modals: a native <dialog> with the library's header,
+         a dark scrolling container for content and a light one for actions. -->
+    <dialog class="ore-modal detail-modal" id="gallery-modal" aria-labelledby="gm-project-name">
+      <div class="ore-modal-content">
+        <header class="ore-modal-header">
+          <span class="modal-accent" id="gm-accent-dot" aria-hidden="true"></span>
+          <h2 class="ore-modal-title" id="gm-project-name"></h2>
+          <button type="button" class="ore-modal-header-button" id="gm-close" aria-label="Close gallery" data-ore-icon="cross"></button>
+        </header>
+        <div class="ore-container detail-body" data-variant="dark">
+          <div class="gm-viewer" id="gm-viewer">
+            <button type="button" class="ore-icon-button gm-nav prev" id="gm-prev" aria-label="Previous image" data-ore-icon="chevron-left"></button>
+            <img class="gm-main-img" id="gm-main-img" src="" alt="" style="display: none" />
+            <video
+              class="gm-main-img gm-main-video"
+              id="gm-main-video"
+              controls
+              playsinline
+              preload="metadata"
+              style="display: none"
+            ></video>
+            <div class="gm-video-note" id="gm-video-note" style="display: none">
+              <div class="gm-placeholder-icon">🎞️</div>
+              <div class="gm-placeholder-sub">This video can't be played in this browser.</div>
+            </div>
+            <div class="gm-placeholder" id="gm-placeholder">
+              <div class="gm-placeholder-icon" id="gm-ph-icon">📷</div>
+              <div class="gm-placeholder-title">No screenshots yet</div>
+              <div class="gm-placeholder-sub">Add images to this project's gallery array in the config.</div>
+            </div>
+            <button type="button" class="ore-icon-button gm-nav next" id="gm-next" aria-label="Next image" data-ore-icon="chevron-right"></button>
           </div>
-          <button type="button" class="gm-close" id="gm-close" aria-label="Close gallery">✕</button>
-        </div>
-        <div class="gm-viewer" id="gm-viewer">
-          <button type="button" class="gm-nav prev" id="gm-prev" aria-label="Previous image">◀</button>
-          <img class="gm-main-img" id="gm-main-img" src="" alt="" style="display: none" />
-          <video
-            class="gm-main-img gm-main-video"
-            id="gm-main-video"
-            controls
-            playsinline
-            preload="metadata"
-            style="display: none"
-          ></video>
-          <div class="gm-video-note" id="gm-video-note" style="display: none">
-            <div class="gm-placeholder-icon">🎞️</div>
-            <div class="gm-placeholder-sub">This video can't be played in this browser.</div>
+          <div class="gm-caption" id="gm-caption-bar" style="display: none">
+            <span class="gm-caption-text" id="gm-caption"></span>
+            <span class="gm-counter" id="gm-counter"></span>
           </div>
-          <div class="gm-placeholder" id="gm-placeholder">
-            <div class="gm-placeholder-icon" id="gm-ph-icon">📷</div>
-            <div class="gm-placeholder-title">No screenshots yet</div>
-            <div class="gm-placeholder-sub">Add images to this project's gallery array in the config.</div>
+          <div class="gm-thumbs" id="gm-thumbs" style="display: none"></div>
+          <div class="modal-font-row" id="gm-font-row" hidden>
+            <div class="ore-toggles" role="tablist" aria-label="Description font">
+              <button type="button" class="ore-tab-button" role="tab" id="gm-font-default" aria-selected="true">Default</button>
+              <button type="button" class="ore-tab-button" role="tab" id="gm-font-minecraft" aria-selected="false">Minecraft</button>
+            </div>
           </div>
-          <button type="button" class="gm-nav next" id="gm-next" aria-label="Next image">▶</button>
-        </div>
-        <div class="gm-caption" id="gm-caption-bar" style="display: none">
-          <span class="gm-caption-text" id="gm-caption"></span>
-          <span class="gm-counter" id="gm-counter"></span>
-        </div>
-        <div class="sm-font-row" id="gm-font-row" hidden>
-          <div class="sm-font-toggle" role="group" aria-label="Description font">
-            <button type="button" class="sm-font-btn" id="gm-font-default" aria-pressed="true">Default</button>
-            <button type="button" class="sm-font-btn" id="gm-font-minecraft" aria-pressed="false">Minecraft</button>
-          </div>
-        </div>
-        <div class="gm-info">
           <div class="sm-desc-slot"><div class="gm-info-desc" id="gm-info-desc"></div></div>
+          <div class="gm-tags" id="gm-tags"></div>
+        </div>
+        <div class="ore-container detail-footer" data-variant="light">
           <div class="gm-info-links" id="gm-info-links"></div>
+          <p class="gm-add-hint">ESC to close · ← → to navigate</p>
         </div>
-        <div class="gm-tags" id="gm-tags"></div>
-        <div class="gm-thumbs" id="gm-thumbs" style="display: none"></div>
-        <div class="gm-add-hint">ESC to close · ← → to navigate</div>
       </div>
-    </div>
+    </dialog>
 
-    <div id="selling-modal" role="dialog" aria-modal="true" aria-label="Store item">
-      <div class="gm-backdrop" id="sm-backdrop"></div>
-      <div class="gm-shell">
-        <div class="gm-titlebar">
-          <div class="gm-title-left">
-            <div class="gm-accent-dot" id="sm-accent-dot"></div>
-            <span class="gm-project-name" id="sm-title"></span>
+    <dialog class="ore-modal detail-modal" id="selling-modal" aria-labelledby="sm-title">
+      <div class="ore-modal-content">
+        <header class="ore-modal-header">
+          <span class="modal-accent" id="sm-accent-dot" aria-hidden="true"></span>
+          <h2 class="ore-modal-title" id="sm-title"></h2>
+          <button type="button" class="ore-modal-header-button" id="sm-close" aria-label="Close store item" data-ore-icon="cross"></button>
+        </header>
+        <div class="ore-container detail-body" data-variant="dark">
+          <div class="gm-viewer" id="sm-viewer">
+            <button type="button" class="ore-icon-button gm-nav prev" id="sm-prev" aria-label="Previous image" data-ore-icon="chevron-left"></button>
+            <img class="gm-main-img" id="sm-main-img" src="" alt="" style="display: none" />
+            <video
+              class="gm-main-img gm-main-video"
+              id="sm-main-video"
+              controls
+              playsinline
+              preload="metadata"
+              style="display: none"
+            ></video>
+            <div class="gm-video-note" id="sm-video-note" style="display: none">
+              <div class="gm-placeholder-icon">🎞️</div>
+              <div class="gm-placeholder-sub">This video can't be played in this browser.</div>
+            </div>
+            <div class="gm-placeholder" id="sm-placeholder">
+              <div class="gm-placeholder-icon" id="sm-ph-icon">📦</div>
+              <div class="gm-placeholder-title">No images</div>
+            </div>
+            <button type="button" class="ore-icon-button gm-nav next" id="sm-next" aria-label="Next image" data-ore-icon="chevron-right"></button>
           </div>
-          <button type="button" class="gm-close" id="sm-close" aria-label="Close store item">✕</button>
-        </div>
-        <div class="gm-viewer" id="sm-viewer">
-          <button type="button" class="gm-nav prev" id="sm-prev" aria-label="Previous image">◀</button>
-          <img class="gm-main-img" id="sm-main-img" src="" alt="" style="display: none" />
-          <video
-            class="gm-main-img gm-main-video"
-            id="sm-main-video"
-            controls
-            playsinline
-            preload="metadata"
-            style="display: none"
-          ></video>
-          <div class="gm-video-note" id="sm-video-note" style="display: none">
-            <div class="gm-placeholder-icon">🎞️</div>
-            <div class="gm-placeholder-sub">This video can't be played in this browser.</div>
+          <div class="gm-caption" id="sm-caption-bar" style="display: none">
+            <span class="gm-caption-text" id="sm-caption"></span>
+            <span class="gm-counter" id="sm-counter"></span>
           </div>
-          <div class="gm-placeholder" id="sm-placeholder">
-            <div class="gm-placeholder-icon" id="sm-ph-icon">📦</div>
-            <div class="gm-placeholder-title">No images</div>
+          <div class="gm-thumbs" id="sm-thumbs" style="display: none"></div>
+          <div class="modal-font-row">
+            <div class="ore-toggles" role="tablist" aria-label="Description font">
+              <button type="button" class="ore-tab-button" role="tab" id="sm-font-default" aria-selected="true">Default</button>
+              <button type="button" class="ore-tab-button" role="tab" id="sm-font-minecraft" aria-selected="false">Minecraft</button>
+            </div>
           </div>
-          <button type="button" class="gm-nav next" id="sm-next" aria-label="Next image">▶</button>
-        </div>
-        <div class="gm-caption" id="sm-caption-bar" style="display: none">
-          <span class="gm-caption-text" id="sm-caption"></span>
-          <span class="gm-counter" id="sm-counter"></span>
-        </div>
-        <div class="sm-font-row">
-          <div class="sm-font-toggle" role="group" aria-label="Description font">
-            <button type="button" class="sm-font-btn" id="sm-font-default" aria-pressed="true">Default</button>
-            <button type="button" class="sm-font-btn" id="sm-font-minecraft" aria-pressed="false">Minecraft</button>
-          </div>
-        </div>
-        <div class="gm-info">
           <div class="sm-desc-slot"><div id="sm-desc" class="gm-info-desc"></div></div>
+        </div>
+        <div class="ore-container detail-footer" data-variant="light">
           <div class="gm-info-links" id="sm-links"></div>
+          <p class="gm-add-hint">Markdown rendering enabled · Full formatting supported</p>
         </div>
-        <div class="gm-thumbs" id="sm-thumbs" style="display: none"></div>
-        <div class="gm-add-hint">Markdown rendering enabled · Full formatting supported</div>
       </div>
-    </div>
+    </dialog>
 
-    <div id="profile-modal" role="dialog" aria-modal="true" aria-label="Profile menu">
-      <div class="gm-backdrop" id="pm-backdrop"></div>
-      <div class="gm-shell pm-shell">
-        <div class="gm-titlebar">
-          <div class="gm-title-left">
-            <div class="gm-accent-dot" id="pm-accent-dot"></div>
-            <span class="gm-project-name" id="pm-title">Profile</span>
+    <dialog class="ore-modal detail-modal pm-modal" id="profile-modal" aria-labelledby="pm-title">
+      <div class="ore-modal-content">
+        <header class="ore-modal-header">
+          <span class="modal-accent" id="pm-accent-dot" aria-hidden="true"></span>
+          <h2 class="ore-modal-title" id="pm-title">Profile</h2>
+          <button type="button" class="ore-modal-header-button" id="pm-close" aria-label="Close profile" data-ore-icon="cross"></button>
+        </header>
+        <div class="ore-container detail-body" data-variant="dark">
+          <div class="modal-font-row">
+            <div class="ore-toggles" role="tablist" aria-label="Profile font">
+              <button type="button" class="ore-tab-button" role="tab" id="pm-font-default" aria-selected="true">Default</button>
+              <button type="button" class="ore-tab-button" role="tab" id="pm-font-minecraft" aria-selected="false">Minecraft</button>
+            </div>
           </div>
-          <button type="button" class="gm-close" id="pm-close" aria-label="Close profile">✕</button>
+          <div id="pm-desc" class="pm-desc"></div>
         </div>
-        <div class="pm-font-row">
-          <div class="pm-font-toggle" role="group" aria-label="Profile font">
-            <button type="button" class="pm-font-btn" id="pm-font-default" aria-pressed="true">Default</button>
-            <button type="button" class="pm-font-btn" id="pm-font-minecraft" aria-pressed="false">Minecraft</button>
-          </div>
-        </div>
-        <div class="pm-body">
-          <div class="pm-desc-wrap">
-            <div id="pm-desc" class="pm-desc"></div>
-          </div>
-          <div class="pm-links" id="pm-links"></div>
+        <div class="ore-container detail-footer" data-variant="light">
+          <div class="gm-info-links pm-links" id="pm-links"></div>
         </div>
       </div>
-    </div>
+    </dialog>
   </body>
 </html>

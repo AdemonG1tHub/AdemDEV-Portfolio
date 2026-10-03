@@ -14,7 +14,9 @@ Add-on pages all run the **same renderer** (`src/addon/`) over a per-add-on conf
 `src/config/addons/`. Adding another one is a config, an `index.html` and one line in
 `vite.config.ts` — no renderer changes.
 
-Based off [BetterBedrock.com](https://betterbedrock.com).
+Based off [BetterBedrock.com](https://betterbedrock.com). The header, buttons, modals,
+toggles and tags use [OreUI](https://katorly.dev/OreUI/docs/) (`oreui-web`), wired up in
+`src/lib/oreui.ts`.
 
 ## Highlights
 
@@ -68,7 +70,7 @@ npm run dev      # http://localhost:5173
 │   │       └── blockbay.menus.ts
 │   ├── pages/                     # One tiny entry per add-on page
 │   ├── types/                     # Config shapes, enforced at build time
-│   ├── lib/                       # dom, colors, icon, media, markdown, mcText, nav
+│   ├── lib/                       # dom, colors, icon, media, markdown, mcText, nav, oreui
 │   ├── portfolio/                 # Portfolio page modules
 │   ├── addon/                     # Shared add-on page renderer
 │   │   ├── page.ts                # initAddonPage(config)

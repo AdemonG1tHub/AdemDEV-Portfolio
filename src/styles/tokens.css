@@ -7,7 +7,7 @@
    --------------------------------------------------------------------------- */
 
 @font-face {
-  font-family: "Minecraft";
+  font-family: "MinecraftTen";
   src: url("/fonts/minecraft/MinecraftTen.ttf") format("truetype");
   font-display: swap;
 }
@@ -54,17 +54,50 @@
   --accent-ink: #1b912f;
   --accent-link: #9dff84;
 
-  /* Button skin used by generic `.card-btn` with no colour class */
-  --btn-default-skin: url("/ui/buttons/gold/unchecked.png");
-  --btn-default-skin-hover: url("/ui/buttons/gold/unchecked_hover.png");
-  --btn-default-ink: #000;
-  --btn-default-shadow: none;
+}
+
+/* ------------------------------ OreUI colours ------------------------------
+   Config link colours map onto OreUI button colours in src/lib/oreui.ts.
+   OreUI has no blue or dark button, so these two are added here through the
+   library's public variables, the same way its own colours are defined. */
+
+.ore-button[data-color="blue"] {
+  --ore-button-background-default: var(--ore-color-blue-20);
+  --ore-button-background-hover: color-mix(in srgb, var(--ore-color-blue-20), var(--ore-color-blue-10) 35%);
+  --ore-button-background-pressed: var(--ore-color-blue-30);
+  --ore-button-highlight-default: color-mix(in srgb, var(--ore-color-blue-20), var(--ore-color-white) 20%);
+  --ore-button-highlight-hover: color-mix(in srgb, var(--ore-color-blue-10), var(--ore-color-white) 20%);
+  --ore-button-highlight-pressed: color-mix(in srgb, var(--ore-color-blue-30), var(--ore-color-white) 10%);
+  --ore-button-shadow: color-mix(in srgb, var(--ore-color-blue-30), var(--ore-color-black) 30%);
+}
+
+.ore-button[data-color="neutral"] {
+  --ore-button-background-default: var(--ore-color-neutral-background);
+  --ore-button-background-hover: var(--ore-color-neutral-background-hover);
+  --ore-button-background-pressed: var(--ore-color-neutral-background-pressed);
+  --ore-button-highlight-default: var(--ore-color-neutral-highlight);
+  --ore-button-highlight-hover: var(--ore-color-neutral-highlight-hover);
+  --ore-button-highlight-pressed: var(--ore-color-neutral-highlight-pressed);
+  --ore-button-shadow: var(--ore-color-neutral-shadow);
+}
+
+/* The reset sits in OreUI's `base` layer, below its `components` layer.
+   Unlayered, `* { padding: 0 }` would beat every OreUI rule regardless of
+   specificity and flatten the buttons, header and modals. */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-bright);
+    outline-offset: 2px;
+  }
 }
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
   scrollbar-width: thin;
   scrollbar-color: var(--accent-deep) #1f2228;
 }
@@ -114,11 +147,6 @@ body {
   background-color: var(--surface);
   color: #fff;
   overflow-x: hidden;
-}
-
-:focus-visible {
-  outline: 2px solid var(--accent-bright);
-  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

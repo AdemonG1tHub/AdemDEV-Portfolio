@@ -245,8 +245,8 @@ export interface AddonPageConfig {
   };
   stats: { num: string; label: string }[];
   /**
-   * Button skin for the "Open this in the live menu" link. The `card-btn`
-   * skins are fixed textures, so pick the one nearest the theme accent.
+   * Button colour for the "Open this in the live menu" link. OreUI buttons
+   * have a fixed palette, so pick the one nearest the theme accent.
    */
   demoButtonColor?: LinkColor;
   features: Feature[];

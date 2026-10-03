@@ -1,5 +1,6 @@
 import { el, escapeHtml, qsa } from "@/lib/dom";
 import { setIcon } from "@/lib/icon";
+import { oreTagHtml, setButtonColor } from "@/lib/oreui";
 import type { Feature } from "@/types/addon";
 import type { LinkColor } from "@/types/site";
 
@@ -62,7 +63,7 @@ function buildDetail(
   heading.append(el("h3", { className: "feature-detail__name", text: feature.name }));
   if (feature.tags?.length) {
     const tags = el("div", { className: "feature-detail__tags" });
-    for (const tag of feature.tags) tags.append(el("span", { className: "tag", text: tag }));
+    for (const tag of feature.tags) tags.insertAdjacentHTML("beforeend", oreTagHtml(tag));
     heading.append(tags);
   }
   head.append(heading);
@@ -123,10 +124,11 @@ function buildDetail(
   if (feature.demoMenu && onDemo) {
     const demoMenu = feature.demoMenu;
     const button = el("button", {
-      className: `card-btn ${demoColor} feature-detail__demo`,
+      className: "ore-button feature-detail__demo",
       attrs: { type: "button" },
       text: "Open this in the live menu ↓",
     });
+    setButtonColor(button, demoColor);
     button.addEventListener("click", () => onDemo(demoMenu));
     panel.append(button);
   }

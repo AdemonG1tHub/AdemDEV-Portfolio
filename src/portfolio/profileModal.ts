@@ -2,13 +2,15 @@ import { SITE } from "@/config/site.config";
 import { resolveLinkColor, resolveTextColor } from "@/lib/colors";
 import { byId } from "@/lib/dom";
 import { fetchMarkdown, normalizeGithubUrl, normalizeIndent, renderMarkdown } from "@/lib/markdown";
+import { setButtonColor, setButtonTextColor } from "@/lib/oreui";
+import { bindDialog } from "./dialog";
 import { initFontToggle } from "./fontToggle";
 
 /** Nav "Profile" entry — renders a remote markdown README in a modal. */
 export function initProfileModal(): void {
   const cfg = SITE.profileMenu ?? {};
   const navLink = byId<HTMLAnchorElement>("nav-profile");
-  const modal = byId("profile-modal");
+  const modal = byId<HTMLDialogElement>("profile-modal");
   const descEl = byId("pm-desc");
   const linksEl = byId("pm-links");
   if (!navLink || !modal || !descEl || !linksEl) return;
@@ -19,7 +21,8 @@ export function initProfileModal(): void {
     return;
   }
 
-  if (cfg.navLabel) navLink.textContent = cfg.navLabel;
+  const navLabel = navLink.querySelector(".ore-navbar-action-label") ?? navLink;
+  if (cfg.navLabel) navLabel.textContent = cfg.navLabel;
   const titleEl = byId("pm-title");
   if (titleEl && cfg.title) titleEl.textContent = cfg.title;
   const accentEl = byId("pm-accent-dot");
@@ -55,25 +58,21 @@ export function initProfileModal(): void {
       anchor.href = button.url;
       anchor.target = "_blank";
       anchor.rel = "noopener noreferrer";
-      anchor.className = `card-btn modal-btn ${resolveLinkColor(button.color, SITE.defaults.linkColor)}`;
-      const textColor = resolveTextColor(button.textColor);
-      if (textColor) anchor.style.color = textColor;
+      anchor.className = "ore-button";
+      setButtonColor(anchor, resolveLinkColor(button.color, SITE.defaults.linkColor));
+      setButtonTextColor(anchor, resolveTextColor(button.textColor));
       anchor.textContent = button.label;
       linksEl!.append(anchor);
     }
   }
 
-  function close(): void {
-    modal!.classList.remove("open");
-    document.body.style.overflow = "";
-  }
+  const dialog = bindDialog(modal);
 
   function openProfile(): void {
     renderButtons();
     void loadMarkdown();
     fonts.apply();
-    modal!.classList.add("open");
-    document.body.style.overflow = "hidden";
+    dialog.open();
   }
 
   navLink.addEventListener("click", (event) => {
@@ -82,9 +81,6 @@ export function initProfileModal(): void {
     openProfile();
   });
 
-  byId("pm-close")?.addEventListener("click", close);
-  byId("pm-backdrop")?.addEventListener("click", close);
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && modal.classList.contains("open")) close();
-  });
+  // Escape and backdrop clicks are handled by the dialog itself.
+  byId("pm-close")?.addEventListener("click", dialog.close);
 }

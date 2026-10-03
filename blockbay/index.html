@@ -25,23 +25,29 @@
   </head>
   <body>
     <header class="topbar">
-      <a href="/" class="brand">
-        <span class="brand-text">AdemDEV</span>
-      </a>
-      <button
-        class="nav-toggle"
-        id="nav-toggle"
-        aria-label="Toggle menu"
-        aria-controls="nav"
-        aria-expanded="false"
-      >
-        ☰
-      </button>
-      <nav id="nav">
-        <a href="/">Portfolio</a>
-        <a href="#features">Features</a>
-        <a href="#preview">Live Menu</a>
-        <a href="#download" class="cta">Download</a>
+      <nav class="ore-navbar topbar-nav" aria-label="Main navigation">
+        <div class="ore-navbar-start">
+          <a href="/" class="brand">
+            <span class="brand-text">AdemDEV</span>
+          </a>
+        </div>
+        <div class="ore-navbar-actions">
+          <div class="topbar-links" id="nav">
+            <a class="ore-navbar-action" href="/"><span class="ore-navbar-action-label">Portfolio</span></a>
+            <a class="ore-navbar-action" href="#features"><span class="ore-navbar-action-label">Features</span></a>
+            <a class="ore-navbar-action" href="#preview"><span class="ore-navbar-action-label">Live Menu</span></a>
+            <a class="ore-navbar-action cta" href="#download"><span class="ore-navbar-action-label">Download</span></a>
+          </div>
+          <button
+            class="ore-navbar-button nav-toggle"
+            id="nav-toggle"
+            type="button"
+            aria-label="Toggle menu"
+            aria-controls="nav"
+            aria-expanded="false"
+            data-ore-icon="menu"
+          ></button>
+        </div>
       </nav>
     </header>
 
@@ -92,7 +98,7 @@
 
           <div class="menu-toolbar reveal">
             <div class="menu-jumps" id="menu-jumps"></div>
-            <button type="button" class="menu-reset" id="menu-reset">Reset to main menu</button>
+            <button type="button" class="ore-button menu-reset" data-color="secondary" id="menu-reset">Reset to main menu</button>
           </div>
 
           <div class="mcui reveal" id="menu-stage" aria-label="Interactive menu preview"></div>

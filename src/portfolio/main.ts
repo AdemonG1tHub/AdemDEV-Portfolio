@@ -1,9 +1,11 @@
+import "@/lib/oreui";
 import "@/styles/main.css";
 
 import { SITE } from "@/config/site.config";
 import { byId, escapeHtml, onReady, qsa } from "@/lib/dom";
-import { initButtonPressStates, initCopyBox, initNav } from "@/lib/nav";
+import { initCopyBox, initNav } from "@/lib/nav";
 import { observeReveals, revealAll } from "@/lib/reveal";
+import { buttonColorAttr, hydrateIcons, oreTagHtml, setButtonColor } from "@/lib/oreui";
 import { createUiSounds } from "@/lib/sound";
 import { renderCards } from "./cards";
 import { initGalleryModal } from "./galleryModal";
@@ -65,7 +67,7 @@ function renderTeam(): void {
       grid.insertAdjacentHTML(
         "beforeend",
         `<div class="team-card reveal">
-           <span class="team-badge">${escapeHtml(member.role || "Role")}</span>
+           ${oreTagHtml(member.role || "Role", "primary")}
            <h3>${escapeHtml(member.name || "Name")}</h3>
            <p class="team-note">${escapeHtml(member.text ?? "")}</p>
          </div>`,
@@ -102,13 +104,13 @@ function renderContact(): void {
     if (SITE.email) {
       links.insertAdjacentHTML(
         "beforeend",
-        `<a href="mailto:${escapeHtml(SITE.email)}" class="bb-btn green"><span>Email Me</span></a>`,
+        `<a href="mailto:${escapeHtml(SITE.email)}" class="ore-button"${buttonColorAttr("green")}>Email Me</a>`,
       );
     }
     if (SITE.github) {
       links.insertAdjacentHTML(
         "beforeend",
-        `<a href="${escapeHtml(SITE.github)}" target="_blank" rel="noopener noreferrer" class="bb-btn white"><span>GitHub</span></a>`,
+        `<a href="${escapeHtml(SITE.github)}" target="_blank" rel="noopener noreferrer" class="ore-button"${buttonColorAttr("white")}>GitHub</a>`,
       );
     }
   }
@@ -127,10 +129,8 @@ function hideStoreSection(): void {
     const label = config.label?.trim() || (action === "url" ? "Open Link" : "Copy Discord");
     const copyText = config.copyText?.trim() || SITE.discord || "";
 
-    cta.classList.remove("white", "green", "gold");
-    cta.classList.add("blue");
-    const span = cta.querySelector("span");
-    if (span) span.textContent = label;
+    setButtonColor(cta, "blue");
+    cta.textContent = label;
 
     if (action === "url") {
       cta.href = config.url?.trim() || "#contact";
@@ -142,15 +142,14 @@ function hideStoreSection(): void {
       cta.removeAttribute("rel");
       cta.addEventListener("click", async (event) => {
         event.preventDefault();
-        if (!span) return;
         try {
           await navigator.clipboard.writeText(copyText);
-          span.textContent = "Copied";
+          cta.textContent = "Copied";
         } catch {
-          span.textContent = "Copy failed";
+          cta.textContent = "Copy failed";
         }
         window.setTimeout(() => {
-          span.textContent = label;
+          cta.textContent = label;
         }, 1200);
       });
     }
@@ -168,6 +167,7 @@ function hideStoreSection(): void {
 onReady(() => {
   const sfx = createUiSounds();
 
+  hydrateIcons();
   renderIdentity();
   renderStatsAndSkills();
   renderTeam();
@@ -196,8 +196,7 @@ onReady(() => {
 
   initNav();
   initProfileModal();
-  initButtonPressStates();
-  sfx.bind(".bb-btn, .card-btn, .discord-box, .gm-close, .gm-nav, #nav-toggle, #nav a");
+  sfx.bind(".ore-button, .ore-icon-button, .ore-modal-header-button, .ore-tab-button, #nav-toggle, #nav a");
 
   initDetailRouting({
     openProject: (index, options) => gallery.open(index, options),

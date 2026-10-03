@@ -1,100 +1,40 @@
 /* ---------------------------------------------------------------------------
    Gallery, store and profile modals, plus the markdown typography they share.
+
+   Each modal is an OreUI Modal (`dialog.ore-modal`): the frame, title bar,
+   close button, backdrop and the dark/light `.ore-container` sections come
+   from the library. These rules size the dialogs for media and lay out what
+   goes inside them.
    --------------------------------------------------------------------------- */
 
-#gallery-modal,
-#selling-modal,
-#profile-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
+.detail-modal {
+  width: min(1240px, calc(100vw - 28px));
+  max-height: calc(100dvh - 28px);
 }
 
-#gallery-modal.open,
-#selling-modal.open,
-#profile-modal.open {
-  opacity: 1;
-  pointer-events: auto;
+.pm-modal {
+  width: min(1100px, calc(100vw - 28px));
 }
 
-.gm-backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-}
-
-.gm-shell {
+/* Project / item colour, in the header's leading slot. */
+.modal-accent {
   position: relative;
-  width: min(1240px, 98vw);
-  max-height: 95vh;
-  overflow: auto;
-  background: #202122;
-  border: 2px solid #555;
   z-index: 1;
-}
-
-.gm-titlebar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 48px;
-  padding: 0 12px;
-  border-bottom: 1px solid #666;
-}
-
-.gm-title-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.gm-accent-dot {
+  justify-self: center;
   width: 10px;
   height: 10px;
 }
 
-.gm-project-name {
-  font-family: "Minecraft", monospace;
+.detail-body {
+  --ore-container-padding: 16px;
+  --ore-container-gap: 12px;
+
+  align-content: start;
 }
 
-.gm-close {
-  width: 32px;
-  height: 32px;
-  font-family: "Minecraft", monospace;
-  font-size: 0;
-  line-height: 1;
-  border: 0;
-  border-style: solid;
-  border-image-source: url("/ui/buttons/red/unchecked.png");
-  border-image-slice: 2 2 4 2 fill;
-  border-image-width: 5px 5px 10px 5px;
-  background: none;
-  color: #fff;
-  text-shadow: var(--text-shadow);
-  padding: 0;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-}
-
-.gm-close::before {
-  content: "";
-  width: 14px;
-  height: 14px;
-  background: center / contain no-repeat url("/ui/glyphs/cross.png");
-  image-rendering: pixelated;
-  transform: translateY(1px);
-}
-
-.gm-close:hover {
-  border-image-source: url("/ui/buttons/red/unchecked_hover.png");
+.detail-footer {
+  --ore-container-padding: 12px 16px;
+  --ore-container-gap: 8px;
 }
 
 .gm-viewer {
@@ -103,13 +43,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #151617;
+  background: var(--ore-color-neutral-surface-deep);
+  border: var(--ore-size-unit) solid var(--ore-color-border);
   overflow: hidden;
 }
 
 .gm-main-img {
   max-width: 100%;
-  max-height: 72vh;
+  max-height: 62vh;
   object-fit: contain;
   transition:
     opacity 0.18s ease,
@@ -143,73 +84,23 @@
   font-family: "Mojangles", monospace;
 }
 
+/* Prev / next are OreUI Icon Buttons pinned to the viewer's edges. */
 .gm-nav {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 54px;
-  font-size: 0;
-  line-height: 1;
-  color: #fff;
-  border: 0;
-  background: none;
-  border-image: url("/ui/buttons/dark/unchecked.png") 2 2 4 2 fill;
-  border-image-width: 5px 5px 10px 5px;
-  border-image-slice: 2 2 4 2 fill;
-  border-style: solid;
-  text-shadow: var(--text-shadow);
   z-index: 4;
-  appearance: none;
-  -webkit-appearance: none;
-  padding: 0;
-  display: block;
-  cursor: pointer;
-}
-
-.gm-nav::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 30px;
-  height: 30px;
-  display: block;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  image-rendering: pixelated;
-  transform: translate(-50%, -50%);
-}
-
-.gm-nav.prev::before {
-  background-image: url("/ui/glyphs/left_arrow.png");
-}
-
-.gm-nav.next::before {
-  background-image: url("/ui/glyphs/right_arrow.png");
-}
-
-.gm-nav:hover {
-  border-image-source: url("/ui/buttons/dark/unchecked_hover.png");
-}
-
-.gm-nav:disabled {
-  opacity: 0.4;
-  cursor: default;
+  transform: translateY(-50%);
 }
 
 .gm-nav.prev {
-  left: 10px;
+  left: 12px;
 }
 
 .gm-nav.next {
-  right: 10px;
+  right: 12px;
 }
 
 .gm-caption {
-  padding: 8px 10px;
-  border-top: 1px solid #555;
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -217,9 +108,12 @@
 
 .gm-caption-text,
 .gm-info-desc,
-.gm-counter,
-.gm-add-hint {
+.gm-counter {
   font-family: "Mojangles", monospace;
+}
+
+.gm-counter {
+  color: var(--ore-color-neutral-text-dim);
 }
 
 .gm-info-desc {
@@ -227,47 +121,34 @@
   line-height: 1.25;
 }
 
-.gm-info {
-  display: flex;
-  gap: 10px;
-  justify-content: space-between;
-  border-top: 1px solid #555;
-  padding: 12px;
-}
-
 .gm-info-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  align-items: flex-start;
-  align-content: flex-start;
+  gap: 8px;
 }
 
-.gm-info-links .card-btn {
-  min-height: 0;
-  font-size: 0.9rem;
-  border-image-slice: 2 2 4 2 fill;
-  border-image-width: 5px 5px 10px 5px;
-  border-style: solid;
-  padding: 0.35rem 0.65rem calc(0.35rem + var(--minecraftdepth) * 2);
-  width: auto;
-  height: auto;
-  align-self: flex-start;
-  flex: 0 0 auto;
+.gm-info-links:empty,
+.gm-tags:empty {
+  display: none;
 }
 
 .gm-tags {
-  padding: 10px;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
+.gm-add-hint {
+  font-family: var(--ore-font-body);
+  font-size: 0.85rem;
+  color: var(--ore-color-neutral-text-dim);
+  text-align: center;
+}
+
 .gm-thumbs {
-  border-top: 1px solid #555;
-  padding: 10px;
   display: flex;
   gap: 6px;
+  padding-bottom: 4px;
   overflow-x: auto;
 }
 
@@ -275,7 +156,7 @@
   position: relative;
   width: 80px;
   height: 52px;
-  border: 1px solid #666;
+  border: var(--ore-size-unit) solid var(--ore-color-border);
   overflow: hidden;
   flex-shrink: 0;
   cursor: pointer;
@@ -312,73 +193,24 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  background: #1c1d1e;
+  background: var(--ore-color-neutral-surface-sunken);
 }
 
 .gm-thumb.active {
-  border-color: var(--accent-bright);
+  border-color: var(--ore-color-focus-ring);
 }
 
-.gm-add-hint {
-  border-top: 1px solid #555;
-  padding: 8px;
-  text-align: center;
-}
+/* ----------------------------- font switcher -----------------------------
+   An OreUI Toggles group of Tab Buttons. */
 
-/* ----------------------------- font switcher ----------------------------- */
-
-.sm-font-row,
-.pm-font-row {
+.modal-font-row {
   display: flex;
-  justify-content: flex-start;
-  padding: 6px 10px;
 }
 
 /* `display: flex` above outranks the UA sheet's [hidden] rule, so the project
    modal's row needs this to actually disappear for entries with no `md`. */
-.sm-font-row[hidden],
-.pm-font-row[hidden] {
+.modal-font-row[hidden] {
   display: none;
-}
-
-.sm-font-row {
-  border-top: 1px solid #555;
-}
-
-.pm-font-row {
-  border-bottom: 1px solid #555;
-}
-
-.sm-font-toggle,
-.pm-font-toggle {
-  display: inline-flex;
-  gap: 6px;
-}
-
-.sm-font-btn,
-.pm-font-btn {
-  border: 1px solid #54575c;
-  background: #1b1c1e;
-  color: #e7e7e7;
-  padding: 4px 8px;
-  font-size: 0.78rem;
-  line-height: 1;
-  cursor: pointer;
-  border-radius: 2px;
-  text-shadow: var(--text-shadow);
-  font-family: "Minecraft", monospace;
-}
-
-.sm-font-btn:hover,
-.pm-font-btn:hover {
-  border-color: #7a7f86;
-  background: #222427;
-}
-
-.sm-font-btn[aria-pressed="true"],
-.pm-font-btn[aria-pressed="true"] {
-  border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.06);
 }
 
 /* --------------------- markdown pane (store + project) -------------------- */
@@ -484,7 +316,7 @@
 .sm-font-minecraft .md-body h4, .gm-font-minecraft .md-body h4,
 .sm-font-minecraft .md-body h5, .gm-font-minecraft .md-body h5,
 .sm-font-minecraft .md-body h6 , .gm-font-minecraft .md-body h6 {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
 }
 
 .sm-font-minecraft .md-body p, .gm-font-minecraft .md-body p,
@@ -496,24 +328,6 @@
 }
 
 /* ----------------------------- profile modal ----------------------------- */
-
-.pm-shell {
-  width: min(1100px, 98vw);
-}
-
-.pm-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 220px;
-  gap: 16px;
-  padding: 16px;
-}
-
-.pm-desc-wrap {
-  min-width: 0;
-  max-height: 70vh;
-  overflow: auto;
-  padding-right: 4px;
-}
 
 .pm-desc {
   font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
@@ -596,35 +410,14 @@
 #profile-modal.pm-font-minecraft .pm-desc h4,
 #profile-modal.pm-font-minecraft .pm-desc h5,
 #profile-modal.pm-font-minecraft .pm-desc h6 {
-  font-family: "Minecraft", monospace;
-}
-
-.pm-links {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.pm-links .card-btn {
-  justify-content: center;
+  font-family: "MinecraftTen", monospace;
 }
 
 /* ------------------------------ responsive ------------------------------- */
 
-@media (max-width: 900px) {
-  .pm-body {
-    grid-template-columns: 1fr;
-  }
-
-  .pm-links {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-
 @media (max-width: 768px) {
-  .gm-info {
-    flex-direction: column;
+  .gm-viewer {
+    min-height: 240px;
   }
 
   .gm-nav {

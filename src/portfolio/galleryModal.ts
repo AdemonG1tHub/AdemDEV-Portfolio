@@ -2,6 +2,8 @@ import { SITE } from "@/config/site.config";
 import { resolveLinkColor, resolveTextColor } from "@/lib/colors";
 import { byId, requireId } from "@/lib/dom";
 import { setIcon } from "@/lib/icon";
+import { oreTagHtml, setButtonColor, setButtonTextColor } from "@/lib/oreui";
+import { bindDialog, isTabTarget } from "./dialog";
 import { initFontToggle } from "./fontToggle";
 import { renderMarkdownInto } from "./markdownPane";
 import { createMediaViewer } from "./mediaViewer";
@@ -15,7 +17,7 @@ export interface ModalController {
 
 /** Project gallery: screenshots, description, links and tags. */
 export function initGalleryModal(): ModalController {
-  const modal = requireId("gallery-modal");
+  const modal = requireId<HTMLDialogElement>("gallery-modal");
   const viewer = createMediaViewer({
     image: requireId<HTMLImageElement>("gm-main-img"),
     video: byId<HTMLVideoElement>("gm-main-video"),
@@ -60,17 +62,10 @@ export function initGalleryModal(): ModalController {
     { passive: false },
   );
 
-  function isOpen(): boolean {
-    return modal.classList.contains("open");
-  }
-
-  function close(): void {
-    if (!isOpen()) return;
-    modal.classList.remove("open");
-    document.body.style.overflow = "";
+  const dialog = bindDialog(modal, () => {
     viewer.pause();
     if (!routeState.syncing) clearDetailPath();
-  }
+  });
 
   function open(index: number, options: { skipRouteUpdate?: boolean } = {}): void {
     const project = SITE.projects[index];
@@ -102,41 +97,33 @@ export function initGalleryModal(): ModalController {
         anchor.target = "_blank";
         anchor.rel = "noopener noreferrer";
       }
-      anchor.className = `card-btn modal-btn ${resolveLinkColor(link.color, SITE.defaults.linkColor)}`;
-      const textColor = resolveTextColor(link.textColor);
-      if (textColor) anchor.style.color = textColor;
+      anchor.className = "ore-button";
+      setButtonColor(anchor, resolveLinkColor(link.color, SITE.defaults.linkColor));
+      setButtonTextColor(anchor, resolveTextColor(link.textColor));
       anchor.textContent = link.label;
       linksEl.append(anchor);
     }
 
-    tagsEl.replaceChildren();
-    for (const tag of project.tags ?? []) {
-      const span = document.createElement("span");
-      span.className = "tag";
-      span.textContent = tag;
-      tagsEl.append(span);
-    }
+    tagsEl.innerHTML = (project.tags ?? []).map((tag) => oreTagHtml(tag)).join("");
 
     viewer.load(project.gallery ?? []);
 
-    modal.classList.add("open");
-    document.body.style.overflow = "hidden";
+    dialog.open();
 
     if (!options.skipRouteUpdate) {
       setDetailPath(routeState.projectSlugs[index] ?? toSlug(project.title));
     }
   }
 
-  byId("gm-close")?.addEventListener("click", close);
-  byId("gm-backdrop")?.addEventListener("click", close);
+  byId("gm-close")?.addEventListener("click", dialog.close);
 
+  // Escape and backdrop clicks are handled by the dialog itself.
   document.addEventListener("keydown", (event) => {
-    if (!isOpen()) return;
-    if (event.key === "Escape") close();
-    if (viewer.isVideoFocused(event.target)) return;
+    if (!dialog.isOpen()) return;
+    if (viewer.isVideoFocused(event.target) || isTabTarget(event.target)) return;
     if (event.key === "ArrowLeft") viewer.step(-1);
     if (event.key === "ArrowRight") viewer.step(1);
   });
 
-  return { open, close, isOpen };
+  return { open, close: dialog.close, isOpen: dialog.isOpen };
 }

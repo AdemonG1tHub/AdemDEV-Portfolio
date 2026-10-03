@@ -5,9 +5,10 @@ export type FontMode = "default" | "minecraft";
 const VALID = new Set<FontMode>(["default", "minecraft"]);
 
 /**
- * The Default/Minecraft font switch on the store and profile modals. The choice
- * is remembered per-modal in localStorage, which may throw in private mode, so
- * every access is guarded.
+ * The Default/Minecraft font switch on the modals, an OreUI Toggles group. The
+ * library selects tabs on click and arrow keys and fires `change`; this applies
+ * the font. The choice is remembered per-modal in localStorage, which may throw
+ * in private mode, so every access is guarded.
  */
 export function initFontToggle(options: {
   storageKey: string;
@@ -44,16 +45,17 @@ export function initFontToggle(options: {
       [minecraftBtn, resolved === "minecraft"],
     ] as const) {
       if (!btn) continue;
-      btn.setAttribute("aria-pressed", String(isActive));
-      btn.classList.toggle("active", isActive);
+      // OreUI Tab Buttons: the library's controller watches `aria-selected`
+      // and keeps roving tabindex in step with it.
+      btn.setAttribute("aria-selected", String(isActive));
     }
   }
 
-  defaultBtn?.addEventListener("click", () => {
+  defaultBtn?.addEventListener("change", () => {
     apply("default");
     persist("default");
   });
-  minecraftBtn?.addEventListener("click", () => {
+  minecraftBtn?.addEventListener("change", () => {
     apply("minecraft");
     persist("minecraft");
   });

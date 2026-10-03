@@ -1,10 +1,12 @@
+import "@/lib/oreui";
 import "@/styles/addon.css";
 
 import { SITE } from "@/config/site.config";
 import { resolveLinkColor, resolveTextColor } from "@/lib/colors";
 import { byId, el, escapeHtml, onReady } from "@/lib/dom";
 import { stripMcCodes } from "@/lib/mcText";
-import { initButtonPressStates, initNav } from "@/lib/nav";
+import { initNav } from "@/lib/nav";
+import { hydrateIcons, setButtonColor, setButtonTextColor } from "@/lib/oreui";
 import { observeReveals, revealAll } from "@/lib/reveal";
 import { createUiSounds } from "@/lib/sound";
 import type { AddonPageConfig, AddonTheme } from "@/types/addon";
@@ -56,9 +58,9 @@ function linkButton(link: LinkButton, extraClass = ""): HTMLAnchorElement {
     anchor.target = "_blank";
     anchor.rel = "noopener noreferrer";
   }
-  anchor.className = `card-btn ${resolveLinkColor(link.color, "gold")}${extraClass ? ` ${extraClass}` : ""}`;
-  const textColor = resolveTextColor(link.textColor);
-  if (textColor) anchor.style.color = textColor;
+  anchor.className = `ore-button${extraClass ? ` ${extraClass}` : ""}`;
+  setButtonColor(anchor, resolveLinkColor(link.color, "gold"));
+  setButtonTextColor(anchor, resolveTextColor(link.textColor));
   anchor.textContent = link.label;
   return anchor;
 }
@@ -70,8 +72,10 @@ function heroButton(link: LinkButton): HTMLAnchorElement {
     anchor.target = "_blank";
     anchor.rel = "noopener noreferrer";
   }
-  anchor.className = `bb-btn ${resolveLinkColor(link.color, "gold")}`;
-  anchor.innerHTML = `<span>${escapeHtml(link.label)}</span>`;
+  anchor.className = "ore-button hero-btn";
+  anchor.dataset["variant"] = "hero";
+  setButtonColor(anchor, resolveLinkColor(link.color, "gold"));
+  anchor.textContent = link.label;
   return anchor;
 }
 
@@ -124,6 +128,7 @@ export function initAddonPage(config: AddonPageConfig): void {
   onReady(() => {
     const sfx = createUiSounds();
 
+    hydrateIcons();
     renderHero(config);
     renderDownload(config);
 
@@ -152,7 +157,12 @@ export function initAddonPage(config: AddonPageConfig): void {
           stripMcCodes(menu.title)
             .replace(/\{player\}/g, config.viewer.playerName)
             .replace(/\{server\}/g, config.viewer.serverName);
-        const chip = el("button", { className: "menu-jump", attrs: { type: "button" }, text: label });
+        const chip = el("button", {
+          className: "ore-button menu-jump",
+          attrs: { type: "button" },
+          dataset: { color: "neutral" },
+          text: label,
+        });
         chip.addEventListener("click", () => {
           sfx.play();
           viewer.goTo(id);
@@ -184,8 +194,7 @@ export function initAddonPage(config: AddonPageConfig): void {
     }
 
     initNav();
-    initButtonPressStates();
-    sfx.bind(".bb-btn, .card-btn, #nav-toggle, #nav a");
+    sfx.bind(".ore-button:not(.menu-jump, #menu-reset), #nav-toggle, #nav a");
 
     window.setTimeout(() => {
       revealAll();

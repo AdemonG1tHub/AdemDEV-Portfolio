@@ -205,7 +205,7 @@
 }
 
 .mcui-header__brand {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 1.25rem;
   color: #fff;
   text-shadow: var(--mcui-ink);
@@ -229,7 +229,7 @@
   background: var(--mcui-orange);
   box-shadow: inset 0 4px 0 var(--mcui-orange-lit);
   clip-path: polygon(var(--mcui-diagonal) 0, 100% 0, 100% 100%, 0 100%);
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 1.7rem;
   color: #fff;
   text-shadow: var(--mcui-ink);
@@ -373,7 +373,7 @@
   image-rendering: pixelated;
   cursor: pointer;
   color: #fff;
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   text-shadow: var(--mcui-ink);
   padding: 8px;
   display: flex;

@@ -3,6 +3,7 @@ import { resolveLinkColor, resolveTextColor } from "@/lib/colors";
 import { byId, escapeHtml } from "@/lib/dom";
 import { iconHtml } from "@/lib/icon";
 import { isVideoMedia, resolveMediaPath } from "@/lib/media";
+import { buttonColorAttr, oreTagHtml } from "@/lib/oreui";
 import type { LinkButton, MediaItem, Project, StoreItem } from "@/types/site";
 
 export type CardKind = "projects" | "selling";
@@ -12,9 +13,9 @@ function linkButtonsHtml(links: LinkButton[] | undefined): string {
     .map((link) => {
       const color = resolveLinkColor(link.color, SITE.defaults.linkColor);
       const textColor = resolveTextColor(link.textColor);
-      const style = textColor ? ` style="color:${escapeHtml(textColor)}"` : "";
+      const style = textColor ? ` style="--ore-button-foreground:${escapeHtml(textColor)}"` : "";
       const external = /^https?:/i.test(link.url) ? ' target="_blank" rel="noopener noreferrer"' : "";
-      return `<a class="card-btn ${color}"${style} href="${escapeHtml(link.url)}"${external} data-stop-card>${escapeHtml(link.label)}</a>`;
+      return `<a class="ore-button"${buttonColorAttr(color)}${style} href="${escapeHtml(link.url)}"${external} data-stop-card>${escapeHtml(link.label)}</a>`;
     })
     .join("");
 }
@@ -64,7 +65,7 @@ export function renderCards(
         : escapeHtml(("desc" in item && item.desc) || "");
 
     const links = linkButtonsHtml(item.links);
-    const tags = (item.tags ?? []).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("");
+    const tags = (item.tags ?? []).map((tag) => oreTagHtml(tag)).join("");
     const status = "status" in item ? item.status : undefined;
 
     const card = document.createElement("div");
@@ -76,7 +77,7 @@ export function renderCards(
       <div class="card-accent" style="background:${escapeHtml(item.color ?? "#666")}"></div>
       <div class="card-inner">
         ${coverHtml}
-        <div class="card-chip-row"><span class="card-chip">${escapeHtml(cardLabel)}</span></div>
+        <div class="card-chip-row">${oreTagHtml(cardLabel, "primary")}</div>
         <div class="card-title-row">
           <div class="card-title">${escapeHtml(item.title)}</div>
           ${iconHtml(item.icon, "card-title-icon")}

@@ -20,7 +20,7 @@
 
 .hero-badge {
   display: inline-block;
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 0.85rem;
   letter-spacing: 0.06em;
   color: #1a1710;
@@ -48,7 +48,7 @@
 
 .addon-stat__num {
   display: block;
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 1.5rem;
   color: var(--accent);
   line-height: 1.1;
@@ -138,7 +138,7 @@
 }
 
 .feature-tile__name {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 1.05rem;
   line-height: 1.1;
 }
@@ -153,7 +153,7 @@
 .feature-tile__status {
   margin-left: auto;
   align-self: flex-start;
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 0.68rem;
   padding: 3px 6px;
   border: 1px solid currentColor;
@@ -199,7 +199,7 @@
 }
 
 .feature-detail__name {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.05;
@@ -222,7 +222,7 @@
 }
 
 .feature-detail__label {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 0.95rem;
   font-weight: 400;
   letter-spacing: 0.05em;
@@ -256,7 +256,7 @@
   height: 28px;
   display: grid;
   place-items: center;
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 0.9rem;
   color: #1a1710;
   background: var(--accent);
@@ -275,7 +275,7 @@
 }
 
 .feature-step__title {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 1.05rem;
   line-height: 1.15;
   margin-bottom: 5px;
@@ -335,7 +335,7 @@
 }
 
 .feature-command__perm {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 0.72rem;
   color: #1a1710;
   background: #a9a396;
@@ -363,7 +363,7 @@
 }
 
 .feature-options dt {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: 0.92rem;
   color: var(--accent-bright);
   line-height: 1.25;
@@ -396,34 +396,18 @@
   flex-wrap: wrap;
 }
 
-.menu-jump {
-  font-family: "Minecraft", monospace;
-  font-size: 0.82rem;
-  color: #ede6d5;
-  background: #34312a;
-  border: 2px solid #45413a;
-  padding: 6px 10px;
-  cursor: pointer;
-}
+/* Quick-jump chips and the reset button are OreUI Buttons; just compact. */
+.menu-jump,
+.menu-reset {
+  --ore-button-font-size: 0.82rem;
 
-.menu-jump:hover {
-  border-color: var(--accent);
-  color: var(--accent-bright);
+  min-width: 0;
+  min-height: 36px;
+  padding-inline: 12px;
 }
 
 .menu-reset {
-  font-family: "Minecraft", monospace;
-  font-size: 0.82rem;
-  color: #1a1710;
-  background: var(--accent);
-  border: 2px solid #0f0e0b;
-  padding: 6px 12px;
-  cursor: pointer;
   margin-left: auto;
-}
-
-.menu-reset:hover {
-  background: var(--accent-bright);
 }
 
 .menu-note {
@@ -451,7 +435,7 @@
 }
 
 .download-heading {
-  font-family: "Minecraft", monospace;
+  font-family: "MinecraftTen", monospace;
   font-size: clamp(22px, 2.6vw, 34px);
 }
 
@@ -480,8 +464,8 @@
 }
 
 .download-btn {
-  min-height: 3.2rem;
-  font-size: 1.1rem;
+  --ore-button-unit: 3px;
+  --ore-button-font-size: 1.1rem;
 }
 
 /* ------------------------------ responsive ------------------------------- */
