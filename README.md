@@ -1,3 +1,6 @@
+# AI NOTICE:
+## This website was made mostly with the use of AI. This does not however apply to the content on my website; all my commissions, and listed projects does not contain AI generated content of any kind. (unless explicitly stated)
+
 # AdemDEV Website
 
 A Minecraft-themed portfolio and add-on site, built with **TypeScript + Vite**.
