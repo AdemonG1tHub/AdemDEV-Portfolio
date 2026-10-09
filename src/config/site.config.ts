@@ -36,6 +36,8 @@ export const SITE: SiteConfig = {
   // ---------------------------------------------------------------------------
   defaults: {
     // Used by link buttons that don't set a colour of their own.
+    // Button colours are OreUI's: primary (green), secondary (white), gold,
+    // destructive (red), dungeons, legends, realms — plus blue and neutral.
     linkColor: "gold",
   },
 
@@ -165,7 +167,7 @@ export const SITE: SiteConfig = {
         { url: "/images/astral-engine/codereadme.png", caption: "README" },
       ],
       md: "/markdown/astral-engine.md",
-      links: [{ label: "Contact to Purchase", url: "https://discord.gg/CN4U5kkfTm", color: "white" }],
+      links: [{ label: "Contact to Purchase", url: "https://discord.gg/CN4U5kkfTm", color: "secondary" }],
     },
     
     {
@@ -177,7 +179,7 @@ export const SITE: SiteConfig = {
       color: "#4CAF50",
       cover: "/images/cover-art/MongoDB.png",
       links: [
-        { label: "GitHub", url: "https://github.com/AdemonG1tHub/MCBE-MongoDB-API", color: "green" },
+        { label: "GitHub", url: "https://github.com/AdemonG1tHub/MCBE-MongoDB-API", color: "primary" },
       ],
     },
     {
@@ -189,7 +191,7 @@ export const SITE: SiteConfig = {
       gallery: [{ url: "/images/plots-system/plots.mov", caption: "Video Example" }],
       tags: ["addon", "minecraft", "download"],
       md: "/markdown/plots-system.md",
-      links: [{ label: "Contact to Purchase", url: "https://discord.gg/CN4U5kkfTm", color: "white" }],
+      links: [{ label: "Contact to Purchase", url: "https://discord.gg/CN4U5kkfTm", color: "secondary" }],
     },
     {
       icon: "🧩",
@@ -244,11 +246,20 @@ export const SITE: SiteConfig = {
       ],
     },
     {
+      icon: "🔮",
+      title: "NexusSMP",
+      desc: "A custom add-on for NexusSMP, featuring many awesome features, and a high playerbase over the course of 2024-2025.",
+      status: "archived",
+      color: "#6608fd",
+      cover: "/images/cover-art/NexusSMP.png",
+      tags: ["JavaScript", "JSON UI", "Large Project"]
+    },
+    {
       icon: "🌐",
       title: "Realm Explorer",
       desc: "A discovery platform for Minecraft Bedrock Realms & Servers. Featuring RE Hub which allows you to join Bedrock servers on console. (I am no longer the owner of this network)",
       tags: ["Python Bot", "Discord Setup", "Discovery Realm Platform"],
-      status: "active",
+      status: "archived",
       color: "#4CAF50",
       cover: "/images/cover-art/RealmExplorer.png",
       links: [{ label: "Join the Discord", url: "https://discord.gg/realmexplorer", color: "blue" }],
@@ -263,7 +274,33 @@ export const SITE: SiteConfig = {
       color: "#fd09f9",
       cover: "/images/cover-art/RealmTransfer.png",
     },
+    // Example archived project — uncomment and fill in. `status: "archived"`
+    // is all it takes to move a project into the Archived Projects section.
+    // {
+    //   icon: "📦",
+    //   title: "Example Archived Project",
+    //   desc: "A short line on what it was and why it's no longer maintained.",
+    //   tags: ["TypeScript", "Scripting API"],
+    //   status: "archived",
+    //   color: "#9b9b99",
+    //   cover: "/images/cover-art/Example.png",
+    //   links: [{ label: "Source on GitHub", url: "https://github.com/AdemonG1tHub/example", color: "neutral" }],
+    //   gallery: [{ url: "/images/example/menu.png", caption: "Main Menu" }],
+    // },
   ],
+
+  // ---------------------------------------------------------------------------
+  // Archived projects — projects above with `status: "archived"` are listed
+  // here instead of the main grid. With none, the section and its nav link
+  // disappear. Set `enabled: false` to keep them in the main grid.
+  // ---------------------------------------------------------------------------
+  archivedProjects: {
+    enabled: true,
+    label: "ARCHIVE",
+    heading: "Archived Projects",
+    note: "NO LONGER MAINTAINED",
+    navLabel: "Archive",
+  },
 
   // ---------------------------------------------------------------------------
   // Team — leave `members` empty and the section plus its nav link disappear.
@@ -331,7 +368,7 @@ export const SITE: SiteConfig = {
     title: "AdemDEV Profile",
     markdownUrl: "https://raw.githubusercontent.com/AdemonG1tHub/AdemonG1tHub/main/README.md",
     buttons: [
-      { label: "GitHub", url: "https://github.com/AdemonG1tHub", color: "dark" },
+      { label: "GitHub", url: "https://github.com/AdemonG1tHub", color: "neutral" },
       { label: "Website", url: "https://ademdev.xyz", color: "gold" },
       { label: "Join Discord", url: "https://discord.gg/CN4U5kkfTm", color: "blue" },
     ],

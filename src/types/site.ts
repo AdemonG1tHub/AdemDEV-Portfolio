@@ -5,8 +5,14 @@
  * is a build error rather than a blank section at runtime.
  */
 
-/** Button skins backed by textures in `public/ui/buttons/<name>/`. */
-export type LinkColor = "green" | "white" | "blue" | "gold" | "dark" | "red";
+import type { OreButtonColor } from "oreui-web";
+
+/**
+ * Button colours: OreUI's own (`primary` is its default green), plus `blue`
+ * and `neutral`, which tokens.css defines with the same `--ore-button-*`
+ * variables the library uses.
+ */
+export type LinkColor = OreButtonColor | "blue" | "neutral";
 
 export type ProjectStatus = "active" | "wip" | "archived";
 
@@ -100,6 +106,19 @@ export interface ProfileMenuConfig {
   buttons?: LinkButton[];
 }
 
+/**
+ * The "Archived Projects" section, filled with every project whose `status`
+ * is `"archived"`. With `enabled: false` those projects stay in the main grid.
+ */
+export interface ArchivedProjectsConfig {
+  enabled: boolean;
+  label?: string;
+  heading?: string;
+  /** Small note beside the heading. */
+  note?: string;
+  navLabel?: string;
+}
+
 export interface StoreHiddenCta {
   action: "copy" | "url";
   label?: string;
@@ -120,6 +139,7 @@ export interface SiteConfig {
   stats: Stat[];
   skills: string[];
   projects: Project[];
+  archivedProjects: ArchivedProjectsConfig;
   team: { label?: string; heading?: string; members: TeamMember[] };
   services: Service[];
   featureFlags: { showStoreSection: boolean };

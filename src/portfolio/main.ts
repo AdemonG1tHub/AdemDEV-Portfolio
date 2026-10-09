@@ -79,8 +79,44 @@ function renderTeam(): void {
   section?.remove();
   byId("team-separator")?.remove();
   byId("nav-team")?.remove();
-  // Team held the alternating band; hand it back to Services.
-  byId("services")?.classList.add("section-alt");
+}
+
+/**
+ * Splits `status: "archived"` projects into their own section. Returns each
+ * group with its indexes into `SITE.projects`, which the gallery modal and
+ * routing are keyed on.
+ */
+function splitArchivedProjects(): { active: number[]; archived: number[] } {
+  const config = SITE.archivedProjects;
+  const active: number[] = [];
+  const archived: number[] = [];
+  SITE.projects.forEach((project, index) => {
+    (config.enabled && project.status === "archived" ? archived : active).push(index);
+  });
+
+  if (archived.length > 0) {
+    const label = byId("archived-label");
+    const heading = byId("archived-heading");
+    const note = byId("archived-note");
+    const navLabel = byId("nav-archived")?.querySelector(".ore-navbar-action-label");
+    if (label && config.label) label.textContent = config.label;
+    if (heading && config.heading) heading.textContent = config.heading;
+    if (note) note.textContent = config.note ?? "";
+    if (navLabel && config.navLabel) navLabel.textContent = config.navLabel;
+  } else {
+    byId("archived")?.remove();
+    byId("archived-separator")?.remove();
+    byId("nav-archived")?.remove();
+  }
+
+  return { active, archived };
+}
+
+/** Alternates the band colour across whichever sections are left. */
+function stripeSections(): void {
+  qsa(".section:not(.section-dark)").forEach((section, index) => {
+    section.classList.toggle("section-alt", index % 2 === 1);
+  });
 }
 
 function renderServices(): void {
@@ -104,13 +140,13 @@ function renderContact(): void {
     if (SITE.email) {
       links.insertAdjacentHTML(
         "beforeend",
-        `<a href="mailto:${escapeHtml(SITE.email)}" class="ore-button"${buttonColorAttr("green")}>Email Me</a>`,
+        `<a href="mailto:${escapeHtml(SITE.email)}" class="ore-button"${buttonColorAttr("primary")}>Email Me</a>`,
       );
     }
     if (SITE.github) {
       links.insertAdjacentHTML(
         "beforeend",
-        `<a href="${escapeHtml(SITE.github)}" target="_blank" rel="noopener noreferrer" class="ore-button"${buttonColorAttr("white")}>GitHub</a>`,
+        `<a href="${escapeHtml(SITE.github)}" target="_blank" rel="noopener noreferrer" class="ore-button"${buttonColorAttr("secondary")}>GitHub</a>`,
       );
     }
   }
@@ -177,10 +213,22 @@ onReady(() => {
   const gallery = initGalleryModal();
   const selling = initSellingModal();
 
-  renderCards(SITE.projects, "projects", (index) => {
+  const projects = splitArchivedProjects();
+  const openProject = (indexes: number[]) => (position: number) => {
     sfx.play();
-    gallery.open(index);
-  });
+    gallery.open(indexes[position]!);
+  };
+  renderCards(
+    projects.active.map((index) => SITE.projects[index]!),
+    "projects",
+    openProject(projects.active),
+  );
+  renderCards(
+    projects.archived.map((index) => SITE.projects[index]!),
+    "projects",
+    openProject(projects.archived),
+    "archived-grid",
+  );
 
   // An enabled-but-empty store would render a heading over a blank grid, so
   // treat "no items" the same as the section being switched off.
@@ -193,6 +241,7 @@ onReady(() => {
   } else {
     hideStoreSection();
   }
+  stripeSections();
 
   initNav();
   initProfileModal();

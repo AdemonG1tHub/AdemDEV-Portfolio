@@ -22,32 +22,21 @@ import { escapeHtml } from "./dom";
 
 /* ------------------------------- buttons --------------------------------- */
 
-/**
- * Config link colours predate OreUI, so they're translated here rather than
- * renamed in every config. `undefined` is OreUI's default (primary green);
- * `blue` and `neutral` are site additions defined in tokens.css with the same
- * `--ore-button-*` variables the library's own colours use.
+/*
+ * Config colours are OreUI's `data-color` values as-is (see `LinkColor`).
+ * `primary` is the library default and has no rule of its own, so it's left
+ * off the element rather than set.
  */
-const BUTTON_COLORS: Record<LinkColor, string | undefined> = {
-  green: undefined,
-  white: "secondary",
-  gold: "gold",
-  red: "destructive",
-  blue: "blue",
-  dark: "neutral",
-};
 
 /** Sets (or clears) `data-color` on an `.ore-button` for a config colour. */
 export function setButtonColor(node: HTMLElement, color: LinkColor): void {
-  const value = BUTTON_COLORS[color];
-  if (value) node.dataset["color"] = value;
-  else delete node.dataset["color"];
+  if (color === "primary") delete node.dataset["color"];
+  else node.dataset["color"] = color;
 }
 
 /** The `data-color` attribute for a config colour, for template strings. */
 export function buttonColorAttr(color: LinkColor): string {
-  const value = BUTTON_COLORS[color];
-  return value ? ` data-color="${value}"` : "";
+  return color === "primary" ? "" : ` data-color="${color}"`;
 }
 
 /**

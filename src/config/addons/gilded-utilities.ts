@@ -45,7 +45,7 @@ export const GILDED_UTILITIES: AddonPageConfig = {
 
   heroLinks: [
     { label: "Explore Features", url: "#features", color: "gold" },
-    { label: "Try the Live Menu", url: "#preview", color: "dark" },
+    { label: "Try the Live Menu", url: "#preview", color: "neutral" },
   ],
 
   // ---------------------------------------------------------------------------
@@ -65,7 +65,7 @@ export const GILDED_UTILITIES: AddonPageConfig = {
       {
         label: "Source on GitHub",
         url: "https://github.com/GildedStudios/Gilded-Utilities",
-        color: "dark",
+        color: "neutral",
       },
     ],
   },

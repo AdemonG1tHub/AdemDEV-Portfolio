@@ -41,8 +41,9 @@ export function renderCards(
   items: readonly (Project | StoreItem)[],
   kind: CardKind,
   onOpen: (index: number) => void,
+  containerId = kind === "projects" ? "cards-grid" : "selling-grid",
 ): void {
-  const container = byId(kind === "projects" ? "cards-grid" : "selling-grid");
+  const container = byId(containerId);
   if (!container) return;
 
   const cardLabel = kind === "selling" ? SITE.labels.sellingCardLabel : SITE.labels.projectCardLabel;

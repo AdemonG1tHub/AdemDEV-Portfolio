@@ -40,8 +40,8 @@ export const BLOCKBAY: AddonPageConfig = {
   heroBackground: "/images/crosshair_backgrounds/13.webp",
 
   heroLinks: [
-    { label: "Explore Features", url: "#features", color: "green" },
-    { label: "Try the Live Menu", url: "#preview", color: "dark" },
+    { label: "Explore Features", url: "#features", color: "primary" },
+    { label: "Try the Live Menu", url: "#preview", color: "neutral" },
   ],
 
   // ---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ export const BLOCKBAY: AddonPageConfig = {
   // ---------------------------------------------------------------------------
   // Features
   // ---------------------------------------------------------------------------
-  demoButtonColor: "green",
+  demoButtonColor: "primary",
 
   features: [
     {

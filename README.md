@@ -95,6 +95,13 @@ A project or store item's `md` takes either inline markdown or a path such as
 `/markdown/astral-engine.md`. When set it replaces `desc` in the modal and turns on the
 Default/Minecraft font switcher.
 
+Projects with `status: "archived"` are listed in the "Archived Projects" section rather than
+the main grid; `archivedProjects` sets its heading and note, and `enabled: false` keeps them
+in the main grid instead. With no archived projects the section and its nav link are hidden.
+
+Button `color`s are OreUI's: `primary` (green), `secondary` (white), `gold`, `destructive`
+(red), `dungeons`, `legends` and `realms`, plus the site's own `blue` and `neutral`.
+
 An `icon` is either an emoji or an image — `"🪙"`, `/images/glyphs/coin.png`, or a remote
 URL such as a custom Discord emoji. Values that look like a path render as an `<img>`.
 

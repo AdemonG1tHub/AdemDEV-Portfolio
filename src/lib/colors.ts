@@ -1,11 +1,23 @@
 import type { LinkColor } from "@/types/site";
 
-const ALLOWED_LINK_COLORS = new Set<LinkColor>(["green", "white", "blue", "gold", "dark", "red"]);
+// A record rather than a list so adding a colour to `LinkColor` without
+// listing it here is a type error.
+const LINK_COLORS: Record<LinkColor, true> = {
+  primary: true,
+  secondary: true,
+  destructive: true,
+  gold: true,
+  dungeons: true,
+  legends: true,
+  realms: true,
+  blue: true,
+  neutral: true,
+};
 
 /** Falls back to `fallback` for unset or unrecognised colours. */
 export function resolveLinkColor(color: string | undefined, fallback: LinkColor = "gold"): LinkColor {
   if (!color) return fallback;
-  return ALLOWED_LINK_COLORS.has(color as LinkColor) ? (color as LinkColor) : fallback;
+  return Object.hasOwn(LINK_COLORS, color) ? (color as LinkColor) : fallback;
 }
 
 const CSS_COLOR_RE = /^(#[0-9a-fA-F]{3,8}|[a-zA-Z]+|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\))$/;
