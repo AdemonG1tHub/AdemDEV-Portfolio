@@ -1,4 +1,4 @@
-import type { SiteConfig } from "@/types/site";
+import type { Project, SiteConfig } from "@/types/site";
 
 /**
  * Builds the Discord "component embed" (Components V2) for the link preview.
@@ -15,6 +15,8 @@ interface Media {
   media: { url: string };
 }
 
+const image = (p: Project) => p.embedImage ?? p.cover;
+
 export function buildDiscordEmbed(site: SiteConfig): { component: unknown } {
   const cfg = site.discordEmbed;
   const abs = (path: string) => (/^https?:\/\//.test(path) ? path : new URL(path, cfg.siteUrl).href);
@@ -23,16 +25,16 @@ export function buildDiscordEmbed(site: SiteConfig): { component: unknown } {
   const featured = projects.slice(0, cfg.featured);
   const gallery = projects
     .slice(cfg.featured)
-    .filter((p) => p.cover)
+    .filter(image)
     .slice(0, Math.min(cfg.gallery, 10)); // Discord caps gallery items at 10
 
   const sections = featured.map((p) => ({
     type: 9,
     components: [{ type: 10, content: `### __${p.title}__${p.desc ? `\n> ${p.desc}` : ""}` }],
-    ...(p.cover && { accessory: { type: 11, media: { url: abs(p.cover) } } }),
+    ...(image(p) && { accessory: { type: 11, media: { url: abs(image(p)!) } } }),
   }));
 
-  const items: Media[] = gallery.map((p) => ({ media: { url: abs(p.cover!) } }));
+  const items: Media[] = gallery.map((p) => ({ media: { url: abs(image(p)!) } }));
 
   const payload = {
     component: {

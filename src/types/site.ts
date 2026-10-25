@@ -64,6 +64,8 @@ export interface Project {
   color?: string;
   /** Card banner, ideally 1000x400. */
   cover?: string;
+  /** Image for the Discord link preview only; falls back to `cover`. */
+  embedImage?: string;
   links?: LinkButton[];
   gallery?: MediaItem[];
 }

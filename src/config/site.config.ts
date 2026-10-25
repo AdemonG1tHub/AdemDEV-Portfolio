@@ -88,6 +88,7 @@ export const SITE: SiteConfig = {
       status: "active",
       color: "#ee7905",
       cover: "/images/cover-art/Arkadia.png",
+      embedImage: "/images/embed/arkadia.webp", // Discord preview only
       links: [{ label: "Join the Discord", url: "https://discord.gg/vGJUTEWjUM", color: "blue" }],
       gallery: [
         { url: "/images/arkadia/mainmenu.png", caption: "Main Menu" },
