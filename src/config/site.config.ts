@@ -31,6 +31,15 @@ export const SITE: SiteConfig = {
     tagLine: "Not affiliated with Mojang Studios.",
   },
 
+  // Discord link preview (Components V2). Built from `projects` at build time:
+  // the first `featured` projects show title + description + cover, the next
+  // `gallery` covers follow as a strip. Reorder `projects` to change it.
+  discordEmbed: {
+    siteUrl: "https://ademdev.xyz",
+    featured: 2,
+    gallery: 6,
+  },
+
   // ---------------------------------------------------------------------------
   // Defaults
   // ---------------------------------------------------------------------------
@@ -92,6 +101,39 @@ export const SITE: SiteConfig = {
       ],
     },
     {
+      title: "AstralCraft Engine",
+      desc: "A custom Minecraft Bedrock Engine Add-on, featuring a custom GUI, Auction System, Shop System, Factions, Warps, Donator Perks, and much more!",
+      tags: ["TypeScript", "JSON UI", "Chest UI"],
+      status: "active",
+      color: "#ee0dee",
+      cover: "/images/cover-art/AstralCraft.png",
+      gallery: [
+        { url: "/images/astral-engine/mainmenu.png", caption: "Main Menu" },
+        { url: "/images/astral-engine/othermenu.png", caption: "Other Menu" },
+        { url: "/images/astral-engine/auction.png", caption: "Auction" },
+        { url: "/images/astral-engine/shop.png", caption: "Shop" },
+        { url: "/images/astral-engine/factions.png", caption: "Factions" },
+        { url: "/images/astral-engine/warps.png", caption: "Warps" },
+        { url: "/images/astral-engine/donator.png", caption: "Donator" },
+        { url: "/images/astral-engine/settings.png", caption: "Settings" },
+        { url: "/images/astral-engine/stats.png", caption: "Stats" },
+        { url: "/images/astral-engine/guide.png", caption: "Guide" },
+        { url: "/images/astral-engine/crate.png", caption: "Crate" },
+        { url: "/images/astral-engine/claim.png", caption: "Claim" },
+        { url: "/images/astral-engine/logs.png", caption: "Logs" },
+        { url: "/images/astral-engine/pause.png", caption: "Pause" },
+        { url: "/images/astral-engine/hud.png", caption: "HUD" },
+        { url: "/images/astral-engine/relay.png", caption: "Relay" },
+        { url: "/images/astral-engine/log.png", caption: "Log" },
+        { url: "/images/astral-engine/discord.png", caption: "Discord" },
+        { url: "/images/astral-engine/codeconfig.png", caption: "Config" },
+        { url: "/images/astral-engine/codelayout.png", caption: "Code Layout" },
+        { url: "/images/astral-engine/codereadme.png", caption: "README" },
+      ],
+      md: "/markdown/astral-engine.md",
+      links: [{ label: "Contact to Purchase", url: "https://discord.gg/CN4U5kkfTm", color: "secondary" }],
+    },
+    {
       icon: "🔥",
       title: "Blaze Network",
       desc: "A fully custom DonutSMP Shop like add-on for MCBE, but featuring other content like Stats, Warps, /pay, a custom sidebar, and even fully configurable modules inside a /admin command.",
@@ -136,39 +178,6 @@ export const SITE: SiteConfig = {
       links: [{ label: "View Add-on Page:", url: "/blockbay", color: "gold" }],
       gallery: [],
     },*/
-    {
-      title: "AstralCraft Engine",
-      desc: "A custom Minecraft Bedrock Engine Add-on, featuring a custom GUI, Auction System, Shop System, Factions, Warps, Donator Perks, and much more!",
-      tags: ["TypeScript", "JSON UI", "Chest UI"],
-      status: "active",
-      color: "#ee0dee",
-      cover: "/images/cover-art/AstralCraft.png",
-      gallery: [
-        { url: "/images/astral-engine/mainmenu.png", caption: "Main Menu" },
-        { url: "/images/astral-engine/othermenu.png", caption: "Other Menu" },
-        { url: "/images/astral-engine/auction.png", caption: "Auction" },
-        { url: "/images/astral-engine/shop.png", caption: "Shop" },
-        { url: "/images/astral-engine/factions.png", caption: "Factions" },
-        { url: "/images/astral-engine/warps.png", caption: "Warps" },
-        { url: "/images/astral-engine/donator.png", caption: "Donator" },
-        { url: "/images/astral-engine/settings.png", caption: "Settings" },
-        { url: "/images/astral-engine/stats.png", caption: "Stats" },
-        { url: "/images/astral-engine/guide.png", caption: "Guide" },
-        { url: "/images/astral-engine/crate.png", caption: "Crate" },
-        { url: "/images/astral-engine/claim.png", caption: "Claim" },
-        { url: "/images/astral-engine/logs.png", caption: "Logs" },
-        { url: "/images/astral-engine/pause.png", caption: "Pause" },
-        { url: "/images/astral-engine/hud.png", caption: "HUD" },
-        { url: "/images/astral-engine/relay.png", caption: "Relay" },
-        { url: "/images/astral-engine/log.png", caption: "Log" },
-        { url: "/images/astral-engine/discord.png", caption: "Discord" },
-        { url: "/images/astral-engine/codeconfig.png", caption: "Config" },
-        { url: "/images/astral-engine/codelayout.png", caption: "Code Layout" },
-        { url: "/images/astral-engine/codereadme.png", caption: "README" },
-      ],
-      md: "/markdown/astral-engine.md",
-      links: [{ label: "Contact to Purchase", url: "https://discord.gg/CN4U5kkfTm", color: "secondary" }],
-    },
     
     {
       icon: "🍃",

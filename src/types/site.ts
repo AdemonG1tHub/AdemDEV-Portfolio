@@ -126,6 +126,22 @@ export interface StoreHiddenCta {
   url?: string;
 }
 
+/**
+ * The Discord link preview for the homepage (a Components V2 "component
+ * embed"). Built from `projects`: the first `featured` non-archived projects
+ * get their title, description and cover; the next `gallery` covers follow as
+ * a strip. Reorder `projects` to change what it shows.
+ */
+export interface DiscordEmbedConfig {
+  /** Public origin, used to make cover paths absolute. */
+  siteUrl: string;
+  /** Heading; defaults to "<name> Portfolio". */
+  title?: string;
+  featured: number;
+  /** Max 10 (Discord's limit). */
+  gallery: number;
+}
+
 export interface SiteConfig {
   name: string;
   brandText?: string;
@@ -135,6 +151,7 @@ export interface SiteConfig {
   github?: string;
   discord?: string;
   FOOTER: { tagLine: string };
+  discordEmbed: DiscordEmbedConfig;
   defaults: { linkColor: LinkColor };
   stats: Stat[];
   skills: string[];

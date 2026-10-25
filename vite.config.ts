@@ -2,6 +2,8 @@ import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig, type Plugin, type Connect } from "vite";
+import { SITE } from "./src/config/site.config";
+import { buildDiscordEmbed } from "./src/lib/discordEmbed";
 
 const root = dirname(fileURLToPath(import.meta.url));
 
@@ -41,6 +43,36 @@ function cleanUrls(): Plugin {
   };
 }
 
+/**
+ * Discord Components V2 link preview. Generates `/discord-embed.json` from the
+ * site config and links it from the homepage <head> (Discord needs the tag in
+ * server-rendered HTML, so it's injected at build time, not by main.ts).
+ */
+function discordEmbed(): Plugin {
+  const file = "discord-embed.json";
+  const json = () => JSON.stringify(buildDiscordEmbed(SITE));
+  return {
+    name: "discord-embed",
+    transformIndexHtml: {
+      order: "pre",
+      handler(html, ctx) {
+        if (resolve(ctx.filename) !== resolve(root, "index.html")) return html;
+        const tag = `<link rel="discord:component-embed" type="application/json" href="${SITE.discordEmbed.siteUrl}/${file}" />`;
+        return html.replace("</head>", `    ${tag}\n  </head>`);
+      },
+    },
+    configureServer(server) {
+      server.middlewares.use(`/${file}`, (_req, res) => {
+        res.setHeader("Content-Type", "application/json");
+        res.end(json());
+      });
+    },
+    generateBundle() {
+      this.emitFile({ type: "asset", fileName: file, source: json() });
+    },
+  };
+}
+
 // One entry per route:
 //   index.html                   -> ademdev.xyz
 //   gilded-utilities/index.html  -> ademdev.xyz/gilded-utilities
@@ -49,7 +81,7 @@ function cleanUrls(): Plugin {
 export default defineConfig({
   appType: "mpa",
   publicDir: "public",
-  plugins: [cleanUrls()],
+  plugins: [cleanUrls(), discordEmbed()],
   build: {
     outDir: "dist",
     emptyOutDir: true,
