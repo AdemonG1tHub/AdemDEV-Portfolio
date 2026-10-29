@@ -42,9 +42,12 @@ export function setDetailPath(slug: string, replace = false): void {
 }
 
 export function clearDetailPath(replace = false): void {
-  if (!window.location.hash) return;
-  const bare = `${window.location.pathname}${window.location.search}`;
-  if (replace) window.history.replaceState({}, "", bare);
+  // A `/<slug>` landing path (e.g. from a Discord link) goes back to the bare
+  // site root; replace rather than push so Back doesn't return to a dead entry.
+  const onSlugPath = window.location.pathname !== "/";
+  if (!window.location.hash && !onSlugPath) return;
+  const bare = onSlugPath ? "/" : `${window.location.pathname}${window.location.search}`;
+  if (replace || onSlugPath) window.history.replaceState({}, "", bare);
   else window.history.pushState({}, "", bare);
 }
 
