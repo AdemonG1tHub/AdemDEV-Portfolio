@@ -1,9 +1,10 @@
-import { existsSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig, type Plugin, type Connect } from "vite";
 import { SITE } from "./src/config/site.config";
-import { buildDiscordEmbed } from "./src/lib/discordEmbed";
+import { buildDiscordEmbed, buildProjectEmbed } from "./src/lib/discordEmbed";
+import { projectSlugs } from "./src/lib/slug";
 
 const root = dirname(fileURLToPath(import.meta.url));
 
@@ -51,6 +52,7 @@ function cleanUrls(): Plugin {
 function discordEmbed(): Plugin {
   const file = "discord-embed.json";
   const json = () => JSON.stringify(buildDiscordEmbed(SITE));
+  let outDir = "";
   return {
     name: "discord-embed",
     transformIndexHtml: {
@@ -70,8 +72,49 @@ function discordEmbed(): Plugin {
     generateBundle() {
       this.emitFile({ type: "asset", fileName: file, source: json() });
     },
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir);
+    },
+    // Discord never sees the `#/slug` fragment, so each project also gets a real
+    // `/<slug>` page: the homepage plus that project's own preview tags. The app
+    // already opens the matching modal for a `/<slug>` path.
+    closeBundle() {
+      const home = join(outDir, "index.html");
+      if (!existsSync(home)) return;
+      const html = readFileSync(home, "utf8");
+      const { siteUrl } = SITE.discordEmbed;
+
+      projectSlugs(SITE.projects).forEach((slug, i) => {
+        const p = SITE.projects[i]!;
+        const pageDir = join(outDir, slug);
+        if (existsSync(pageDir)) {
+          this.warn(`Skipped Discord page for "${p.title}": /${slug} already exists.`);
+          return;
+        }
+        const jsonPath = `discord-embed/${slug}.json`;
+        const img = p.embedImage ?? p.cover;
+        const meta = [
+          `<link rel="canonical" href="${siteUrl}/${slug}" />`,
+          `<meta property="og:url" content="${siteUrl}/${slug}" />`,
+          `<meta property="og:title" content="${escapeAttr(p.title)}" />`,
+          `<meta property="og:description" content="${escapeAttr(p.desc ?? SITE.tagline)}" />`,
+          ...(img ? [`<meta property="og:image" content="${new URL(img, siteUrl).href}" />`] : []),
+          `<link rel="discord:component-embed" type="application/json" href="${siteUrl}/${jsonPath}" />`,
+        ];
+        const page = html
+          .replace(/<link rel="canonical"[^>]*>|<meta\s+property="og:(?:url|title|description|image)"[^>]*>|<link rel="discord:component-embed"[^>]*>/gs, "")
+          .replace("</head>", `    ${meta.join("\n    ")}\n  </head>`);
+
+        mkdirSync(pageDir, { recursive: true });
+        writeFileSync(join(pageDir, "index.html"), page);
+        mkdirSync(join(outDir, "discord-embed"), { recursive: true });
+        writeFileSync(join(outDir, jsonPath), JSON.stringify(buildProjectEmbed(SITE, p, slug)));
+      });
+    },
   };
 }
+
+const escapeAttr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
 // One entry per route:
 //   index.html                   -> ademdev.xyz

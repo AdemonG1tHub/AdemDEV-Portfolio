@@ -1,4 +1,5 @@
 import { SITE } from "@/config/site.config";
+import { getUniqueSlug, projectSlugs, toSlug } from "@/lib/slug";
 
 /**
  * Hash routing for the detail modals: `#/astralcraft-engine` deep-links to a
@@ -18,29 +19,11 @@ export const routeState: RouteState = {
   sellingSlugs: [],
 };
 
-export function toSlug(input: unknown): string {
-  const slug = String(input ?? "")
-    .trim()
-    .replace(/[^A-Za-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-  return slug || "item";
-}
-
-function getUniqueSlug(seed: unknown, used: Set<string>): string {
-  const base = toSlug(seed);
-  let out = base;
-  let n = 2;
-  while (used.has(out.toLowerCase())) {
-    out = `${base}-${n}`;
-    n += 1;
-  }
-  used.add(out.toLowerCase());
-  return out;
-}
+export { toSlug };
 
 function rebuildSlugs(): void {
   const used = new Set<string>();
-  routeState.projectSlugs = SITE.projects.map((p) => getUniqueSlug(p.slug ?? p.title, used));
+  routeState.projectSlugs = projectSlugs(SITE.projects, used);
   routeState.sellingSlugs = SITE.currentlySelling.map((p) => getUniqueSlug(p.slug ?? p.id ?? p.title, used));
 }
 

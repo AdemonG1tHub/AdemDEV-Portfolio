@@ -17,6 +17,41 @@ interface Media {
 
 const image = (p: Project) => p.embedImage ?? p.cover;
 
+/** The dedicated preview for one project's link (`/<slug>`): its title, blurb and cover. */
+export function buildProjectEmbed(site: SiteConfig, p: Project, slug: string): { component: unknown } {
+  const cfg = site.discordEmbed;
+  const abs = (path: string) => (/^https?:\/\//.test(path) ? path : new URL(path, cfg.siteUrl).href);
+  const img = image(p);
+  const url = `${cfg.siteUrl}/${slug}`;
+
+  return checked({
+    component: {
+      type: 17,
+      accent_color: 5793266,
+      components: [
+        { type: 10, content: `## ${cfg.title ?? `${site.name} Portfolio`}` },
+        { type: 14, divider: true, spacing: 1 },
+        {
+          type: 10,
+          content: `### __[${p.title}](${url})__${p.desc ? `\n> ${p.desc}` : ""}\n-# *Developed by ${site.name}*`,
+        },
+        ...(img ? [{ type: 12, items: [{ media: { url: abs(img) } }] }] : []),
+      ],
+    },
+  });
+}
+
+function checked<T>(payload: T): T {
+  const bytes = new TextEncoder().encode(JSON.stringify(payload)).length;
+  if (bytes > MAX_BYTES) {
+    throw new Error(
+      `Discord component embed is ${bytes} bytes (limit ${MAX_BYTES}). ` +
+        `Shorten project descriptions or lower discordEmbed.gallery.`,
+    );
+  }
+  return payload;
+}
+
 export function buildDiscordEmbed(site: SiteConfig): { component: unknown } {
   const cfg = site.discordEmbed;
   const abs = (path: string) => (/^https?:\/\//.test(path) ? path : new URL(path, cfg.siteUrl).href);
@@ -36,7 +71,7 @@ export function buildDiscordEmbed(site: SiteConfig): { component: unknown } {
 
   const items: Media[] = gallery.map((p) => ({ media: { url: abs(image(p)!) } }));
 
-  const payload = {
+  return checked({
     component: {
       type: 17,
       components: [
@@ -46,14 +81,5 @@ export function buildDiscordEmbed(site: SiteConfig): { component: unknown } {
         ...(items.length ? [{ type: 14, divider: true, spacing: 2 }, { type: 12, items }] : []),
       ],
     },
-  };
-
-  const bytes = new TextEncoder().encode(JSON.stringify(payload)).length;
-  if (bytes > MAX_BYTES) {
-    throw new Error(
-      `Discord component embed is ${bytes} bytes (limit ${MAX_BYTES}). ` +
-        `Shorten project descriptions or lower discordEmbed.gallery.`,
-    );
-  }
-  return payload;
+  });
 }
