@@ -201,6 +201,27 @@
           <button type="button" class="ore-modal-header-button" id="gm-close" aria-label="Close gallery" data-ore-icon="cross"></button>
         </header>
         <div class="ore-container detail-body" data-variant="dark">
+          <!-- Asset-pack layout (project `layout: "icons"`): replaces the carousel below. -->
+          <div class="ig" id="gm-icons" hidden>
+            <div class="ig-hero">
+              <div class="ig-stage" id="ig-stage">
+                <button type="button" class="ore-icon-button ig-nav prev" id="ig-prev" aria-label="Previous icon" data-ore-icon="chevron-left"></button>
+                <img class="ig-img" id="ig-img" src="" alt="" />
+                <button type="button" class="ore-icon-button ig-nav next" id="ig-next" aria-label="Next icon" data-ore-icon="chevron-right"></button>
+              </div>
+              <div class="ig-info">
+                <div class="ig-count" id="ig-count"></div>
+                <h3 class="ig-name" id="ig-name"></h3>
+                <dl class="ig-facts">
+                  <div><dt>Format</dt><dd>PNG</dd></div>
+                  <div><dt>Size</dt><dd id="ig-size">—</dd></div>
+                  <div><dt>License</dt><dd>Free, credit required</dd></div>
+                </dl>
+                <a class="ore-button ig-download" id="ig-download" download>Download PNG</a>
+              </div>
+            </div>
+            <div class="ig-grid" id="ig-grid" role="listbox" aria-label="Icons in this pack"></div>
+          </div>
           <div class="gm-viewer" id="gm-viewer">
             <button type="button" class="ore-icon-button gm-nav prev" id="gm-prev" aria-label="Previous image" data-ore-icon="chevron-left"></button>
             <img class="gm-main-img" id="gm-main-img" src="" alt="" style="display: none" />

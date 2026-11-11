@@ -68,6 +68,12 @@ export interface Project {
   embedImage?: string;
   links?: LinkButton[];
   gallery?: MediaItem[];
+  /**
+   * How `gallery` is shown in the popup. "icons" is for asset packs: a
+   * pixel-crisp preview with a tile grid and per-icon download, instead of the
+   * screenshot carousel. Defaults to "screenshots".
+   */
+  layout?: "screenshots" | "icons";
 }
 
 export interface StoreItem {

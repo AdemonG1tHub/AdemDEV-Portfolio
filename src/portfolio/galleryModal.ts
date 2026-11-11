@@ -5,6 +5,7 @@ import { setIcon } from "@/lib/icon";
 import { oreTagHtml, setButtonColor, setButtonTextColor } from "@/lib/oreui";
 import { bindDialog, isTabTarget } from "./dialog";
 import { initFontToggle } from "./fontToggle";
+import { createIconGallery } from "./iconGallery";
 import { renderMarkdownInto } from "./markdownPane";
 import { createMediaViewer } from "./mediaViewer";
 import { clearDetailPath, routeState, setDetailPath, toSlug } from "./routing";
@@ -30,6 +31,9 @@ export function initGalleryModal(): ModalController {
     prev: byId<HTMLButtonElement>("gm-prev"),
     next: byId<HTMLButtonElement>("gm-next"),
   });
+
+  const icons = createIconGallery();
+  const iconsEl = requireId("gm-icons");
 
   const nameEl = requireId("gm-project-name");
   const dotEl = requireId("gm-accent-dot");
@@ -73,6 +77,7 @@ export function initGalleryModal(): ModalController {
 
     nameEl.textContent = project.title;
     dotEl.style.background = project.color ?? "#666";
+    modal.style.setProperty("--ig-accent", project.color ?? "#666");
     setIcon(phIcon, project.icon, "📷");
 
     // `md` (inline or a .md path) replaces the plain `desc` blurb and brings
@@ -106,7 +111,12 @@ export function initGalleryModal(): ModalController {
 
     tagsEl.innerHTML = (project.tags ?? []).map((tag) => oreTagHtml(tag)).join("");
 
-    viewer.load(project.gallery ?? []);
+    // Asset packs swap the screenshot carousel for the icon grid.
+    const iconLayout = project.layout === "icons" && (project.gallery?.length ?? 0) > 0;
+    modal.classList.toggle("gm-icons-mode", iconLayout);
+    iconsEl.hidden = !iconLayout;
+    if (iconLayout) icons.load(project.gallery ?? []);
+    viewer.load(iconLayout ? [] : (project.gallery ?? []));
 
     dialog.open();
 
@@ -121,8 +131,9 @@ export function initGalleryModal(): ModalController {
   document.addEventListener("keydown", (event) => {
     if (!dialog.isOpen()) return;
     if (viewer.isVideoFocused(event.target) || isTabTarget(event.target)) return;
-    if (event.key === "ArrowLeft") viewer.step(-1);
-    if (event.key === "ArrowRight") viewer.step(1);
+    const nav = modal.classList.contains("gm-icons-mode") ? icons : viewer;
+    if (event.key === "ArrowLeft") nav.step(-1);
+    if (event.key === "ArrowRight") nav.step(1);
   });
 
   return { open, close: dialog.close, isOpen: dialog.isOpen };

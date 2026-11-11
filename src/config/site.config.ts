@@ -242,6 +242,7 @@ export const SITE: SiteConfig = {
       status: "active",
       color: "#E91E63",
       cover: "/images/cover-art/PixelBadgePack.png",
+      layout: "icons",
       links: [{ label: "Download on Discord", url: "https://discord.gg/CN4U5kkfTm", color: "blue" }],
       gallery: [
         { url: "/images/pixel-badge/red.png", caption: "Red Badge" },
