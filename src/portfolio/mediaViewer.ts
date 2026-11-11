@@ -112,6 +112,40 @@ export function createMediaViewer(els: MediaViewerElements, placeholderFallback 
     show(index + 1);
   });
 
+  // Touch swipe: horizontal drags on the stage step through the media.
+  const stage = els.image.parentElement;
+  if (stage) {
+    stage.style.touchAction = "pan-y";
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    stage.addEventListener(
+      "touchstart",
+      (event) => {
+        const touch = event.touches[0];
+        tracking = event.touches.length === 1 && !!touch && event.target !== els.video;
+        if (!touch) return;
+        startX = touch.clientX;
+        startY = touch.clientY;
+      },
+      { passive: true },
+    );
+    stage.addEventListener(
+      "touchend",
+      (event) => {
+        if (!tracking) return;
+        tracking = false;
+        const touch = event.changedTouches[0];
+        if (!touch) return;
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+        show(index + (dx < 0 ? 1 : -1));
+      },
+      { passive: true },
+    );
+  }
+
   return {
     load(nextItems: MediaItem[]): void {
       items = nextItems;
