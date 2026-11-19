@@ -172,10 +172,9 @@ export default function App() {
             </p>
             <SplitText as="h1" className="hero-title" text={SITE.name} onScroll={false} delay={0.25} stagger={0.05} />
             <p className="hero-tag hero-fade">
-              {SITE.tagline.split("&")[0]}
-              <em>&amp;{SITE.tagline.split("&")[1]}</em>
+              Software developer, <em>primarily TypeScript.</em>
             </p>
-            <BlurText className="hero-sub" text={SITE.subtitle} delay={1} />
+            <BlurText className="hero-sub" text="I build bots, tools, plugins and web apps — mostly in TypeScript, Node.js and Python, with a new project every month." delay={1} />
             <div className="hero-cta hero-fade">
               <Magnet>
                 <Button variant="filled" onClick={() => go("work")} style={{ height: 48, borderRadius: 24, padding: "0 26px", fontSize: 15 }}>
