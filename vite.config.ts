@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig, type Plugin, type Connect } from "vite";
+import react from "@vitejs/plugin-react";
 import { SITE } from "./src/config/site.config";
 import { buildDiscordEmbed, buildProjectEmbed } from "./src/lib/discordEmbed";
 import { projectSlugs } from "./src/lib/slug";
@@ -120,11 +121,12 @@ const escapeAttr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;
 //   index.html                   -> ademdev.xyz
 //   gilded-utilities/index.html  -> ademdev.xyz/gilded-utilities
 //   blockbay/index.html          -> ademdev.xyz/blockbay
+//   new/index.html               -> ademdev.xyz/new (liquid glass redesign preview)
 // Adding an add-on page means adding its config, its index.html and one line here.
 export default defineConfig({
   appType: "mpa",
   publicDir: "public",
-  plugins: [cleanUrls(), discordEmbed()],
+  plugins: [react(), cleanUrls(), discordEmbed()],
   build: {
     outDir: "dist",
     emptyOutDir: true,
@@ -135,6 +137,7 @@ export default defineConfig({
         gilded: fileURLToPath(new URL("./gilded-utilities/index.html", import.meta.url)),
         blockbay: fileURLToPath(new URL("./blockbay/index.html", import.meta.url)),
         discord: fileURLToPath(new URL("./discord/index.html", import.meta.url)),
+        preview: fileURLToPath(new URL("./new/index.html", import.meta.url)),
       },
     },
   },
