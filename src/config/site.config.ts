@@ -222,16 +222,16 @@ export const SITE: SiteConfig = {
     },
     {
       icon: "⚔️",
-      title: "Kits System",
-      desc: "A completely customisable Kits Add-on. Featuring a GUI menu, Custom Commands, and a Chest UI menu for easy kit selection. Also featuring cooldowns, tag requirements, and more.",
+      title: "Kitted Out",
+      desc: "A kit system for Minecraft Bedrock. Admins create kits in-game from their inventory or a shulker box, keeping enchantments, names and lore. Players claim them from a simple /kits menu. Supports cooldowns, permission tags, custom icons and an admin menu.",
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
-      color: "#9b9b99",
-      cover: "/images/cover-art/Kits.png",
+      color: "#F5A623",
+      cover: "/images/cover-art/KittedOut.png",
       gallery: [
-        { url: "/images/kits/kitspage.png", caption: "Kits Menu" },
-        { url: "/images/kits/admin.png", caption: "Configuration Menu" },
-        { url: "/images/kits/commands.png", caption: "Commands" },
+        { url: "/images/kitted-out/kits.png", caption: "Kits Menu" },
+        { url: "/images/kitted-out/admin.png", caption: "Kit Admin Menu" },
+        { url: "/images/kitted-out/commands.webp", caption: "Commands" },
       ],
     },
     {
