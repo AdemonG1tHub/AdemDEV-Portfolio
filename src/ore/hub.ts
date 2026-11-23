@@ -651,7 +651,12 @@ $$(".card", app).forEach((c) => {
   c.addEventListener("click", () => open(c.dataset["slug"]!));
   c.addEventListener("keydown", (e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), open(c.dataset["slug"]!)));
 });
-const fromHash = () => { const m = location.hash.match(/^#\/(.+)$/); if (m) open(decodeURIComponent(m[1]!), false); };
+const fromHash = () => {
+  const m = location.hash.match(/^#\/(.+)$/);
+  const p = decodeURIComponent(location.pathname.replace(/^\/+|\/+$/g, "")); // Discord link pages live at /<slug>
+  if (m) open(decodeURIComponent(m[1]!), false);
+  else if (p && entries.some((x) => x.slug === p)) open(p, false);
+};
 fromHash();
 
 let toastT = 0;

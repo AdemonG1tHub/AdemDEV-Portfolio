@@ -10,7 +10,7 @@ import { projectSlugs } from "./src/lib/slug";
 const root = dirname(fileURLToPath(import.meta.url));
 
 /**
- * Serve `/gilded-utilities` the same way the deployed site does.
+ * Serve clean extension-less URLs the same way the deployed site does.
  *
  * Vite only resolves a directory to its index.html when the URL ends in a
  * slash, so the extension-less canonical URL 404s locally even though
@@ -119,8 +119,6 @@ const escapeAttr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;
 
 // One entry per route:
 //   index.html                   -> ademdev.xyz
-//   gilded-utilities/index.html  -> ademdev.xyz/gilded-utilities
-//   blockbay/index.html          -> ademdev.xyz/blockbay
 // Adding an add-on page means adding its config, its index.html and one line here.
 export default defineConfig({
   appType: "mpa",
@@ -133,10 +131,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         portfolio: fileURLToPath(new URL("./index.html", import.meta.url)),
-        gilded: fileURLToPath(new URL("./gilded-utilities/index.html", import.meta.url)),
-        blockbay: fileURLToPath(new URL("./blockbay/index.html", import.meta.url)),
         discord: fileURLToPath(new URL("./discord/index.html", import.meta.url)),
-        oreHub: fileURLToPath(new URL("./ore/hub/index.html", import.meta.url)),
       },
     },
   },

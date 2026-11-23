@@ -163,32 +163,7 @@ export const SITE: SiteConfig = {
         { url: "/images/blaze/admin.png", caption: "Admin Menu" },
         { url: "/images/blaze/payuser.png", caption: "/pay" },
       ],
-    },/*
-    {
-      icon: "🪙",
-      title: "Gilded Utilities",
-      desc: "A free MCBE Realm / Server Utility Add-on. Featuring many configurable modules, including: Warps, Homes, Mailbox, Shop System, Ranks, and more!",
-      tags: ["TypeScript", "JSON UI", "Free Add-on"],
-      status: "wip",
-      color: "#fde799",
-      cover: "/images/cover-art/GildedUtilities.png",
-      links: [
-        { label: "View Add-on Page", url: "/gilded-utilities", color: "gold" },
-        { label: "Follow the Development", url: "https://discord.gg/CN4U5kkfTm", color: "blue" },
-      ],
-      gallery: [],
     },
-    {
-      icon: "🧿",
-      title: "Block-Bay",
-      desc: "A recreation of ebay but in Minecraft Bedrock. Featuring a custom textured ChestUI menu, a bidding system, and admin commands for managing listings.",
-      tags: ["TypeScript", "JSON UI", "Chest UI"],
-      status: "active",
-      color: "#0a87e6",
-      cover: "/images/cover-art/BlockBay.png",
-      links: [{ label: "View Add-on Page:", url: "/blockbay", color: "gold" }],
-      gallery: [],
-    },*/
     
     {
       icon: "🍃",
