@@ -111,6 +111,19 @@ const skillGlyph = (s: string) => {
   const caps = s.match(/[A-Z]/g) ?? [];
   return (caps.length >= 2 ? caps.slice(0, 2).join("") : w.length > 1 ? w[0]![0]! + w[1]![0]! : s.slice(0, 2)).toUpperCase();
 };
+/** Real brand / game icons from /public/icons; unknown skills fall back to the letter tile. */
+const skillIcon = (s: string): string | null => {
+  const t = s.toLowerCase();
+  if (t.includes("typescript")) return "typescript";
+  if (t.includes("python")) return "python";
+  if (t.includes("node")) return "nodedotjs";
+  if (t.includes("discord")) return "discord";
+  if (t.includes("github")) return "github";
+  if (t.includes("html") || t.includes("css")) return "html5";
+  if (t.includes("endstone")) return "endstone";
+  if (t.includes("bedrock") || t.includes("minecraft")) return "bedrock";
+  return null;
+};
 const skillColor = (s: string) => {
   let h = 0;
   for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 360;
@@ -205,7 +218,7 @@ const app = mount(
           ${Array.from({ length: 9 }, (_, i) => {
             const s = SITE.skills[i];
             return s
-              ? `<button type="button" class="slot" role="option" data-name="${escapeHtml(s)}" aria-selected="${i === 0}"><kbd>${i + 1}</kbd><span class="item" style="background:${skillColor(s)}">${escapeHtml(skillGlyph(s))}</span></button>`
+              ? `<button type="button" class="slot" role="option" data-name="${escapeHtml(s)}" aria-selected="${i === 0}"><kbd>${i + 1}</kbd>${skillIcon(s) ? `<span class="item icon"><img src="/icons/${skillIcon(s)}.svg" alt="" width="32" height="32" loading="lazy"></span>` : `<span class="item" style="background:${skillColor(s)}">${escapeHtml(skillGlyph(s))}</span>`}</button>`
               : `<span class="slot empty"><kbd>${i + 1}</kbd></span>`;
           }).join("")}
         </div>
@@ -214,9 +227,9 @@ const app = mount(
       <article class="cta2 reveal" id="contact">
         <div><h2>Got something in mind?</h2><p>Tell me what you want built: a Bedrock add-on, a Discord bot, or tooling for your server.</p></div>
         <div class="contact-list">
-          <a class="contact" style="--c:#ffc431" href="mailto:${escapeHtml(SITE.email)}"><span class="ci">✉</span><span><strong>Email</strong><small>${escapeHtml(SITE.email)}</small></span><span class="arrow">›</span></a>
-          <a class="contact" style="--c:#4a7bf0" href="${escapeHtml(DISCORD)}" target="_blank" rel="noopener noreferrer"><span class="ci">💬</span><span><strong>Discord</strong><small>Join the server</small></span><span class="arrow">›</span></a>
-          <a class="contact" style="--c:#b8b9bd" href="${escapeHtml(SITE.github)}" target="_blank" rel="noopener noreferrer"><span class="ci">⌥</span><span><strong>GitHub</strong><small>${escapeHtml((SITE.github ?? "").replace(/^https?:\/\//, ""))}</small></span><span class="arrow">›</span></a>
+          <a class="contact" style="--c:#ffc431" href="mailto:${escapeHtml(SITE.email)}"><span class="ci"><img src="/icons/mail.svg" alt=""></span><span><strong>Email</strong><small>${escapeHtml(SITE.email)}</small></span><span class="arrow">›</span></a>
+          <a class="contact" style="--c:#4a7bf0" href="${escapeHtml(DISCORD)}" target="_blank" rel="noopener noreferrer"><span class="ci"><img src="/icons/discord.svg" alt=""></span><span><strong>Discord</strong><small>Join the server</small></span><span class="arrow">›</span></a>
+          <a class="contact" style="--c:#b8b9bd" href="${escapeHtml(SITE.github)}" target="_blank" rel="noopener noreferrer"><span class="ci"><img src="/icons/github.svg" alt=""></span><span><strong>GitHub</strong><small>${escapeHtml((SITE.github ?? "").replace(/^https?:\/\//, ""))}</small></span><span class="arrow">›</span></a>
         </div>
       </article>
     </section>
