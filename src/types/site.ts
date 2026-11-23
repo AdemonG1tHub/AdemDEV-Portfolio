@@ -16,6 +16,9 @@ export type LinkColor = OreButtonColor | "blue" | "neutral";
 
 export type ProjectStatus = "active" | "wip" | "archived";
 
+/** Which tab a project is listed under on the /ore/hub layout. */
+export type ProjectCategory = "commissioned" | "projects" | "free";
+
 export interface LinkButton {
   label: string;
   url: string;
@@ -58,6 +61,11 @@ export interface Project {
   md?: string;
   tags?: string[];
   status?: ProjectStatus;
+  /**
+   * Tab/section on the /ore/hub layout: "commissioned" (built for a server or client),
+   * "projects" (your own products and platforms, the default) or "free" (free-to-use).
+   */
+  category?: ProjectCategory;
   /** Custom URL slug; defaults to a slugified title. */
   slug?: string;
   /** Accent colour (hex). */
@@ -158,6 +166,12 @@ export interface SiteConfig {
   email?: string;
   github?: string;
   discord?: string;
+  /** Discord user ID. The /ore/hub profile card loads this account's avatar, decoration and banner. */
+  discordUserId?: string;
+  /** Discord "About me" text, markdown. Used on the Hub profile card (a live lookup overrides it when available). */
+  discordBio?: string;
+  /** Discord profile theme [primary, accent] hex colours, shown as the card gradient. */
+  discordTheme?: [string, string];
   FOOTER: { tagLine: string };
   discordEmbed: DiscordEmbedConfig;
   defaults: { linkColor: LinkColor };

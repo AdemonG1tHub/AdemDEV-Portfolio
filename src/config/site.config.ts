@@ -26,6 +26,12 @@ export const SITE: SiteConfig = {
   email: "ademdev@skyrosmc.com",
   github: "https://github.com/AdemonG1tHub",
   discord: "ademondiscrd",
+  discordUserId: "673193669104500736",
+  // Discord's public API doesn't expose "About me" or profile theme colours, so set them here
+  // (bio is markdown, theme is [primary, accent]). A live lookup overrides these when it can.
+  discordBio:
+    "__**MCBE Developer**__\n> :black_reply: **https://ademdev.xyz/**\n\nDM me for any work needing done, I can create Minecraft add-ons, websites, discord bots, and much more!\n\nFree Add-ons -> https://www.curseforge.com/members/ademdev/projects\n\n**` JS / TS — HTML / CSS — Python `**",
+  discordTheme: ["#b77206", "#f41aff"],
 
   FOOTER: {
     tagLine: "Not affiliated with Mojang Studios.",
@@ -78,11 +84,13 @@ export const SITE: SiteConfig = {
   // Projects
   // ---------------------------------------------------------------------------
   // Required: title, desc. Everything else is optional.
+  // `category` picks the tab on /ore/hub: "commissioned" | "projects" (default) | "free".
   // `cover` looks best at 1000x400. `gallery` entries may be images or videos.
   projects: [
     {
       icon: "🍌",
       title: "Arkadia",
+      category: "commissioned",
       desc: "A custom add-on for Arkadia, featuring land claiming, teams, God affinity system, external DB backup system, a bedrock-protocol bot, and much more!",
       tags: ["TypeScript", "JSON UI", "MongoDB", "Node.js"],
       status: "active",
@@ -103,6 +111,7 @@ export const SITE: SiteConfig = {
     },
     {
       title: "AstralCraft Engine",
+      category: "projects",
       desc: "A custom Minecraft Bedrock Engine Add-on, featuring a custom GUI, Auction System, Shop System, Factions, Warps, Donator Perks, and much more!",
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
@@ -137,6 +146,7 @@ export const SITE: SiteConfig = {
     {
       icon: "🔥",
       title: "Blaze Network",
+      category: "commissioned",
       desc: "A fully custom DonutSMP Shop like add-on for MCBE, but featuring other content like Stats, Warps, /pay, a custom sidebar, and even fully configurable modules inside a /admin command.",
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
@@ -183,6 +193,7 @@ export const SITE: SiteConfig = {
     {
       icon: "🍃",
       title: "MongoDB-MCBE-Bridge",
+      category: "free",
       desc: "A Minecraft Scripting API library for MongoDB integration. Designed for better storage saving / access.",
       tags: ["Open-sourced", "MongoDB", "Node.js", "TypeScript"],
       status: "active",
@@ -194,6 +205,7 @@ export const SITE: SiteConfig = {
     },
     {
       title: "Plots System",
+      category: "free",
       desc: "A custom plots system for Minecraft Bedrock servers. Featuring a GUI menu, plot claiming, and plot management.",
       status: "active",
       color: "#299c10",
@@ -206,6 +218,7 @@ export const SITE: SiteConfig = {
     {
       icon: "🧩",
       title: "Octane Skygen",
+      category: "commissioned",
       desc: "The Shop System for Octane Skygen, additionally featuring customisable NPCs which can be used to open Shops via Chest UI menus.",
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
@@ -223,6 +236,7 @@ export const SITE: SiteConfig = {
     {
       icon: "⚔️",
       title: "Kitted Out",
+      category: "projects",
       desc: "A kit system for Minecraft Bedrock. Admins create kits in-game from their inventory or a shulker box, keeping enchantments, names and lore. Players claim them from a simple /kits menu. Supports cooldowns, permission tags, custom icons and an admin menu.",
       tags: ["TypeScript", "JSON UI", "Chest UI"],
       status: "active",
@@ -237,6 +251,7 @@ export const SITE: SiteConfig = {
     {
       icon: "🛡️",
       title: "Pixel Badge Icon Pack",
+      category: "free",
       desc: "A collection of 9 pixel art badge like icons for Discord bots, Minecraft servers, or any other project. Free to use with attribution.",
       tags: ["Pixel Art", "Free Resource"],
       status: "active",
@@ -259,6 +274,7 @@ export const SITE: SiteConfig = {
     {
       icon: "🔮",
       title: "NexusSMP",
+      category: "commissioned",
       desc: "A custom add-on for NexusSMP, featuring many awesome features, and a high playerbase over the course of 2024-2025.",
       status: "archived",
       color: "#6608fd",
@@ -268,6 +284,7 @@ export const SITE: SiteConfig = {
     {
       icon: "🌐",
       title: "Realm Explorer",
+      category: "projects",
       desc: "A discovery platform for Minecraft Bedrock Realms & Servers. Featuring RE Hub which allows you to join Bedrock servers on console. (I am no longer the owner of this network)",
       tags: ["Python Bot", "Discord Setup", "Discovery Realm Platform"],
       status: "archived",
@@ -279,6 +296,7 @@ export const SITE: SiteConfig = {
     {
       icon: "💫",
       title: "Realm Transfer",
+      category: "projects",
       desc: "An add-on which transfers players from a Realm to a server, via the @minecraft/server-admin Scripting API. (Mojang has now patched this)",
       tags: ["TypeScript", "Scripting API"],
       status: "archived",

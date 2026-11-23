@@ -121,7 +121,6 @@ const escapeAttr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;
 //   index.html                   -> ademdev.xyz
 //   gilded-utilities/index.html  -> ademdev.xyz/gilded-utilities
 //   blockbay/index.html          -> ademdev.xyz/blockbay
-//   new/index.html               -> ademdev.xyz/new (liquid glass redesign preview)
 // Adding an add-on page means adding its config, its index.html and one line here.
 export default defineConfig({
   appType: "mpa",
@@ -137,7 +136,7 @@ export default defineConfig({
         gilded: fileURLToPath(new URL("./gilded-utilities/index.html", import.meta.url)),
         blockbay: fileURLToPath(new URL("./blockbay/index.html", import.meta.url)),
         discord: fileURLToPath(new URL("./discord/index.html", import.meta.url)),
-        preview: fileURLToPath(new URL("./new/index.html", import.meta.url)),
+        oreHub: fileURLToPath(new URL("./ore/hub/index.html", import.meta.url)),
       },
     },
   },

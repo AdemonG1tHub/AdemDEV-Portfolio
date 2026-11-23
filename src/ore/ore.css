@@ -1,0 +1,173 @@
+/* Ore UI layout experiments — shared page chrome. Component looks come from oreui-web. */
+*, *::before, *::after { box-sizing: border-box; }
+html { color-scheme: dark; }
+body.ore-page {
+  margin: 0;
+  min-height: 100vh;
+  background: #1e1e1f;
+  color: var(--ore-color-foreground, #fff);
+  font-family: var(--ore-font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: none;
+}
+a { color: inherit; }
+h1, h2, h3, p { margin: 0; }
+h1, h2, h3 { font-family: var(--ore-font-display); font-weight: normal; }
+.dim { color: var(--ore-color-disabled, #b1b2b5); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.cover-fallback { width: 100%; height: 100%; display: grid; place-items: center; font-size: 3rem; }
+.cover-icon img { height: 1em; }
+.ore-back {
+  position: fixed; left: 12px; bottom: 12px; z-index: 50; padding: 6px 12px;
+  background: #000a; color: #fff; text-decoration: none; font-size: .85rem;
+  box-shadow: 0 0 0 2px #fff4;
+}
+.ore-back:hover { background: #000d; box-shadow: 0 0 0 2px #fff; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+
+/* ============================ 0. Chooser ============================ */
+.chooser { max-width: 1000px; margin: 0 auto; padding: 56px 20px 80px; display: grid; gap: 28px; }
+.chooser header { display: grid; gap: 8px; }
+.chooser h1 { font-size: 2.2rem; }
+.chooser-grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.chooser-grid article.ore-card { width: 100%; }
+.chooser-grid a { text-decoration: none; color: inherit; display: block; }
+.chooser-grid .ore-card-media { display: grid; place-items: center; font-size: 3rem; background: linear-gradient(135deg, var(--g1), var(--g2)); }
+
+/* ========================== 1. Main menu ============================ */
+.v-menu { background: #111 url("/images/stone.png") center / 128px; image-rendering: pixelated; }
+.v-menu::before { content: ""; position: fixed; inset: 0; background: radial-gradient(#0000 0%, #000c 100%), #0008; pointer-events: none; }
+.menu-shell { position: relative; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; }
+.menu-title { text-align: center; display: grid; gap: 6px; margin-bottom: 28px; text-shadow: 0 4px 0 #000; }
+.menu-title h1 { font-size: clamp(2.6rem, 9vw, 5rem); letter-spacing: 2px; }
+.menu-title .accent { color: var(--ore-color-primary-background, #3f8f3a); }
+.menu-title p { color: #ffd966; font-size: 1.1rem; transform: rotate(-2deg); }
+.menu-stack { display: grid; gap: 12px; width: min(440px, 100%); margin: 0 auto; }
+.menu-stack .ore-button { width: 100%; }
+.menu-panel { width: min(900px, 100%); display: none; gap: 14px; }
+.menu-panel.on { display: grid; }
+.menu-panel .ore-container { padding: 16px; display: grid; gap: 14px; max-height: 68vh; overflow: auto; }
+.menu-panel header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.menu-list { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.menu-list article.ore-card { width: 100%; }
+.menu-svc { display: grid; gap: 4px; padding: 12px; background: #0004; box-shadow: 0 0 0 2px #0006; }
+.menu-svc strong { font-size: 1.1rem; }
+.menu-foot { position: fixed; bottom: 10px; right: 14px; font-size: .8rem; color: #ccc; text-shadow: 1px 1px 0 #000; }
+
+/* =========================== 2. Realms ============================= */
+.v-realms { background: #1b2230; }
+.realms-nav { position: sticky; top: 0; z-index: 20; }
+.realms-nav .ore-navbar-title { font-family: var(--ore-font-display); }
+.realms-wrap { max-width: 1160px; margin: 0 auto; padding: 28px 18px 90px; display: grid; gap: 34px; }
+.realms-hero { display: grid; gap: 14px; padding: 36px 24px; background: linear-gradient(180deg, #2b3a5c, #1f2940); box-shadow: 0 0 0 2px #0a0f1a; }
+.realms-hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); }
+.realms-stats { width: 100%; }
+.realms-stats table { width: 100%; }
+.realms-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center; }
+.realms-grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.realms-grid article.ore-card { width: 100%; cursor: pointer; }
+.realms-grid article.ore-card:hover { transform: translateY(-2px); }
+.realms-grid .ore-card-media { aspect-ratio: 5 / 2; }
+.realms-grid .ore-card-overlay-bottom-start { padding: 6px; }
+.realms-two { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.realms-two .ore-container { padding: 18px; display: grid; gap: 12px; align-content: start; }
+.realms-two details.ore-accordion { width: 100%; }
+.realms-two .ore-accordion-content { padding: 10px 14px; }
+
+/* =========================== 3. Settings =========================== */
+.v-settings { background: #26272a; }
+.settings-shell { max-width: 1100px; margin: 0 auto; padding: 24px 16px 90px; display: grid; gap: 16px; }
+.settings-shell > header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.settings-body { display: grid; gap: 14px; grid-template-columns: 240px minmax(0, 1fr); align-items: start; }
+.settings-tabs { padding: 10px; display: grid; gap: 4px; }
+.settings-tabs .ore-tab-button { width: 100%; justify-content: flex-start; }
+.settings-pane { display: none; padding: 20px; gap: 16px; align-content: start; min-height: 440px; }
+.settings-pane.on { display: grid; }
+.settings-pane h2 { font-size: 1.5rem; }
+.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 14px; background: #0003; box-shadow: 0 0 0 2px #0004; }
+.setting-row > div { display: grid; gap: 2px; min-width: 0; }
+.setting-row > .row { flex-shrink: 0; }
+.settings-pane .ore-textfield, .settings-pane .ore-textarea { width: 100%; }
+.settings-pane details.ore-accordion { width: 100%; }
+.settings-pane .ore-accordion-content { padding: 12px 14px; display: grid; gap: 10px; }
+.settings-pane .acc-cover { aspect-ratio: 5 / 2; overflow: hidden; }
+.settings-pane .acc-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 760px) {
+  .settings-body { grid-template-columns: 1fr; }
+  .settings-tabs { grid-auto-flow: column; overflow: auto; }
+}
+
+/* ============================ 4. Worlds ============================ */
+.v-worlds { background: #1f1f20 url("/images/netherrack.png") center / 128px; image-rendering: auto; }
+.v-worlds::before { content: ""; position: fixed; inset: 0; background: #000b; pointer-events: none; }
+.worlds-shell { position: relative; max-width: 1180px; margin: 0 auto; padding: 18px 14px 100px; display: grid; gap: 14px; }
+.worlds-head { text-align: center; padding: 10px 0 2px; }
+.worlds-head h1 { font-size: 2rem; text-shadow: 0 3px 0 #000; }
+.worlds-body { display: grid; gap: 14px; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+.worlds-list { padding: 8px; display: grid; gap: 8px; max-height: 70vh; overflow: auto; }
+.world-row {
+  all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 12px;
+  padding: 8px; background: #0004; box-shadow: 0 0 0 2px #0005;
+}
+.world-row:hover { background: #fff1; }
+.world-row:focus-visible { outline: 2px solid #fff; }
+.world-row[aria-selected="true"] { box-shadow: 0 0 0 2px #fff; background: #fff2; }
+.world-row .thumb { width: 112px; aspect-ratio: 16 / 9; overflow: hidden; background: #000; }
+.world-row .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.world-row .thumb .cover-fallback { font-size: 1.6rem; }
+.world-row .meta { display: grid; gap: 2px; align-content: center; min-width: 0; }
+.world-row strong { font-size: 1.05rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.world-row small { color: #b1b2b5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.worlds-detail { padding: 14px; display: grid; gap: 12px; position: sticky; top: 14px; }
+.worlds-detail .banner { aspect-ratio: 5 / 2; overflow: hidden; background: #000; box-shadow: 0 0 0 2px #0008; }
+.worlds-detail .banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.worlds-actions { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 12px; background: #000c; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.worlds-actions .ore-button { min-width: 220px; }
+@media (max-width: 820px) {
+  .worlds-body { grid-template-columns: 1fr; }
+  .worlds-detail { position: static; }
+  .worlds-actions .ore-button { min-width: 0; flex: 1 1 140px; }
+}
+
+.v-worlds .ore-back { bottom: 84px; }
+
+/* Larger UI: scales every OreUI component (buttons, tags, toggles…) by 1.5x */
+body.ore-page { --ore-size-unit: 0.1875rem; font-size: 1.15rem; }
+.ore-button[data-color="blue"] {
+  --ore-button-background-default: var(--ore-color-blue-20);
+  --ore-button-background-hover: color-mix(in srgb, var(--ore-color-blue-20), var(--ore-color-blue-10) 35%);
+  --ore-button-background-pressed: var(--ore-color-blue-30);
+  --ore-button-highlight-default: color-mix(in srgb, var(--ore-color-blue-20), var(--ore-color-white) 20%);
+  --ore-button-highlight-hover: color-mix(in srgb, var(--ore-color-blue-10), var(--ore-color-white) 20%);
+  --ore-button-highlight-pressed: color-mix(in srgb, var(--ore-color-blue-30), var(--ore-color-white) 10%);
+  --ore-button-shadow: color-mix(in srgb, var(--ore-color-blue-30), var(--ore-color-black) 30%);
+}
+
+.ore-button[data-color="neutral"] {
+  --ore-button-background-default: var(--ore-color-neutral-background);
+  --ore-button-background-hover: var(--ore-color-neutral-background-hover);
+  --ore-button-background-pressed: var(--ore-color-neutral-background-pressed);
+  --ore-button-highlight-default: var(--ore-color-neutral-highlight);
+  --ore-button-highlight-hover: var(--ore-color-neutral-highlight-hover);
+  --ore-button-highlight-pressed: var(--ore-color-neutral-highlight-pressed);
+  --ore-button-shadow: var(--ore-color-neutral-shadow);
+}
+
+
+/* Dark OreUI tabs: a plain tablist (no .ore-toggles, which forces the light "toggle" palette) */
+.tabs { display: flex; align-items: flex-end; }
+
+/* Pressed state for the custom colours. The library's `:active` rule drops the
+   bottom shadow, but these unlayered colour rules set `--ore-button-shadow` and
+   beat it, so the button never looked pressed. Restore it explicitly. */
+.ore-button:is([data-color="blue"], [data-color="neutral"]):active:not([disabled], [loading]),
+.ore-button:is([data-color="blue"], [data-color="neutral"])[data-pressed]:not([disabled], [loading]) {
+  --ore-button-shadow: transparent;
+}
+
+/* Gold buttons (incl. the hero variant) get dark text instead of white + shadow */
+.ore-button[data-color="gold"] { --ore-button-foreground: #1e1e1f; --ore-button-text-shadow: none; }
+/* My `a { color: inherit }` above is unlayered and beat the library's layered button colour on <a> buttons. */
+a.ore-button { color: var(--ore-button-foreground); text-decoration: none; }

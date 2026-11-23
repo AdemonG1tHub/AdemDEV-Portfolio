@@ -81,6 +81,14 @@
   --ore-button-shadow: var(--ore-color-neutral-shadow);
 }
 
+/* Pressed state for the custom colours. The library's `:active` rule drops the
+   bottom shadow, but these unlayered colour rules set `--ore-button-shadow` and
+   beat it, so the button never looked pressed. Restore it explicitly. */
+.ore-button:is([data-color="blue"], [data-color="neutral"]):active:not([disabled], [loading]),
+.ore-button:is([data-color="blue"], [data-color="neutral"])[data-pressed]:not([disabled], [loading]) {
+  --ore-button-shadow: transparent;
+}
+
 /* The reset sits in OreUI's `base` layer, below its `components` layer.
    Unlayered, `* { padding: 0 }` would beat every OreUI rule regardless of
    specificity and flatten the buttons, header and modals. */
