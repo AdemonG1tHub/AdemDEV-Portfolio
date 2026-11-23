@@ -574,3 +574,4 @@ html, body { overflow-x: clip; max-width: 100%; }
 .lb-cap { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; display: flex; gap: 14px; justify-content: center; padding: 28px 16px max(14px, env(safe-area-inset-bottom)); background: linear-gradient(#0000, #000b); pointer-events: none; text-shadow: 0 2px 0 #000; }
 .lb-cap:empty, .lb-cap:not(:has(:not(:empty))) { display: none; }
 @media (max-width: 720px) { .lb-nav { font-size: 1.6rem; top: auto; bottom: 56px; translate: 0 0; } .lb-prev { left: 12px; } .lb-next { right: 12px; } }
+.anchor { height: 0; margin: 0; padding: 0; pointer-events: none; }

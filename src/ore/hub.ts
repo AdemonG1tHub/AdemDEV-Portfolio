@@ -140,7 +140,7 @@ const app = mount(
     <section class="hero">
       <div class="hero-copy">
         <h1 class="glitch" data-text="LOADING PROJECTS">LOADING PROJECTS</h1>
-        <p class="status"><span class="spin"></span><span id="load-msg">${LOAD_MSGS[0]}</span><b id="load-pct">0%</b></p>
+        <p class="status"><span class="spin"></span><span id="load-msg">${LOAD_MSGS[0]}</span></p>
         <button class="bar" id="bar" aria-label="Replay loading animation"><i></i></button>
         <p class="tip" id="tip"><b>Tip:</b> <span>${TIPS[0]}</span> <button id="tip-next" aria-label="Next tip">↻</button></p>
         <div class="row">
@@ -166,7 +166,8 @@ const app = mount(
       </aside>
     </section>
 
-    <div class="toolbar" id="work">
+    <div class="anchor" id="work"></div>
+    <div class="toolbar">
       <div class="ore-textfield">
         <span class="ore-textfield-control"><input class="ore-textfield-input" id="q" type="text" placeholder="Search projects…" autocomplete="off" aria-label="Search projects"></span>
       </div>
@@ -326,7 +327,6 @@ $("#pf-handle", app)?.addEventListener("click", () => {
 /* ------------------------- loading hero animation ------------------------ */
 const barFill = $<HTMLElement>("#bar i", app)!;
 const msg = $("#load-msg", app)!;
-const pct = $("#load-pct", app)!;
 let raf = 0;
 function runLoad(): void {
   cancelAnimationFrame(raf);
@@ -336,7 +336,6 @@ function runLoad(): void {
     const p = Math.min(1, (t - t0) / dur);
     const eased = 1 - Math.pow(1 - p, 2.2);
     barFill.style.width = `${eased * 100}%`;
-    pct.textContent = `${Math.round(eased * 100)}%`;
     msg.textContent = LOAD_MSGS[Math.min(LOAD_MSGS.length - 1, Math.floor(p * LOAD_MSGS.length))]!;
     app.classList.toggle("loaded", p >= 1);
     if (p < 1) raf = requestAnimationFrame(tick);
@@ -389,13 +388,65 @@ addEventListener("scroll", () => {
 /* top bar: current-section highlight + mobile menu */
 const secLinks = $$<HTMLAnchorElement>(".tb-link[data-sec]", app);
 const secs = secLinks.map((a) => document.getElementById(a.dataset["sec"]!)!);
+const topbar = $<HTMLElement>(".topbar", app)!;
+const headerH = () => topbar.getBoundingClientRect().height;
+let navLock: string | null = null; // while a nav click is scrolling, highlight its target instead of whatever passes by
 function markSection(): void {
+  const doc = document.documentElement;
   let cur = 0;
-  secs.forEach((s, i) => { if (s.getBoundingClientRect().top <= 170) cur = i; });
+  secs.forEach((s, i) => { if (s.getBoundingClientRect().top <= headerH() + 80) cur = i; });
+  if (doc.scrollTop + innerHeight >= doc.scrollHeight - 4) cur = secs.length - 1;
+  if (navLock) cur = secLinks.findIndex((a) => a.dataset["sec"] === navLock);
   secLinks.forEach((a, i) => (i === cur ? a.setAttribute("aria-current", "true") : a.removeAttribute("aria-current")));
 }
 addEventListener("scroll", markSection, { passive: true });
 markSection();
+
+/** Scrolls to a section, re-measuring every frame so images loading or reveal animations can't make it land short or long. */
+let scrollRaf = 0;
+function goToSection(id: string): void {
+  const el = document.getElementById(id);
+  if (!el) return;
+  cancelAnimationFrame(scrollRaf);
+  const target = () => {
+    if (id === "top") return 0;
+    const gap = id === "work" ? 0 : id === "contact" ? 12 : 8;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    return Math.max(0, Math.min(max, el.getBoundingClientRect().top + scrollY - headerH() - gap));
+  };
+  const from = scrollY;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const dur = reduce ? 0 : Math.min(900, 350 + Math.abs(target() - from) * 0.12);
+  const t0 = performance.now();
+  navLock = id;
+  const stop = () => { cancelAnimationFrame(scrollRaf); navLock = null; markSection(); removeEventListener("wheel", stop); removeEventListener("touchstart", stop); removeEventListener("keydown", stop); };
+  addEventListener("wheel", stop, { passive: true, once: true });
+  addEventListener("touchstart", stop, { passive: true, once: true });
+  addEventListener("keydown", stop, { once: true });
+  const step = (now: number) => {
+    const t = dur ? Math.min(1, (now - t0) / dur) : 1;
+    const e = 1 - Math.pow(1 - t, 3);
+    document.documentElement.style.scrollBehavior = "auto";
+    scrollTo(0, from + (target() - from) * e);
+    if (t < 1) scrollRaf = requestAnimationFrame(step);
+    else {
+      scrollTo(0, target());
+      document.documentElement.style.scrollBehavior = "";
+      stop();
+    }
+  };
+  scrollRaf = requestAnimationFrame(step);
+  history.replaceState(null, "", id === "top" ? location.pathname : `#${id}`);
+}
+app.addEventListener("click", (e) => {
+  const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]:not([href^="#/"])');
+  if (!a) return;
+  const id = a.getAttribute("href")!.slice(1);
+  if (!document.getElementById(id)) return;
+  e.preventDefault();
+  goToSection(id);
+});
+if (/^#(work|about|contact)$/.test(location.hash)) addEventListener("load", () => setTimeout(() => goToSection(location.hash.slice(1)), 400), { once: true });
 const menu = $<HTMLButtonElement>(".tb-menu", app)!;
 const tbNav = $("#tb-nav", app)!;
 const setMenu = (open: boolean) => { tbNav.classList.toggle("open", open); menu.setAttribute("aria-expanded", String(open)); };
